@@ -700,7 +700,7 @@ public class playerHandler : MonoBehaviour
         {
             soundFinisherTackle.setParameterValue("Hit", 1);
             soundFinisherTackle.start();
-            tDmg = 3;
+            tDmg = 4;
             tBox = (Vector2)hitboxAttackB.transform.position + hitboxAttackB.offset;
         }
 
@@ -709,7 +709,7 @@ public class playerHandler : MonoBehaviour
         {
             soundFinisherDownkick.setParameterValue("Hit", 1);
             soundFinisherDownkick.start();
-            tDmg = 6;
+            tDmg = 5;
             tBox = (Vector2)hitboxAttackC.transform.position + hitboxAttackC.offset;
         }
 

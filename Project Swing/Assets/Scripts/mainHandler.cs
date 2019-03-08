@@ -262,7 +262,7 @@ public class mainHandler : MonoBehaviour {
         if (level == 10 && currentSpawn == 0)
         {
             currentSpawn++;
-            enemies.Add(Instantiate(enemyA, new Vector3(11.1f, 0f), Quaternion.identity));
+            enemies.Add(Instantiate(enemyA, new Vector3(3.1f, 0f), Quaternion.identity));
         }
 
         if (level == 1)
