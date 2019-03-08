@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="AudioFile" id="{2de005f3-8a1e-4ffe-8d45-275b4fbe39ff}">
+        <property name="assetPath">
+            <value>PirateBoy_148_bpm_01.wav</value>
+        </property>
+        <property name="isStreaming">
+            <value>true</value>
+        </property>
+        <property name="frequencyInKHz">
+            <value>48</value>
+        </property>
+        <property name="channelCount">
+            <value>2</value>
+        </property>
+        <property name="length">
+            <value>121.62162499999999</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{2e1d5e4e-e3e7-4820-b3d7-bf3799489769}</destination>
+        </relationship>
+    </object>
+</objects>

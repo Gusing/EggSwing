@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="AudioFile" id="{0eb271f1-0928-475a-8582-4b1ff626ecbf}">
+        <property name="assetPath">
+            <value>Egg_death_layer_2_05.wav</value>
+        </property>
+        <property name="frequencyInKHz">
+            <value>48</value>
+        </property>
+        <property name="channelCount">
+            <value>2</value>
+        </property>
+        <property name="length">
+            <value>0.25237500000000002</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{2e1d5e4e-e3e7-4820-b3d7-bf3799489769}</destination>
+        </relationship>
+    </object>
+</objects>
