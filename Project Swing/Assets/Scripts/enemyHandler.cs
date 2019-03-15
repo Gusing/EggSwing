@@ -23,6 +23,7 @@ public class enemyHandler : MonoBehaviour
     protected int knockbackLimit;
     protected int bigKnockbackLimit;
     protected bool invincible;
+    protected float randomHitValue;
 
     protected int hitstunDirection;
 
@@ -37,6 +38,7 @@ public class enemyHandler : MonoBehaviour
     protected float attackDelay;
     protected float attackRecovery;
     protected float attackDistance;
+    protected bool attackActive;
 
     protected bool busy;
 
@@ -64,8 +66,11 @@ public class enemyHandler : MonoBehaviour
     protected BoxCollider2D hitboxBody;
     public List<BoxCollider2D> hitboxAttacks;
 
+    protected Animator animator;
+
     protected int currentState;
     protected readonly int NOTBEAT = 0, PREBEAT = 1, BEAT = 2, OFFBEAT = 3;
+    protected bool offBeat;
 
     protected FMOD.Studio.EventInstance soundAttack;
     protected FMOD.Studio.EventInstance soundDeath;
@@ -82,6 +87,8 @@ public class enemyHandler : MonoBehaviour
             hitboxAttacks[i].enabled = false;
         }
 
+        animator = GetComponent<Animator>();
+
         damage = new List<int>();
 
         direction = LEFT;
@@ -97,6 +104,8 @@ public class enemyHandler : MonoBehaviour
 
     public virtual void Update()
     {
+        if (mainHandler.currentState == BEAT) setOffbeat(false);
+
         // update HP bar
         rendererHPFill.transform.localScale = new Vector3(((float)currentHP / (float)maxHP) * 1, 1);
 
@@ -125,6 +134,17 @@ public class enemyHandler : MonoBehaviour
         {
             attackRecovery -= Time.deltaTime;
         }
+    }
+
+    public virtual void UpdateAnimations()
+    {
+        animator.SetBool("attacking", attacking);
+        animator.SetBool("isHit", hitstun);
+        animator.SetBool("attackActive", attackActive);
+        animator.SetInteger("currentAttack", currentAttack);
+        animator.SetBool("offBeat", mainHandler.offBeat);
+        animator.SetBool("dead", dead);
+        animator.SetFloat("randomHitValue", randomHitValue);
     }
 
     public virtual void UpdateMovement()
@@ -156,13 +176,15 @@ public class enemyHandler : MonoBehaviour
 
     public virtual void TakeDamage(int dmg)
     {
+        randomHitValue = Random.Range(0f, 1f);
+        print(randomHitValue);
         currentHP -= dmg;
-        print("hit for " + dmg);
         if (currentHP <= 0) Die(dmg);
         else
         {
             if (dmg >= hitstunLimit)
             {
+                attackActive = false;
                 hitstun = true;
                 attacking = false;
                 attackState = 0;
@@ -200,6 +222,7 @@ public class enemyHandler : MonoBehaviour
         soundDeath.start();
         rendererHPBar.enabled = false;
         rendererHPFill.enabled = false;
+        attacking = false;
         for (int i = 0; i < hitboxAttacks.Count; i++)
         {
             hitboxAttacks[i].enabled = false;
@@ -266,7 +289,7 @@ public class enemyHandler : MonoBehaviour
         }
 
         // ready for next attack state
-        if (currentState == NOTBEAT) timeToMoveOn = true;
+        if (mainHandler.currentState == NOTBEAT) timeToMoveOn = true;
     }
 
     protected virtual void UpdateAttackHitbox()
@@ -275,7 +298,6 @@ public class enemyHandler : MonoBehaviour
 
         if (attackHitboxTimer >= attackHitboxTime)
         {
-            print("no longer active");
             attackHitboxActive = false;
             attackHitboxTimer = 0;
             for (int i = 0; i < hitboxAttacks.Count; i++)
@@ -287,8 +309,12 @@ public class enemyHandler : MonoBehaviour
 
     public virtual void setState(int state)
     {
-        print("parent set state");
         currentState = state;
+    }
+
+    public virtual void setOffbeat(bool ob)
+    {
+        offBeat = ob;
     }
 
     protected virtual void OnTriggerEnter2D(Collider2D other)

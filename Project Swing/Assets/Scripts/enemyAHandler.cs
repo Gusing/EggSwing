@@ -37,7 +37,10 @@ public class enemyAHandler : enemyHandler {
         soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_death");
     }
 	
-	public override void Update () {
+	public override void Update()
+    {
+
+        base.UpdateAnimations();
 
         if (dead) return;
 
@@ -65,11 +68,11 @@ public class enemyAHandler : enemyHandler {
         // update dancing sprite
         if (!busy)
         {
-            if (currentState == BEAT)
+            if (!mainHandler.offBeat)
             {
                 localSpriteRenderer.sprite = spriteStomp2;
             }
-            if (currentState == OFFBEAT)
+            if (mainHandler.offBeat)
             {
                 localSpriteRenderer.sprite = spriteStomp1;
             }
@@ -109,7 +112,7 @@ public class enemyAHandler : enemyHandler {
         base.Attack();
         
         // move to next attack state
-        if (timeToMoveOn && currentState == PREBEAT)
+        if (timeToMoveOn && mainHandler.currentState == PREBEAT)
         {
             timeToMoveOn = false;
             if (attackState == 1)
@@ -130,6 +133,7 @@ public class enemyAHandler : enemyHandler {
             }
             else if (attackState == 3)
             {
+                attackActive = true;
                 soundAttack.setParameterValue("Pre", 4);
                 soundAttack.start();
                 attackHitboxTimer = 0;
@@ -140,6 +144,7 @@ public class enemyAHandler : enemyHandler {
             }
             else if (attackState == 4)
             {
+                attackActive = false;
                 hitboxAttacks[0].enabled = false;
                 localSpriteRenderer.sprite = spriteIdle;
                 attacking = false;

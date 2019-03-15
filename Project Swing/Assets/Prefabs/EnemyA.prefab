@@ -150,6 +150,7 @@ GameObject:
   - component: {fileID: 61714063571005678}
   - component: {fileID: 114684949191481126}
   - component: {fileID: 50898442520606196}
+  - component: {fileID: 483239405}
   m_Layer: 0
   m_Name: EnemyA
   m_TagString: enemy
@@ -263,8 +264,6 @@ MonoBehaviour:
   dead: 0
   currentHP: 0
   maxHP: 0
-  walkAcc: 0
-  walkSpeed: 0
   rendererHPBar: {fileID: 212215759497151352}
   rendererHPFill: {fileID: 212720327578161122}
   pYellowWarning: {fileID: 198766640297364512, guid: cd7ee2537b3a3154e9be53fa1eabfbe9,
@@ -306,6 +305,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
+--- !u!95 &483239405
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1386477621940742}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4be7f57a6cf88564baca820285da34a5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1535724378489824
 GameObject:
   m_ObjectHideFlags: 0

@@ -43,6 +43,8 @@ public class enemyBHandler : enemyHandler
     
     public override void Update()
     {
+        base.UpdateAnimations();
+
         if (dead) return;
 
         base.Update();
@@ -98,11 +100,11 @@ public class enemyBHandler : enemyHandler
         // update dancing sprite
         if (!busy)
         {
-            if (currentState == BEAT)
+            if (!offBeat)
             {
                 localSpriteRenderer.sprite = spriteStomp2;
             }
-            if (currentState == OFFBEAT)
+            if (offBeat)
             {
                 localSpriteRenderer.sprite = spriteStomp1;
             }
@@ -137,7 +139,7 @@ public class enemyBHandler : enemyHandler
         base.Attack();
         
         // move to next attack state
-        if (timeToMoveOn && currentState == PREBEAT)
+        if (timeToMoveOn && mainHandler.currentState == PREBEAT)
         {
             timeToMoveOn = false;
             if (attackState == 1)
@@ -168,6 +170,7 @@ public class enemyBHandler : enemyHandler
             }
             else if (attackState == 5)
             {
+                attackActive = true;
                 soundAttack.setParameterValue("Pre", 4);
                 soundAttack.start();
                 attackHitboxTimer = 0;
@@ -178,6 +181,7 @@ public class enemyBHandler : enemyHandler
             }
             else if (attackState == 6)
             {
+                attackActive = false;
                 hitboxAttacks[0].enabled = false;
                 localSpriteRenderer.sprite = spriteIdle;
                 attacking = false;
@@ -193,7 +197,7 @@ public class enemyBHandler : enemyHandler
         base.Attack();
 
         // move to next attack state
-        if (timeToMoveOn && currentState == PREBEAT)
+        if (timeToMoveOn && mainHandler.currentState == PREBEAT)
         {
             timeToMoveOn = false;
             if (attackState == 1)
@@ -214,6 +218,7 @@ public class enemyBHandler : enemyHandler
             }
             else if (attackState == 3)
             {
+                attackActive = true;
                 soundAttack.setParameterValue("Pre", 4);
                 soundAttack.start();
                 attackHitboxTimer = 0;
@@ -224,6 +229,7 @@ public class enemyBHandler : enemyHandler
             }
             else if (attackState == 4)
             {
+                attackActive = false;
                 hitboxAttacks[1].enabled = false;
                 localSpriteRenderer.sprite = spriteIdle;
                 attacking = false;

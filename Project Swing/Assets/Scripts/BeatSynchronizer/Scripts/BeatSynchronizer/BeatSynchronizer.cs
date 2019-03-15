@@ -21,7 +21,7 @@ public class BeatSynchronizer : MonoBehaviour {
         //soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath);
 
         double initTime = AudioSettings.dspTime;
-		GetComponent<AudioSource>().PlayScheduled(initTime + startDelay);
+		//GetComponent<AudioSource>().PlayScheduled(initTime + startDelay);
         //soundMusic.start();
 		if (OnAudioStart != null) {
 			OnAudioStart(initTime + startDelay);

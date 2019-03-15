@@ -2,40 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using SynchronizerData;
+using UnityEngine.UI;
 
 public class playerHandler : MonoBehaviour
 {
     float velX;
     float accX;
-
-    public Sprite spriteIdle;
-    public Sprite spriteStomp1;
-    public Sprite spriteStomp2;
-    Sprite spriteCurrentIdle;
-
-    public Sprite spriteAttackFail;
-    public Sprite spriteHit;
-    public Sprite spriteDead;
-
-    public Sprite spriteAttack;
-    public Sprite spriteAttackHit;
-    public Sprite spriteAttackB;
-    public Sprite spriteAttackBHit;
-    public Sprite spriteAttackC;
-    public Sprite spriteAttackCHit;
-
-    public Sprite spriteAttack2Hit;
-    public Sprite spriteAttack2HitB;
-    public Sprite spriteAttack2HitC;
-    public Sprite spriteAttack2HitD;
-    public Sprite spriteAttack3;
-
-    public Sprite spriteDodge;
-    public Sprite spriteDodgeFail;
+    
+    public Animator animator;
 
     public ParticleSystem pAttackHit;
     public ParticleSystem pPlayerkHit;
     public ParticleSystem pSpecialAttack;
+    public ParticleSystem pBlock;
+    public ParticleSystem pCounter;
 
     public GameObject damageNumber;
 
@@ -45,14 +25,19 @@ public class playerHandler : MonoBehaviour
     bool lastAttackSlow;
     bool switchBeat;
 
-    public BoxCollider2D hitboxAttack;
-    public BoxCollider2D hitboxAttack2;
+    public BoxCollider2D hitboxAttack1A;
+    public BoxCollider2D hitboxAttack1B;
+    public BoxCollider2D hitboxAttack1C;
+
+    public BoxCollider2D hitboxAttack2A;
     public BoxCollider2D hitboxAttack2B;
     public BoxCollider2D hitboxAttack2C;
-    public BoxCollider2D hitboxAttackB;
-    public BoxCollider2D hitboxAttackC;
     public BoxCollider2D hitboxAttack2D;
-    public BoxCollider2D hitboxAttack3;
+
+    public BoxCollider2D hitboxAttack3A;
+
+    public BoxCollider2D hitboxAttack4A;
+
     BoxCollider2D hitboxBody;
     SpriteRenderer localRenderer;
 
@@ -67,11 +52,22 @@ public class playerHandler : MonoBehaviour
     float specialPunchSuccessTime = 0.7f;
     float punchFailTime = 0.5f;
     int attackType;
+    bool usingSuper;
     bool beatPassed;
+
     bool dodgeSucces;
     bool dodgeFail;
     float dodgeSuccessTime = 0.5f;
     float dodgeFailTime = 0.5f;
+
+    bool blocking;
+    float blockTime;
+    int blockBeat;
+    bool successfullBlock;
+   
+    bool counterReady;
+    float counterTime = 0.4f;
+    bool countering;
 
     int currentHP;
     int maxHP;
@@ -84,8 +80,7 @@ public class playerHandler : MonoBehaviour
     public SpriteRenderer[] renderersSpecialCharges;
 
     public bool dead;
-
-    bool directionRight;
+    
     public int direction;
 
     bool hitstun;
@@ -95,55 +90,60 @@ public class playerHandler : MonoBehaviour
     int beatState;
     readonly int FAIL = 0, SUCCESS = 1, BEAT = 2;
 
-    private BeatObserver beatObserver;
+    List<Attack[]> allCombos;
+    List<Attack[]> currentCombos;
 
-    FMOD.Studio.EventInstance soundAttackQuick;
-    FMOD.Studio.EventInstance soundAttackSlow;
+    readonly int QUICK = 0, SLOW = 1;
+    
     FMOD.Studio.EventInstance soundAttackSuper;
-    FMOD.Studio.EventInstance soundFinisherTackle;
-    FMOD.Studio.EventInstance soundFinisherDonkey;
-    FMOD.Studio.EventInstance soundFinisherDownkick;
+    FMOD.Studio.EventInstance soundAttackSuperUnable;
 
-    // Use this for initialization
+    FMOD.Studio.EventInstance soundDodge;
+
+    // debug
+    public Text txtComboState;
+    public Text txtNumberCombos;
+    
     void Start()
     {
-        soundAttackQuick = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_short");
-        soundAttackSlow = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_long");
         soundAttackSuper = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_super");
-        soundFinisherTackle = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Combo_tackle");
-        soundFinisherDonkey = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Combo_donkey_kick");
-        soundFinisherDownkick = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Combo_drop_kick");
+        soundAttackSuperUnable = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_super_fail");
+        soundDodge = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Dodge");
 
-        spriteCurrentIdle = spriteStomp1;
+        allCombos = new List<Attack[]>();
+
+        // populate available combos
+        allCombos.Add(new Attack[] { new Attack2A(hitboxAttack2A), new Attack2B(hitboxAttack2B), new Attack2C(hitboxAttack2C) });
+        allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack1B(hitboxAttack1B) });
+        allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack2D(hitboxAttack2D), new Attack1C(hitboxAttack1C) });
+
+        currentCombos = new List<Attack[]>();
+        RestockCombos();
 
         maxHP = 10;
         currentHP = maxHP;
         maxSpecialCharges = 3;
         specialCharges = maxSpecialCharges;
         specialChargeExtraTime = 15;
-        directionRight = true;
         direction = 1;
+        blockTime = (60f / mainHandler.currentBpm) * 1.5f;
 
-        beatObserver = GetComponent<BeatObserver>();
         localRenderer = GetComponent<SpriteRenderer>();
 
-        hitboxAttack.enabled = false;
-        hitboxAttackB.enabled = false;
-        hitboxAttackC.enabled = false;
-
-        hitboxAttack2.enabled = false;
-        hitboxAttack2B.enabled = false;
-        hitboxAttack2C.enabled = false;
-        hitboxAttack2D.enabled = false;
-
-        hitboxAttack3.enabled = false;
+        foreach (BoxCollider2D x in GetComponentsInChildren<BoxCollider2D>())
+        {
+            x.enabled = false;
+        }
 
         hitboxBody = GetComponent<BoxCollider2D>();
+        hitboxBody.enabled = true;
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
+        //txtComboState.text = "Current combo state: " + comboState;
+        //txtNumberCombos.text = "Number of available combos: " + currentCombos.Count;
+
         // update HP bar
         rendererHPFill.transform.localScale = new Vector3(((float)currentHP / (float)maxHP) * 1, 1);
 
@@ -161,13 +161,15 @@ public class playerHandler : MonoBehaviour
 
         if (punchingSuccess)
         {
-            if (attackType == 1) SuccessfulPunch();
-            if (attackType == 2) SuccessfulQuickPunch();
+            if (attackType == 1) SuccessfulQuickPunch();
+            if (attackType == 2) SuccessfulPunch();
             if (attackType == 3) SuccessfulSpecialPunch();
         }
         if (punchingFail) FailedPunch();
         if (dodgeSucces) SuccessfulDodge();
         if (dodgeFail) FailedDodge();
+        if (blocking) SuccessfulBlock();
+        if (countering) CounterPunch();
 
         if (hitstun) Hitstun();
 
@@ -178,15 +180,12 @@ public class playerHandler : MonoBehaviour
             specialCharges++;
             specialChargeTimer = 0;
         }
-
-        if ((beatObserver.beatMask & BeatType.DownBeat) == BeatType.DownBeat)
+        
+        if (mainHandler.currentState == BEAT)
         {
             beatState = BEAT;
-
-            spriteCurrentIdle = spriteStomp2;
-            
         }
-        else if ((beatObserver.beatMask & BeatType.OffBeat) == BeatType.OffBeat)
+        else if (mainHandler.currentState == SUCCESS)
         {
             
             beatState = SUCCESS;
@@ -195,29 +194,30 @@ public class playerHandler : MonoBehaviour
             {
                 switchBeat = true;
                 currentBeat++;
-                //currentBeat = currentBeat % 8;
-                //print(currentBeat);
             }
+
+            if (successfullBlock)
+            {
+                blockBeat = currentBeat;
+                successfullBlock = false;
+            }
+
             if ((currentBeat > lastAttackBeat + 1 && !lastAttackSlow) || (currentBeat > lastAttackBeat + 2 && lastAttackSlow))
             {
-                comboState = 0;
+                RestockCombos();
             }
 
         }
         else
         {
-            
             switchBeat = false;
             beatState = FAIL;
         }
-
-        if ((beatObserver.beatMask & BeatType.UpBeat) == BeatType.UpBeat)
+        
+        if (mainHandler.offBeat)
         {
-            spriteCurrentIdle = spriteStomp1;
-            
-        }
 
-        if (!busy) localRenderer.sprite = spriteCurrentIdle;
+        }
 
         if (Input.GetButtonDown("Attack") && !busy)
         {
@@ -235,17 +235,19 @@ public class playerHandler : MonoBehaviour
         {
             Dodge();
         }
+        if (Input.GetButtonDown("Block") && !busy)
+        {
+            Block();
+        }
         if ((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0 || Input.GetAxisRaw("Move Axis 2") > 0) && !busy)
         {
             accX = 26f;
-            directionRight = true;
             direction = 1;
             localRenderer.flipX = false;
         }
         else if ((Input.GetButton("MoveLeft") || Input.GetAxisRaw("Move Axis") < 0 || Input.GetAxisRaw("Move Axis 2") < 0) && !busy)
         {
             accX = -26f;
-            directionRight = false;
             direction = -1;
             localRenderer.flipX = true;
         }
@@ -263,24 +265,77 @@ public class playerHandler : MonoBehaviour
 
         if (transform.position.x < -9.2f) transform.position = new Vector3(-9.2f, transform.position.y);
         if (transform.position.x > 9.3f) transform.position = new Vector3(9.3f, transform.position.y);
+
+        //animator.SetBool("countering", countering);
+        animator.SetBool("blocking", blocking);
+        animator.SetBool("usingSuper", usingSuper);
+        animator.SetBool("hit", hitstun);
+        animator.SetBool("dodging", dodgeSucces);
+        animator.SetFloat("speed", Mathf.Abs(velX));
+        animator.SetInteger("attackType", attackType);
+        if (comboState >= 0) animator.SetInteger("attackID", currentCombos[0][comboState].ID);
+        animator.SetBool("attacking", punchingSuccess);
+        animator.SetBool("attackActive", punchingActive);
+        animator.SetBool("offBeat", mainHandler.offBeat);
     }
 
     void Punch()
     {
         accX = 0;
         velX = 0;
-        attackType = 1;
+        attackType = 2;
         if (beatState == SUCCESS || beatState == BEAT)
         {
-            soundAttackSlow.setParameterValue("Hit", 0);
-            soundAttackSlow.start();
+            if (blockBeat == currentBeat - 1)
+            {
+                Instantiate(pCounter, hitboxAttack4A.transform.position, new Quaternion(0, 0, 0, 0));
+                UpdateHitboxes();
+                punchingSuccess = true;
+                busy = true;
+                countering = true;
+                attackType = 4;
+                hitboxAttack4A.enabled = true;
+                soundAttackSuper.start();
+                transform.Translate(new Vector3(0.5f * direction, 0));
+                CounterPunch();
+                return;
+            }
+
             UpdateHitboxes();
             lastAttackBeat = currentBeat;
             lastAttackSlow = true;
             punchingSuccess = true;
             busy = true;
-            if (beatState == SUCCESS) print("pre");
-            if (beatState == BEAT) print("post");
+            
+            // update which combo is used
+            for (int i = 0; i < currentCombos.Count; i++)
+            {
+                if (currentCombos[i][comboState + 1].type != SLOW)
+                {
+                    currentCombos.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            if (currentCombos.Count == 0)
+            {
+                RestockCombos();
+
+                for (int i = 0; i < currentCombos.Count; i++)
+                {
+                    if (currentCombos[i][comboState + 1].type != SLOW)
+                    {
+                        currentCombos.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }
+
+            comboState++;
+
+            currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 0);
+            currentCombos[0][comboState].soundAttackHit.start();
+
             SuccessfulPunch();
         }
         else if (beatState == FAIL)
@@ -300,28 +355,18 @@ public class playerHandler : MonoBehaviour
 
             if (actionTimer >= punchSuccessTime)
             {
-                if (comboState == 0) comboState = 3;
-                else comboState = 0;
-                GetComponent<SpriteRenderer>().sprite = spriteIdle;
+                DisableHurtboxes();
+                if (currentCombos[0].Length - 1 == comboState) RestockCombos();
+                
                 actionTimer = 0;
                 punchingSuccess = false;
                 busy = false;
                 beatPassed = false;
                 punchingActive = false;
-                hitboxAttack.enabled = false;
-                hitboxAttackB.enabled = false;
-                hitboxAttackC.enabled = false;
             }
         }
         else
         {
-            if (comboState == 3) GetComponent<SpriteRenderer>().sprite = spriteAttackB;
-            else if (comboState == 4) GetComponent<SpriteRenderer>().sprite = spriteAttackC;
-            else
-            {
-                comboState = 0;
-                GetComponent<SpriteRenderer>().sprite = spriteAttack;
-            }
 
             if (!beatPassed)
             {
@@ -331,35 +376,13 @@ public class playerHandler : MonoBehaviour
             {
                 if (beatState == SUCCESS)
                 {
-                    // tackle
-                    if (comboState == 3)
-                    {
-                        soundFinisherTackle.setParameterValue("Hit", 0);
-                        soundFinisherTackle.start();
-                        GetComponent<SpriteRenderer>().sprite = spriteAttackBHit;
-                        hitboxAttackB.enabled = true;
-                        transform.Translate(new Vector3(0.8f * direction, 0));
-                    }
-
-                    // down kick
-                    else if (comboState == 4)
-                    {
-                        soundFinisherDownkick.setParameterValue("Hit", 0);
-                        soundFinisherDownkick.start();
-                        GetComponent<SpriteRenderer>().sprite = spriteAttackCHit;
-                        hitboxAttackC.enabled = true;
-                        transform.Translate(new Vector3(0.5f * direction, 0));
-                    }
-
-                    // punch
-                    else
-                    {
-                        soundAttackSlow.setParameterValue("Hit", 1);
-                        soundAttackSlow.start();
-                        GetComponent<SpriteRenderer>().sprite = spriteAttackHit;
-                        hitboxAttack.enabled = true;
-                        transform.Translate(new Vector3(0.5f * direction, 0));
-                    }
+                    
+                    currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 1);
+                    currentCombos[0][comboState].soundAttackHit.start();
+                    
+                    currentCombos[0][comboState].hitbox.enabled = true;
+                    transform.Translate(new Vector3(currentCombos[0][comboState].push * direction, 0));
+                    
 
                     punchingActive = true;
                 }
@@ -370,12 +393,10 @@ public class playerHandler : MonoBehaviour
 
     void FailedPunch()
     {
-        GetComponent<SpriteRenderer>().sprite = spriteAttackFail;
         actionTimer += Time.deltaTime;
 
         if (actionTimer >= punchFailTime)
         {
-            GetComponent<SpriteRenderer>().sprite = spriteIdle;
             actionTimer = 0;
             punchingFail = false;
             busy = false;
@@ -386,54 +407,60 @@ public class playerHandler : MonoBehaviour
     {
         accX = 0;
         velX = 0;
-        attackType = 2;
+        attackType = 1;
         if (beatState == SUCCESS || beatState == BEAT)
         {
+            if (blockBeat == currentBeat - 1)
+            {
+                Instantiate(pCounter, hitboxAttack4A.transform.position, new Quaternion(0, 0, 0, 0));
+                UpdateHitboxes();
+                punchingSuccess = true;
+                busy = true;
+                countering = true;
+                attackType = 4;
+                hitboxAttack4A.enabled = true;
+                soundAttackSuper.start();
+                transform.Translate(new Vector3(0.5f * direction, 0));
+                CounterPunch();
+                return;
+            }
+
             UpdateHitboxes();
             lastAttackBeat = currentBeat;
             lastAttackSlow = false;
             punchingSuccess = true;
             busy = true;
-            if (beatState == SUCCESS) print("pre");
-            if (beatState == BEAT) print("post");
 
-            // small kick
-            if (comboState == 0 || comboState == 4)
+            for (int i = 0; i < currentCombos.Count; i++)
             {
-                soundAttackQuick.setParameterValue("Hit", 0);
-                soundAttackQuick.start();
-                GetComponent<SpriteRenderer>().sprite = spriteAttack2Hit;
-                hitboxAttack2.enabled = true;
+                if (currentCombos[i][comboState+1].type != QUICK)
+                {
+                    currentCombos.RemoveAt(i);
+                    i--;
+                }
             }
 
-            // small uppercut
-            if (comboState == 1)
+            if (currentCombos.Count == 0)
             {
-                soundAttackQuick.setParameterValue("Hit", 0);
-                soundAttackQuick.start();
-                GetComponent<SpriteRenderer>().sprite = spriteAttack2HitB;
-                hitboxAttack2B.enabled = true;
+                RestockCombos();
+
+                for (int i = 0; i < currentCombos.Count; i++)
+                {
+                    if (currentCombos[i][comboState + 1].type != QUICK)
+                    {
+                        currentCombos.RemoveAt(i);
+                        i--;
+                    }
+                }
             }
 
-            // donkey kick
-            if (comboState == 2)
-            {
-                soundFinisherDonkey.setParameterValue("Hit", 0);
-                soundFinisherDonkey.start();
-                GetComponent<SpriteRenderer>().sprite = spriteAttack2HitC;
-                hitboxAttack2C.enabled = true;
-                transform.Translate(new Vector3(0.5f * direction, 0));
-            }
+            comboState++;
 
-            // headbutt
-            if (comboState == 3)
-            {
-                soundAttackQuick.setParameterValue("Hit", 0);
-                soundAttackQuick.start();
-                GetComponent<SpriteRenderer>().sprite = spriteAttack2HitD;
-                hitboxAttack2D.enabled = true;
-                transform.Translate(new Vector3(0.8f * direction, 0));
-            }
+            currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 0);
+            currentCombos[0][comboState].soundAttackHit.start();
+            currentCombos[0][comboState].hitbox.enabled = true;
+            transform.Translate(new Vector3(currentCombos[0][comboState].push * direction, 0));
+            
             SuccessfulQuickPunch();
         }
         else if (beatState == FAIL)
@@ -450,14 +477,9 @@ public class playerHandler : MonoBehaviour
 
         if (actionTimer >= quickPunchSuccessTime)
         {
-            if (comboState == 0 || comboState == 4) hitboxAttack2.enabled = false;
-            if (comboState == 1) hitboxAttack2B.enabled = false;
-            if (comboState == 2) hitboxAttack2C.enabled = false;
-            if (comboState == 3) hitboxAttack2D.enabled = false;
-            comboState += 1;
-            if (comboState == 3) comboState = 0;
-            if (comboState >= 5) comboState = 1;
-            GetComponent<SpriteRenderer>().sprite = spriteIdle;
+            DisableHurtboxes();
+            if (currentCombos[0].Length - 1 == comboState) RestockCombos();
+            
             actionTimer = 0;
             punchingSuccess = false;
             busy = false;
@@ -472,7 +494,7 @@ public class playerHandler : MonoBehaviour
     {
         if (specialCharges == 0)
         {
-            // play sound
+            soundAttackSuperUnable.start();
             return;
         }
         accX = 0;
@@ -482,17 +504,15 @@ public class playerHandler : MonoBehaviour
         {
             soundAttackSuper.start();
             Instantiate(pSpecialAttack, transform.position, new Quaternion(0, 0, 0, 0));
-            GetComponent<SpriteRenderer>().sprite = spriteAttack3;
             UpdateHitboxes();
             specialCharges--;
             lastAttackBeat = currentBeat;
             lastAttackSlow = false;
             punchingSuccess = true;
             busy = true;
-            hitboxAttack3.enabled = true;
-            comboState = 0;
-            if (beatState == SUCCESS) print("pre");
-            if (beatState == BEAT) print("post");
+            usingSuper = true;
+            hitboxAttack3A.enabled = true;
+            RestockCombos();
             SuccessfulSpecialPunch();
         }
         else if (beatState == FAIL)
@@ -507,11 +527,11 @@ public class playerHandler : MonoBehaviour
     {
         actionTimer += Time.deltaTime;
 
-        if (actionTimer >= quickPunchSuccessTime)
+        if (actionTimer >= specialPunchSuccessTime)
         {
+            usingSuper = false;
             specialChargeTimer = 0;
-            hitboxAttack3.enabled = false;
-            GetComponent<SpriteRenderer>().sprite = spriteIdle;
+            hitboxAttack3A.enabled = false;
             actionTimer = 0;
             punchingSuccess = false;
             busy = false;
@@ -519,6 +539,64 @@ public class playerHandler : MonoBehaviour
             punchingActive = false;
 
         }
+    }
+
+    void CounterPunch()
+    {
+        actionTimer += Time.deltaTime;
+
+        if (actionTimer >= counterTime)
+        {
+            hitboxAttack4A.enabled = false;
+            actionTimer = 0;
+            punchingSuccess = false;
+            countering = false;
+            busy = false;
+            beatPassed = false;
+            punchingActive = false;
+
+        }
+    }
+
+    void Block()
+    {
+        accX = 0;
+        velX = 0;
+        attackType = 0;
+        if (beatState == SUCCESS || beatState == BEAT)
+        {
+            //soundBlock.start();
+            UpdateHitboxes();
+            lastAttackBeat = currentBeat;
+            blocking = true;
+            busy = true;
+            RestockCombos();
+        }
+        else if (beatState == FAIL)
+        {
+            punchingFail = true;
+            busy = true;
+            FailedPunch();
+        }
+    }
+
+    void SuccessfulBlock()
+    {
+        actionTimer += Time.deltaTime;
+
+        if (actionTimer >= blockTime)
+        {
+            actionTimer = 0;
+            blocking = false;
+            busy = false;
+            beatPassed = false;
+        }
+    }
+
+    void RestockCombos()
+    {
+        currentCombos = new List<Attack[]>(allCombos);
+        comboState = -1;
     }
 
     void Hitstun()
@@ -532,7 +610,6 @@ public class playerHandler : MonoBehaviour
         if (actionTimer >= hitstunTime)
         {
             hitboxBody.enabled = true;
-            GetComponent<SpriteRenderer>().sprite = spriteIdle;
             actionTimer = 0;
             hitstun = false;
             busy = false;
@@ -542,13 +619,21 @@ public class playerHandler : MonoBehaviour
 
     void UpdateHitboxes()
     {
-        hitboxAttack.offset = new Vector2(Mathf.Abs(hitboxAttack.offset.x) * direction, hitboxAttack.offset.y);
-        hitboxAttackB.offset = new Vector2(Mathf.Abs(hitboxAttackB.offset.x) * direction, hitboxAttackB.offset.y);
-        hitboxAttackC.offset = new Vector2(Mathf.Abs(hitboxAttackC.offset.x) * direction, hitboxAttackC.offset.y);
-        hitboxAttack2.offset = new Vector2(Mathf.Abs(hitboxAttack2.offset.x) * direction, hitboxAttack2.offset.y);
-        hitboxAttack2B.offset = new Vector2(Mathf.Abs(hitboxAttack2B.offset.x) * direction, hitboxAttack2B.offset.y);
-        hitboxAttack2C.offset = new Vector2(Mathf.Abs(hitboxAttack2C.offset.x) * direction, hitboxAttack2C.offset.y);
-        hitboxAttack2D.offset = new Vector2(Mathf.Abs(hitboxAttack2D.offset.x) * direction, hitboxAttack2D.offset.y);
+        foreach (BoxCollider2D x in GetComponentsInChildren<BoxCollider2D>())
+        {
+            x.offset = new Vector2(Mathf.Abs(x.offset.x) * direction, x.offset.y);
+        }
+    }
+
+    void DisableHurtboxes()
+    {
+        for (int i = 0; i < currentCombos.Count; i++)
+        {
+            for (int j = 0; j < currentCombos[i].Length; j++)
+            {
+                currentCombos[i][j].hitbox.enabled = false;
+            }
+        }
     }
 
     void Dodge()
@@ -559,37 +644,21 @@ public class playerHandler : MonoBehaviour
         busy = true;
         if (Input.GetButton("MoveRight"))
         {
-            directionRight = true;
             direction = 1;
             localRenderer.flipX = false;
         }
         if (Input.GetButton("MoveLeft"))
         {
-            directionRight = false;
             direction = -1;
             localRenderer.flipX = true;
         }
+        soundDodge.start();
         SuccessfulDodge();
-        /*
-        if (beatState == SUCCESS || beatState == BEAT)
-        {
-            dodgeSucces = true;
-            busy = true;
-            SuccessfulDodge();
-        }
-        else if (beatState == FAIL)
-        {
-            dodgeFail = true;
-            busy = true;
-            FailedDodge();
-        }
-        */
     }
 
     void SuccessfulDodge()
     {
         hitboxBody.enabled = false;
-        GetComponent<SpriteRenderer>().sprite = spriteDodge;
         actionTimer += Time.deltaTime;
 
         if (velX == 0) velX = -(7f - actionTimer * 8) * direction;
@@ -603,7 +672,6 @@ public class playerHandler : MonoBehaviour
         if (actionTimer >= dodgeSuccessTime)
         {
             hitboxBody.enabled = true;
-            GetComponent<SpriteRenderer>().sprite = spriteIdle;
             actionTimer = 0;
             dodgeSucces = false;
             busy = false;
@@ -612,12 +680,10 @@ public class playerHandler : MonoBehaviour
 
     void FailedDodge()
     {
-        GetComponent<SpriteRenderer>().sprite = spriteDodgeFail;
         actionTimer += Time.deltaTime;
 
         if (actionTimer >= dodgeFailTime)
         {
-            GetComponent<SpriteRenderer>().sprite = spriteIdle;
             actionTimer = 0;
             dodgeFail = false;
             busy = false;
@@ -626,39 +692,44 @@ public class playerHandler : MonoBehaviour
 
     public void TakeDamage(int dmg, int hitDirection)
     {
-        hitstunDirection = hitDirection;
-
-        currentHP -= dmg;
-
-        hitboxBody.enabled = false;
-
-        velX = 0;
-        accX = 0;
-
-        actionTimer = 0;
-        punchingSuccess = false;
-        punchingFail = false;
-        dodgeFail = false;
-        busy = true;
-        beatPassed = false;
-        punchingActive = false;
-        comboState = 0;
-        hitboxAttack2.enabled = false;
-        hitboxAttack2B.enabled = false;
-        hitboxAttack2C.enabled = false;
-        hitboxAttack2D.enabled = false;
-        hitboxAttack.enabled = false;
-        hitboxAttackB.enabled = false;
-        hitboxAttackC.enabled = false;
-        hitboxAttack3.enabled = false;
-
-        Instantiate(pPlayerkHit, transform.position, new Quaternion(0, 0, 0, 0));
-
-        if (currentHP <= 0) Die();
+        if (blocking)
+        {
+            successfullBlock = true;
+            
+            Instantiate(pBlock, transform.position, new Quaternion(0, 0, 0, 0));
+            //blockBeat = currentBeat;
+            //actionTimer = 0;
+        }
         else
         {
-            GetComponent<SpriteRenderer>().sprite = spriteHit;
-            hitstun = true;
+            hitstunDirection = hitDirection;
+
+            currentHP -= dmg;
+
+            hitboxBody.enabled = false;
+
+            velX = 0;
+            accX = 0;
+
+            actionTimer = 0;
+            punchingSuccess = false;
+            punchingFail = false;
+            usingSuper = false;
+            dodgeFail = false;
+            busy = true;
+            beatPassed = false;
+            punchingActive = false;
+
+            DisableHurtboxes();
+            RestockCombos();
+
+            Instantiate(pPlayerkHit, transform.position, new Quaternion(0, 0, 0, 0));
+
+            if (currentHP <= 0) Die();
+            else
+            {
+                hitstun = true;
+            }
         }
         
     }
@@ -666,9 +737,17 @@ public class playerHandler : MonoBehaviour
     public void Die()
     {
         currentHP = 0;
-        GetComponent<SpriteRenderer>().sprite = spriteDead;
         hitboxBody.enabled = false;
         dead = true;
+    }
+
+    public void Reset()
+    {
+        currentHP = maxHP;
+        dead = false;
+        specialCharges = maxSpecialCharges;
+        busy = false;
+        hitstun = false;
     }
 
     public void SetBeatState(int state)
@@ -678,7 +757,7 @@ public class playerHandler : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D col)
     {
-        print("collision enter");
+
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -686,86 +765,34 @@ public class playerHandler : MonoBehaviour
         int tDmg = 0;
         Vector3 tBox = new Vector3();
 
-        // forward punch
-        if (hitboxAttack.IsTouching(other))
+        if (comboState >= 0)
         {
-            soundAttackSlow.setParameterValue("Hit", 2);
-            soundAttackSlow.start();
-            tDmg = 3;
-            tBox = (Vector2)hitboxAttack.transform.position + hitboxAttack.offset;
+            if (currentCombos[0][comboState].hitbox.IsTouching(other))
+            {
+                currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 2);
+                currentCombos[0][comboState].soundAttackHit.start();
+                tDmg = currentCombos[0][comboState].damage;
+                tBox = (Vector2)currentCombos[0][comboState].hitbox.transform.position + currentCombos[0][comboState].hitbox.offset;
+            }
         }
 
-        // tackle
-        if (hitboxAttackB.IsTouching(other))
+        if (hitboxAttack3A.IsTouching(other))
         {
-            soundFinisherTackle.setParameterValue("Hit", 1);
-            soundFinisherTackle.start();
-            tDmg = 4;
-            tBox = (Vector2)hitboxAttackB.transform.position + hitboxAttackB.offset;
-        }
-
-        // down kick
-        if (hitboxAttackC.IsTouching(other))
-        {
-            soundFinisherDownkick.setParameterValue("Hit", 1);
-            soundFinisherDownkick.start();
-            tDmg = 5;
-            tBox = (Vector2)hitboxAttackC.transform.position + hitboxAttackC.offset;
-        }
-
-
-        // small kick
-        if (hitboxAttack2.IsTouching(other))
-        {
-            soundAttackQuick.setParameterValue("Hit", 1);
-            soundAttackQuick.start();
-            tDmg = 1;
-            tBox = (Vector2)hitboxAttack2.transform.position + hitboxAttack2.offset;
-        }
-
-        // small uppercut
-        if (hitboxAttack2B.IsTouching(other))
-        {
-            soundAttackQuick.setParameterValue("Hit", 1);
-            soundAttackQuick.start();
-            tDmg = 1;
-            tBox = (Vector2)hitboxAttack2B.transform.position + hitboxAttack2B.offset;
-        }
-
-        // donkey kick
-        if (hitboxAttack2C.IsTouching(other))
-        {
-            soundFinisherDonkey.setParameterValue("Hit", 1);
-            soundFinisherDonkey.start();
-            tDmg = 3;
-            tBox = (Vector2)hitboxAttack2C.transform.position + hitboxAttack2C.offset;
-        }
-
-        // headbutt
-        if (hitboxAttack2D.IsTouching(other))
-        {
-            soundAttackQuick.setParameterValue("Hit", 1);
-            soundAttackQuick.start();
-            tDmg = 1;
-            tBox = (Vector2)hitboxAttack2D.transform.position + hitboxAttack2D.offset;
-        }
-
-        // super
-        if (hitboxAttack3.IsTouching(other))
-        {
-            soundAttackQuick.start();
             tDmg = 8;
-            tBox = (Vector2)hitboxAttack3.transform.position + hitboxAttack3.offset;
+            tBox = (Vector2)hitboxAttack3A.transform.position + hitboxAttack3A.offset;
+        }
+
+        if (hitboxAttack4A.IsTouching(other))
+        {
+            tDmg = 4;
+            tBox = (Vector2)hitboxAttack4A.transform.position + hitboxAttack4A.offset;
         }
 
         if (tDmg > 0)
         {
-            print("dmg");
-            if (other.tag == "enemy") other.GetComponent<enemyAHandler>().TakeDamage(tDmg);
-            if (other.tag == "enemyB") other.GetComponent<enemyBHandler>().TakeDamage(tDmg);
+            if (other.tag == "enemy") other.GetComponent<enemyHandler>().TakeDamage(tDmg);
             if (other.tag == "enemyDummy") other.GetComponent<enemyDummyHandler>().TakeDamage(tDmg);
-
-            print(tBox);
+            
             Instantiate(pAttackHit, tBox, new Quaternion(0, 0, 0, 0));
             GameObject tDmgNumber = Instantiate(damageNumber, other.transform.position + new Vector3(0, 0.4f), new Quaternion(0, 0, 0, 0));
             tDmgNumber.GetComponent<dmgNumberHandler>().Init(tDmg);

@@ -88,7 +88,6 @@ public class enemyDummyHandler : MonoBehaviour
         }
         invincible = true;
         hitstun = true;
-        if (dmg >= 5) knockBack = true;
     }
 
     void Hitstun()

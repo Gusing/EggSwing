@@ -5,10 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class menuHandler : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+    FMOD.Studio.EventInstance soundMenuMusic;
+
+    // Use this for initialization
+    void Start () {
+
+        soundMenuMusic = FMODUnity.RuntimeManager.CreateInstance("event:/MenuMusic");
+        soundMenuMusic.start();
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -17,6 +21,8 @@ public class menuHandler : MonoBehaviour {
 
     public void PlayLevel(int num)
     {
+        soundMenuMusic.setParameterValue("End", 1);
+
         if (num == -3) SceneManager.LoadScene("Practice148");
         if (num == -2) SceneManager.LoadScene("Practice128");
         if (num == -1) SceneManager.LoadScene("Practice100");
