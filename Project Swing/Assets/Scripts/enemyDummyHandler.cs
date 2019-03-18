@@ -2,111 +2,78 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class enemyDummyHandler : MonoBehaviour
+public class enemyDummyHandler : enemyHandler
 {
-    float accX;
-    float velX;
-
-    bool hitstun;
-    bool knockBack;
-    float hitstunTime = 0.32f;
-
-    public Sprite spriteIdle;
-    public Sprite spriteHitstun;
-
-    SpriteRenderer localSpriteRenderer;
-
-    bool invincible;
-
-    int health;
-    int maxHealth = 23;
-
-    float actionTimer;
-    bool attackingA;
-    bool attackingB;
-    bool busy;
-    bool dead;
-
-    int lastAttack;
-    int attackStreak;
-
-    GameObject player;
-
-    int attackState;
-    bool timeToMoveOn;
-    bool newBeat;
-    
-    public ParticleSystem pYellowWarning;
-    public ParticleSystem pRedWarning;
-
-    float attackDelay;
-    float attackRecovery;
-
-    int direction;
-
-    int currentState;
-    readonly int NOTBEAT = 0, BEAT = 1;
-
     // Use this for initialization
-    void Start()
+    public override void Start()
     {
-        health = maxHealth;
+        base.Start();
 
-        player = GameObject.Find("Player");
+        transform.position = new Vector3(transform.position.x, -2.24f);
 
-        localSpriteRenderer = GetComponent<SpriteRenderer>();
+        maxHP = 10;
+        currentHP = maxHP;
+
+        walkAcc = -0.0001f;
+        walkSpeed = 0.0001f;
+
+        hitstunLimit = 1;
+        knockbackLimit = 1000;
+        bigKnockbackLimit = 1000;
+
+        stopDistance = 1000;
+
+        soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_attack");
+        soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_death");
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        if (dead) return;
+        base.UpdateAnimations();
 
-        if (hitstun) Hitstun();
-        
-        if (invincible) GetComponent<BoxCollider2D>().enabled = false;
-        else GetComponent<BoxCollider2D>().enabled = true;
+        base.Update();
 
-        velX = 0.0001f;
+        if (invincible) Invincible();
 
-        velX += accX * Time.deltaTime;
-        if (!knockBack) velX = Mathf.Clamp(velX, -1.4f, 1.4f);
-        transform.Translate(new Vector3(velX * Time.deltaTime, 0));
+        //base.UpdateMovement();
     }
 
-    public void TakeDamage(int dmg)
+    public override void TakeDamage(int dmg)
     {
-        if (player.transform.position.x < transform.position.x)
-        {
-            direction = 1;
-            localSpriteRenderer.flipX = false;
-        }
-        else
-        {
-            direction = -1;
-            localSpriteRenderer.flipX = true;
-        }
-        invincible = true;
-        hitstun = true;
+        randomHitValue = Random.Range(0f, 1f);
+            if (dmg >= hitstunLimit)
+            {
+                hitstun = true;
+                busy = true;
+            }
+            else if (!attacking)
+            {
+                if (player.transform.position.x < transform.position.x)
+                {
+                    direction = LEFT;
+                    localSpriteRenderer.flipX = false;
+                }
+                else
+                {
+                    direction = RIGHT;
+                    localSpriteRenderer.flipX = true;
+                }
+            }
+            if (player.transform.position.x < transform.position.x) hitstunDirection = LEFT;
+            else hitstunDirection = RIGHT;
+            invincible = true;
     }
 
     void Hitstun()
     {
-        GetComponent<SpriteRenderer>().sprite = spriteHitstun;
         actionTimer += Time.deltaTime;
 
         if (actionTimer >= hitstunTime)
         {
-            GetComponent<SpriteRenderer>().sprite = spriteIdle;
             actionTimer = 0;
             hitstun = false;
-            knockBack = false;
             invincible = false;
         }
-    }
-    
-    public void setState(int state)
-    {
-        currentState = state;
     }
 }

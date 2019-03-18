@@ -177,7 +177,6 @@ public class enemyHandler : MonoBehaviour
     public virtual void TakeDamage(int dmg)
     {
         randomHitValue = Random.Range(0f, 1f);
-        print(randomHitValue);
         currentHP -= dmg;
         if (currentHP <= 0) Die(dmg);
         else
@@ -255,7 +254,7 @@ public class enemyHandler : MonoBehaviour
     {
         for (int i = 0; i < warningPoints.Count; i++)
         {
-            warningPoints[i].localPosition = new Vector3(Mathf.Abs(warningPoints[i].localPosition.x) * direction, warningPoints[i].localPosition.y);
+            warningPoints[i].localPosition = new Vector3(Mathf.Abs(warningPoints[i].localPosition.x) * -direction, warningPoints[i].localPosition.y);
         }
         for (int i = 0; i < hitboxAttacks.Count; i++)
         {

@@ -99,6 +99,8 @@ public class playerHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundAttackSuperUnable;
 
     FMOD.Studio.EventInstance soundDodge;
+    FMOD.Studio.EventInstance soundDie;
+    FMOD.Studio.EventInstance soundFail;
 
     // debug
     public Text txtComboState;
@@ -109,6 +111,8 @@ public class playerHandler : MonoBehaviour
         soundAttackSuper = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_super");
         soundAttackSuperUnable = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_super_fail");
         soundDodge = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Dodge");
+        soundDie = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Die");
+        soundFail = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Miss_Brad");
 
         allCombos = new List<Attack[]>();
 
@@ -143,6 +147,8 @@ public class playerHandler : MonoBehaviour
     {
         //txtComboState.text = "Current combo state: " + comboState;
         //txtNumberCombos.text = "Number of available combos: " + currentCombos.Count;
+
+        UpdateAnimations();
 
         // update HP bar
         rendererHPFill.transform.localScale = new Vector3(((float)currentHP / (float)maxHP) * 1, 1);
@@ -266,6 +272,12 @@ public class playerHandler : MonoBehaviour
         if (transform.position.x < -9.2f) transform.position = new Vector3(-9.2f, transform.position.y);
         if (transform.position.x > 9.3f) transform.position = new Vector3(9.3f, transform.position.y);
 
+        
+    }
+
+    void UpdateAnimations()
+    {
+        animator.SetBool("dead", dead);
         //animator.SetBool("countering", countering);
         animator.SetBool("blocking", blocking);
         animator.SetBool("usingSuper", usingSuper);
@@ -275,6 +287,7 @@ public class playerHandler : MonoBehaviour
         animator.SetInteger("attackType", attackType);
         if (comboState >= 0) animator.SetInteger("attackID", currentCombos[0][comboState].ID);
         animator.SetBool("attacking", punchingSuccess);
+        animator.SetBool("failedAttack", punchingFail);
         animator.SetBool("attackActive", punchingActive);
         animator.SetBool("offBeat", mainHandler.offBeat);
     }
@@ -340,6 +353,7 @@ public class playerHandler : MonoBehaviour
         }
         else if (beatState == FAIL)
         {
+            soundFail.start();
             punchingFail = true;
             busy = true;
             FailedPunch();
@@ -465,6 +479,7 @@ public class playerHandler : MonoBehaviour
         }
         else if (beatState == FAIL)
         {
+            soundFail.start();
             punchingFail = true;
             busy = true;
             FailedPunch();
@@ -517,6 +532,7 @@ public class playerHandler : MonoBehaviour
         }
         else if (beatState == FAIL)
         {
+            soundFail.start();
             punchingFail = true;
             busy = true;
             FailedPunch();
@@ -574,6 +590,7 @@ public class playerHandler : MonoBehaviour
         }
         else if (beatState == FAIL)
         {
+            soundFail.start();
             punchingFail = true;
             busy = true;
             FailedPunch();
@@ -736,6 +753,7 @@ public class playerHandler : MonoBehaviour
 
     public void Die()
     {
+        soundDie.start();
         currentHP = 0;
         hitboxBody.enabled = false;
         dead = true;
@@ -748,6 +766,7 @@ public class playerHandler : MonoBehaviour
         specialCharges = maxSpecialCharges;
         busy = false;
         hitstun = false;
+        hitboxBody.enabled = true;
     }
 
     public void SetBeatState(int state)
@@ -770,6 +789,7 @@ public class playerHandler : MonoBehaviour
             if (currentCombos[0][comboState].hitbox.IsTouching(other))
             {
                 currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 2);
+                if (other.tag == "enemyDummy") currentCombos[0][comboState].soundAttackHit.setParameterValue("Material", 1);
                 currentCombos[0][comboState].soundAttackHit.start();
                 tDmg = currentCombos[0][comboState].damage;
                 tBox = (Vector2)currentCombos[0][comboState].hitbox.transform.position + currentCombos[0][comboState].hitbox.offset;

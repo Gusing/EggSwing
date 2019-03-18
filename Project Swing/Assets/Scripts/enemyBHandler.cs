@@ -22,6 +22,8 @@ public class enemyBHandler : enemyHandler
     {
         base.Start();
 
+        transform.position = new Vector3(transform.position.x, -1.71f);
+
         maxHP = 23;
         currentHP = maxHP;
 

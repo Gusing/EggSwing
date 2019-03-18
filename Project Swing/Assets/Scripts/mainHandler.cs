@@ -6,6 +6,8 @@ using SynchronizerData;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Runtime.InteropServices;
+using System.Text;
+
 
 public class mainHandler : MonoBehaviour {
 
@@ -44,6 +46,7 @@ public class mainHandler : MonoBehaviour {
     bool indicatorReady;
 
     public int level;
+
     float levelTimer;
     int currentSpawn;
 
@@ -56,6 +59,8 @@ public class mainHandler : MonoBehaviour {
     public Text SecondCounter;
     float victoryTimer;
 
+    EnemySpawn[] levelEndlessSpawn;
+    EnemySpawn[] levelTrainingSpawn;
     EnemySpawn[] level1Spawn;
     EnemySpawn[] level2Spawn;
     EnemySpawn[] level3Spawn;
@@ -96,6 +101,10 @@ public class mainHandler : MonoBehaviour {
 
         currentSpawn = 0;
         levelTimer = 0;
+
+        levelTrainingSpawn = new EnemySpawn[] { };
+
+        levelEndlessSpawn = new EnemySpawn[] { new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 10 }) };
 
         level1Spawn = new EnemySpawn[] {
             new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 10 }),
@@ -145,12 +154,18 @@ public class mainHandler : MonoBehaviour {
 
         };
 
-        endWaitTimer = new float[] { 6,3f, 5f, 7,4f, 0, 0, 0, 0, 5, 5, 5 };
+        endWaitTimer = new float[] { 6.3f, 5f, 7.4f, 0, 0, 0, 0, 5, 5, 5 };
 
+        if (level == 0) currentLevelSpawn = levelTrainingSpawn;
         if (level == 1) currentLevelSpawn = level1Spawn;
         if (level == 2) currentLevelSpawn = level2Spawn;
         if (level == 3) currentLevelSpawn = level3Spawn;
         if (level == 10) currentLevelSpawn = testSpawn;
+        if (level == 100)
+        {
+            SecondCounter.enabled = true;
+            currentLevelSpawn = levelEndlessSpawn;
+        }
 
         if (level == 2) soundAmbCafe.start();
         if (level == 3) soundAmbSea.start();
@@ -160,8 +175,10 @@ public class mainHandler : MonoBehaviour {
     {
         if (type == FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER)
         {
-            //FMOD.Studio.TIMELINE_MARKER_PROPERTIES marker = (FMOD.Studio.TIMELINE_MARKER_PROPERTIES)Marshal.PtrToStructure(parameters, typeof(FMOD.Studio.TIMELINE_MARKER_PROPERTIES));
-           
+            FMOD.Studio.TIMELINE_MARKER_PROPERTIES marker = (FMOD.Studio.TIMELINE_MARKER_PROPERTIES)Marshal.PtrToStructure(parameters, typeof(FMOD.Studio.TIMELINE_MARKER_PROPERTIES));
+            string name = marker.name;
+            print(name);
+            //bpm = int.Parse(name);
         }
         if (type == FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT)
         {
@@ -172,6 +189,8 @@ public class mainHandler : MonoBehaviour {
     }
     
     void Update() {
+
+        print(bpm);
 
         if (player.GetComponent<playerHandler>().dead)
         {
@@ -268,34 +287,38 @@ public class mainHandler : MonoBehaviour {
     void ProgressLevel()
     {
         if (!player.GetComponent<playerHandler>().dead) levelTimer += Time.deltaTime;
-        
-        if (currentLevelSpawn.Length == currentSpawn)
-        {
-            bool tAllDead = true;
-            for (int i = 0; i < enemies.Count; i++)
-            {
-                if (!enemies[i].GetComponent<enemyHandler>().dead) tAllDead = false;
-            }
 
-            if (tAllDead && victoryTimer == 0)
-            {
-                victoryTimer = levelTimer;
-                txtVictory.enabled = true;
-                soundMusic.setParameterValue("Win", 1);
-            }
-            
-            if (victoryTimer > 0 && levelTimer > (victoryTimer + endWaitTimer[level - 1]))
-            {
-                QuitLevel();
-            }
-        }
-        else if (levelTimer > currentLevelSpawn[currentSpawn].spawnTime)
+        if (level > 0 && level < 100)
         {
-            for (int i = 0; i < currentLevelSpawn[currentSpawn].enemies.Length; i++)
+            if (currentLevelSpawn.Length == currentSpawn)
             {
-                enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(currentLevelSpawn[currentSpawn].xPos[i], 0), Quaternion.identity));
+                bool tAllDead = true;
+                for (int i = 0; i < enemies.Count; i++)
+                {
+                    if (!enemies[i].GetComponent<enemyHandler>().dead) tAllDead = false;
+                }
+
+                if (tAllDead && victoryTimer == 0)
+                {
+                    print("end wait: " + endWaitTimer[level - 1]);
+                    victoryTimer = levelTimer;
+                    txtVictory.enabled = true;
+                    soundMusic.setParameterValue("Win", 1);
+                }
+
+                if (victoryTimer > 0 && levelTimer > (victoryTimer + endWaitTimer[level - 1]))
+                {
+                    QuitLevel();
+                }
             }
-            currentSpawn++;
+            else if (levelTimer > currentLevelSpawn[currentSpawn].spawnTime)
+            {
+                for (int i = 0; i < currentLevelSpawn[currentSpawn].enemies.Length; i++)
+                {
+                    enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(currentLevelSpawn[currentSpawn].xPos[i], 0), Quaternion.identity));
+                }
+                currentSpawn++;
+            }
         }
 
 
@@ -303,7 +326,32 @@ public class mainHandler : MonoBehaviour {
 
         if (level == 100)
         {
-            
+            if (currentLevelSpawn.Length == currentSpawn)
+            {
+                if (levelTimer >= nextSpawn)
+                {
+                    nextSpawn += 15 - (Mathf.Clamp(14 * (levelTimer / 150), 0, 14));
+                    int tDistance = 0;
+                    for (int i = 0; i < 2 + levelTimer / 30; i++)
+                    {
+                        if (Random.value > 0.5f) enemies.Add(Instantiate(enemyA, new Vector3((10.1f + tDistance) * RandDirection(), 0f), Quaternion.identity));
+                        else enemies.Add(Instantiate(enemyB, new Vector3((10.1f + tDistance) * RandDirection(), 0.98f), Quaternion.identity));
+                        tDistance++;
+                    }
+                }
+            }
+            /*
+            else if (levelTimer > currentLevelSpawn[currentSpawn].spawnTime)
+            {
+                for (int i = 0; i < currentLevelSpawn[currentSpawn].enemies.Length; i++)
+                {
+                    enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(currentLevelSpawn[currentSpawn].xPos[i], 0), Quaternion.identity));
+                }
+                currentSpawn++;
+            }
+            */
+
+
             if (levelTimer > 2 && currentSpawn == 0)
             {
                 enemies.Add(Instantiate(enemyA, new Vector3(10.1f * RandDirection(), 0f), Quaternion.identity));

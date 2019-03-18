@@ -15,10 +15,12 @@ public class enemyAHandler : enemyHandler {
     public Sprite spriteAttackActive;
     public Sprite spriteHitstun;
     
-    public override void Start ()
+    public override void Start()
     {
         base.Start();
-        
+
+        transform.position = new Vector3(transform.position.x, -2.12f);
+
         maxHP = 10;
         currentHP = maxHP;
         
@@ -29,7 +31,7 @@ public class enemyAHandler : enemyHandler {
         knockbackLimit = 3;
         bigKnockbackLimit = 8;
 
-        stopDistance = 1;
+        stopDistance = 1.4f;
 
         damage.Add(3);
 
@@ -39,7 +41,6 @@ public class enemyAHandler : enemyHandler {
 	
 	public override void Update()
     {
-
         base.UpdateAnimations();
 
         if (dead) return;
@@ -63,19 +64,6 @@ public class enemyAHandler : enemyHandler {
             attackState = 1;
             timeToMoveOn = false;
             newBeat = false;
-        }
-
-        // update dancing sprite
-        if (!busy)
-        {
-            if (!mainHandler.offBeat)
-            {
-                localSpriteRenderer.sprite = spriteStomp2;
-            }
-            if (mainHandler.offBeat)
-            {
-                localSpriteRenderer.sprite = spriteStomp1;
-            }
         }
 
         base.UpdateMovement();
