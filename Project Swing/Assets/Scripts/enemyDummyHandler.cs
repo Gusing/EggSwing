@@ -36,7 +36,7 @@ public class enemyDummyHandler : enemyHandler
 
         if (invincible) Invincible();
 
-        //base.UpdateMovement();
+        base.UpdateMovement();
     }
 
     public override void TakeDamage(int dmg)

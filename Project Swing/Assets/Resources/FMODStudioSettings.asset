@@ -18,7 +18,7 @@ MonoBehaviour:
   SourceProjectPathUnformatted: FMOD\Eggbeat\Eggbeat.fspro
   SourceBankPathUnformatted: FMOD\Eggbeat\Build
   AutomaticEventLoading: 1
-  AutomaticSampleLoading: 0
+  AutomaticSampleLoading: 1
   ImportType: 0
   TargetAssetPath: 
   LoggingLevel: 2

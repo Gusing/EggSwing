@@ -77,6 +77,7 @@ public class playerHandler : MonoBehaviour
     float specialChargeExtraTime;
 
     public SpriteRenderer rendererHPFill;
+    public SpriteMask maskHPFill;
     public SpriteRenderer[] renderersSpecialCharges;
 
     public bool dead;
@@ -131,6 +132,7 @@ public class playerHandler : MonoBehaviour
         specialChargeExtraTime = 15;
         direction = 1;
         blockTime = (60f / mainHandler.currentBpm) * 1.5f;
+        blockBeat = -10;
 
         localRenderer = GetComponent<SpriteRenderer>();
 
@@ -151,7 +153,8 @@ public class playerHandler : MonoBehaviour
         UpdateAnimations();
 
         // update HP bar
-        rendererHPFill.transform.localScale = new Vector3(((float)currentHP / (float)maxHP) * 1, 1);
+        //rendererHPFill.transform.localScale = new Vector3(((float)currentHP / (float)maxHP) * 1, 1);
+        maskHPFill.transform.localPosition = new Vector3(-4.44f + (((float)currentHP / (float)maxHP * 4.77f)), 0);
 
         // update special charges
         for (int i = 2; i >= 0; i--)
@@ -175,7 +178,7 @@ public class playerHandler : MonoBehaviour
         if (dodgeSucces) SuccessfulDodge();
         if (dodgeFail) FailedDodge();
         if (blocking) SuccessfulBlock();
-        if (countering) CounterPunch();
+        if (countering) SuccessfulCounterPunch();
 
         if (hitstun) Hitstun();
 
@@ -224,26 +227,28 @@ public class playerHandler : MonoBehaviour
         {
 
         }
-
-        if (Input.GetButtonDown("Attack") && !busy)
+        if (!busy && mainHandler.songStarted)
         {
-            Punch();
-        }
-        if (Input.GetButtonDown("Quick Attack") && !busy)
-        {
-            QuickPunch();
-        }
-        if (Input.GetButtonDown("Special Attack") && !busy)
-        {
-            SpecialPunch();
-        }
-        if (Input.GetButtonDown("Dodge") && !busy)
-        {
-            Dodge();
-        }
-        if (Input.GetButtonDown("Block") && !busy)
-        {
-            Block();
+            if (Input.GetButtonDown("Heavy Attack"))
+            {
+                Punch();
+            }
+            if (Input.GetButtonDown("Light Attack"))
+            {
+                QuickPunch();
+            }
+            if (Input.GetButtonDown("Super"))
+            {
+                SpecialPunch();
+            }
+            if (Input.GetButtonDown("Dodge"))
+            {
+                Dodge();
+            }
+            if (Input.GetButtonDown("Block"))
+            {
+                Block();
+            }
         }
         if ((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0 || Input.GetAxisRaw("Move Axis 2") > 0) && !busy)
         {
@@ -301,15 +306,6 @@ public class playerHandler : MonoBehaviour
         {
             if (blockBeat == currentBeat - 1)
             {
-                Instantiate(pCounter, hitboxAttack4A.transform.position, new Quaternion(0, 0, 0, 0));
-                UpdateHitboxes();
-                punchingSuccess = true;
-                busy = true;
-                countering = true;
-                attackType = 4;
-                hitboxAttack4A.enabled = true;
-                soundAttackSuper.start();
-                transform.Translate(new Vector3(0.5f * direction, 0));
                 CounterPunch();
                 return;
             }
@@ -426,15 +422,6 @@ public class playerHandler : MonoBehaviour
         {
             if (blockBeat == currentBeat - 1)
             {
-                Instantiate(pCounter, hitboxAttack4A.transform.position, new Quaternion(0, 0, 0, 0));
-                UpdateHitboxes();
-                punchingSuccess = true;
-                busy = true;
-                countering = true;
-                attackType = 4;
-                hitboxAttack4A.enabled = true;
-                soundAttackSuper.start();
-                transform.Translate(new Vector3(0.5f * direction, 0));
                 CounterPunch();
                 return;
             }
@@ -558,6 +545,20 @@ public class playerHandler : MonoBehaviour
     }
 
     void CounterPunch()
+    {
+        Instantiate(pCounter, hitboxAttack4A.transform.position, new Quaternion(0, 0, 0, 0));
+        UpdateHitboxes();
+        punchingSuccess = true;
+        busy = true;
+        countering = true;
+        attackType = 4;
+        hitboxAttack4A.enabled = true;
+        soundAttackSuper.start();
+        transform.Translate(new Vector3(0.5f * direction, 0));
+        SuccessfulCounterPunch();
+    }
+
+    void SuccessfulCounterPunch()
     {
         actionTimer += Time.deltaTime;
 
@@ -766,6 +767,8 @@ public class playerHandler : MonoBehaviour
         specialCharges = maxSpecialCharges;
         busy = false;
         hitstun = false;
+        RestockCombos();
+        comboState = 0;
         hitboxBody.enabled = true;
     }
 

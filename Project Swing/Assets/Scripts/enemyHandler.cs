@@ -222,6 +222,7 @@ public class enemyHandler : MonoBehaviour
         rendererHPBar.enabled = false;
         rendererHPFill.enabled = false;
         attacking = false;
+        attackActive = false;
         for (int i = 0; i < hitboxAttacks.Count; i++)
         {
             hitboxAttacks[i].enabled = false;

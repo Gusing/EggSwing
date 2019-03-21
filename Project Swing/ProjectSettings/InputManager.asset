@@ -54,7 +54,7 @@ InputManager:
     axis: 5
     joyNum: 0
   - serializedVersion: 3
-    m_Name: Attack
+    m_Name: Heavy Attack
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
@@ -76,7 +76,7 @@ InputManager:
     negativeButton: 
     positiveButton: space
     altNegativeButton: 
-    altPositiveButton: joystick button 1
+    altPositiveButton: joystick button 5
     gravity: 0
     dead: 0
     sensitivity: 0
@@ -86,7 +86,7 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
-    m_Name: Quick Attack
+    m_Name: Light Attack
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
@@ -102,13 +102,13 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
-    m_Name: Special Attack
+    m_Name: Super
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: d
     altNegativeButton: 
-    altPositiveButton: joystick button 3
+    altPositiveButton: joystick button 1
     gravity: 0
     dead: 0
     sensitivity: 0

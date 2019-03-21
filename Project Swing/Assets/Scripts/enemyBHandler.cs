@@ -99,41 +99,7 @@ public class enemyBHandler : enemyHandler
             newBeat = false;
         }
 
-        // update dancing sprite
-        if (!busy)
-        {
-            if (!offBeat)
-            {
-                localSpriteRenderer.sprite = spriteStomp2;
-            }
-            if (offBeat)
-            {
-                localSpriteRenderer.sprite = spriteStomp1;
-            }
-        }
-
         base.UpdateMovement();
-    }
-    
-    public override void Die(int dmg)
-    {
-        base.Die(dmg);
-
-        if (dmg == 6) GetComponent<SpriteRenderer>().sprite = spriteDead4;
-        else
-        {
-            int rand = Random.Range(0, 3);
-            if (rand == 0) GetComponent<SpriteRenderer>().sprite = spriteDead;
-            if (rand == 1) GetComponent<SpriteRenderer>().sprite = spriteDead2;
-            if (rand == 2) GetComponent<SpriteRenderer>().sprite = spriteDead3;
-        }
-    }
-
-    protected override void Invincible()
-    {
-        base.Invincible();
-
-        if (hitstun) GetComponent<SpriteRenderer>().sprite = spriteHitstun;
     }
     
     void AttackA()

@@ -49,14 +49,19 @@ public class mainHandler : MonoBehaviour {
 
     float levelTimer;
     int currentSpawn;
+    float prevTime;
 
     float nextSpawn;
 
     readonly int FAIL = 0, SUCCESS = 1, BEAT = 2, OFFBEAT = 3;
     public static int currentState;
     public static bool offBeat;
+    public static bool songStarted;
 
     public Text SecondCounter;
+    public Text SecondDisplay;
+    public Text txtRecordDisplay;
+    public Text txtRecordAnnouncement;
     float victoryTimer;
 
     EnemySpawn[] levelEndlessSpawn;
@@ -67,13 +72,22 @@ public class mainHandler : MonoBehaviour {
     EnemySpawn[] testSpawn;
     EnemySpawn[] currentLevelSpawn;
     float[] endWaitTimer;
-    
+
+    public int endlessRecord;
+    public bool clearedLevel1;
+    public bool clearedLevel2;
+    public bool clearedLevel3;
+    public bool unlockedLevelsA;
+    public bool unlockedLevelsB;
+
     FMOD.Studio.EventInstance soundAmbCafe;
     FMOD.Studio.EventInstance soundAmbSea;
 
     FMOD.Studio.EventInstance soundMusic;
     FMOD.Studio.EVENT_CALLBACK callBack;
 
+    FMOD.Studio.EventInstance soundUIClick;
+    
     public string musicPath;
 
     float beatTimer2;
@@ -97,60 +111,85 @@ public class mainHandler : MonoBehaviour {
         soundAmbCafe = FMODUnity.RuntimeManager.CreateInstance("event:/Amb/Amb_cafe");
         soundAmbSea = FMODUnity.RuntimeManager.CreateInstance("event:/Amb/Amb_sea");
 
+        soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
+
         enemies = new List<GameObject>();
+
+        // load data
+        PlayerData data = SaveSystem.LoadPlayer();
+
+        endlessRecord = data.endlessRecord;
+        clearedLevel1 = data.clearedLevel1;
+        clearedLevel2 = data.clearedLevel2;
+        clearedLevel3 = data.clearedLevel3;
+        unlockedLevelsA = data.unlockedLevelsA;
+        unlockedLevelsB = data.unlockedLevelsB;
 
         currentSpawn = 0;
         levelTimer = 0;
 
         levelTrainingSpawn = new EnemySpawn[] { };
 
-        levelEndlessSpawn = new EnemySpawn[] { new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 10 }) };
+        levelEndlessSpawn = new EnemySpawn[] {
+            new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
+            new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
+            new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
+            new EnemySpawn(3, new GameObject[] { enemyB }, new float[] { 10 * RandDirection() }),
+            new EnemySpawn(3, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
+            new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
+            new EnemySpawn(4, new GameObject[] { enemyB }, new float[] { 10 * RandDirection() }),
+            new EnemySpawn(8, new GameObject[] { enemyA, enemyA }, new float[] { 10 * RandDirection(), 10 * RandDirection() }),
+            new EnemySpawn(8, new GameObject[] { enemyA, enemyA, enemyB }, new float[] { 10 * RandDirection(), 10 * RandDirection(), 10 * RandDirection() }),
+            new EnemySpawn(10, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() })
+        };
 
         level1Spawn = new EnemySpawn[] {
-            new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 10 }),
-            new EnemySpawn(14, new GameObject[] { enemyA }, new float[] { -10 }),
-            new EnemySpawn(22, new GameObject[] { enemyA }, new float[] { 10 }),
-            new EnemySpawn(24, new GameObject[] { enemyA }, new float[] { -10 }),
-            new EnemySpawn(29, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }),
-            new EnemySpawn(42, new GameObject[] { enemyB }, new float[] { 10 }),
-            new EnemySpawn(54, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }),
-            new EnemySpawn(59, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }),
-            new EnemySpawn(64, new GameObject[] { enemyB, enemyA }, new float[] { -10, 10 }),
-            new EnemySpawn(67, new GameObject[] { enemyA }, new float[] { -10 }),
-            new EnemySpawn(79, new GameObject[] { enemyB, enemyB }, new float[] { -10, 10 })
+            new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 }),
+            new EnemySpawn(12, new GameObject[] { enemyA }, new float[] { -10 }),
+            new EnemySpawn(8, new GameObject[] { enemyA }, new float[] { 10 }),
+            new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { -10 }),
+            new EnemySpawn(5, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }),
+            new EnemySpawn(13, new GameObject[] { enemyB }, new float[] { 10 }),
+            new EnemySpawn(12, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }),
+            new EnemySpawn(5, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }),
+            new EnemySpawn(5, new GameObject[] { enemyB, enemyA }, new float[] { -10, 10 }),
+            new EnemySpawn(3, new GameObject[] { enemyA }, new float[] { -10 }),
+            new EnemySpawn(12, new GameObject[] { enemyB, enemyB }, new float[] { -10, 10 })
         };
 
         level2Spawn = new EnemySpawn[] {
-            new EnemySpawn(2, new GameObject[] { enemyA, enemyB }, new float[] { -10, 12 }),
-            new EnemySpawn(10, new GameObject[] { enemyB, enemyA }, new float[] { -12, 10 }),
-            new EnemySpawn(22, new GameObject[] { enemyA }, new float[] { 10 }),
-            new EnemySpawn(24, new GameObject[] { enemyA }, new float[] { -10 }),
-            new EnemySpawn(26, new GameObject[] { enemyA }, new float[] { 10 }),
-            new EnemySpawn(28, new GameObject[] { enemyA, enemyA }, new float[] { 10, 11 }),
-            new EnemySpawn(30, new GameObject[] { enemyA, enemyA }, new float[] { -10, -11 }),
-            new EnemySpawn(45, new GameObject[] { enemyB }, new float[] { 12 }),
-            new EnemySpawn(46, new GameObject[] { enemyA }, new float[] { -10 }),
-            new EnemySpawn(47, new GameObject[] { enemyA }, new float[] { -10 }),
-            new EnemySpawn(48, new GameObject[] { enemyA }, new float[] { -10 }),
-            new EnemySpawn(49, new GameObject[] { enemyA }, new float[] { -10 }),
-            new EnemySpawn(52, new GameObject[] { enemyB }, new float[] { -10 }),
+            new EnemySpawn(7, new GameObject[] { enemyA, enemyB }, new float[] { -10, 12 }),
+            new EnemySpawn(8, new GameObject[] { enemyB, enemyA }, new float[] { -12, 10 }),
+            new EnemySpawn(12, new GameObject[] { enemyA }, new float[] { 10 }),
+            new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { -10 }),
+            new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 10 }),
+            new EnemySpawn(2, new GameObject[] { enemyA, enemyA }, new float[] { 10, 11 }),
+            new EnemySpawn(2, new GameObject[] { enemyA, enemyA }, new float[] { -10, -11 }),
+            new EnemySpawn(11, new GameObject[] { enemyB }, new float[] { 12 }),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }),
+            new EnemySpawn(3, new GameObject[] { enemyB }, new float[] { -10 }),
         };
 
         level3Spawn = new EnemySpawn[] {
-            new EnemySpawn(2, new GameObject[] { enemyB, enemyB }, new float[] { -11, 11 }),
-            new EnemySpawn(14, new GameObject[] { enemyA, enemyA }, new float[] { -10, -12 }),
-            new EnemySpawn(20, new GameObject[] { enemyA, enemyA }, new float[] { 10, 12 }),
-            new EnemySpawn(24, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { -10, -12, -14 }),
-            new EnemySpawn(28, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { 10, 12, 14 }),
-            new EnemySpawn(42, new GameObject[] { enemyB, enemyA, enemyB, enemyA, enemyA }, new float[] { -10, -11, -12, 10, 12 }),
-            new EnemySpawn(60, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11 }),
-            new EnemySpawn(63, new GameObject[] { enemyB, enemyB }, new float[] { -10, -12 }),
-            new EnemySpawn(70, new GameObject[] { enemyB, enemyB }, new float[] { 10, 12 }),
-            new EnemySpawn(90, new GameObject[] { enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA }, new float[] { 10, 11, 12, 13, 14, 15, -10, -11, -12, -13, -14, -15 })
+            new EnemySpawn(10, new GameObject[] { enemyB, enemyB }, new float[] { -11, 11 }),
+            new EnemySpawn(12, new GameObject[] { enemyA, enemyA }, new float[] { -10, -12 }),
+            new EnemySpawn(6, new GameObject[] { enemyA, enemyA }, new float[] { 10, 12 }),
+            new EnemySpawn(4, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { -10, -12, -14 }),
+            new EnemySpawn(4, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { 10, 12, 14 }),
+            new EnemySpawn(14, new GameObject[] { enemyB, enemyA, enemyB, enemyA, enemyA }, new float[] { -10, -11, -12, 10, 12 }),
+            new EnemySpawn(18, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11 }),
+            new EnemySpawn(3, new GameObject[] { enemyB, enemyB }, new float[] { -10, -12 }),
+            new EnemySpawn(8, new GameObject[] { enemyB, enemyB }, new float[] { 10, 12 }),
+            new EnemySpawn(20, new GameObject[] { enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA }, new float[] { 10, 11, 12, 13, 14, 15, -10, -11, -12, -13, -14, -15 })
         };
 
         testSpawn = new EnemySpawn[] {
-            new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 10 }),
+            new EnemySpawn(2, new GameObject[] { enemyB }, new float[] { 10 }),
 
         };
 
@@ -165,6 +204,8 @@ public class mainHandler : MonoBehaviour {
         {
             SecondCounter.enabled = true;
             currentLevelSpawn = levelEndlessSpawn;
+            txtRecordDisplay.enabled = true;
+            txtRecordDisplay.text = "RECORD: " + endlessRecord;
         }
 
         if (level == 2) soundAmbCafe.start();
@@ -177,8 +218,22 @@ public class mainHandler : MonoBehaviour {
         {
             FMOD.Studio.TIMELINE_MARKER_PROPERTIES marker = (FMOD.Studio.TIMELINE_MARKER_PROPERTIES)Marshal.PtrToStructure(parameters, typeof(FMOD.Studio.TIMELINE_MARKER_PROPERTIES));
             string name = marker.name;
-            print(name);
-            //bpm = int.Parse(name);
+            print("callback " + name);
+            if (name == "Play")
+            {
+                songStarted = true;
+            }
+            if (name == "Stop")
+            {
+                songStarted = false;
+            }
+            if (name.Contains("1"))
+            {
+                if (name == "128") soundMusic.setParameterValue("Intro", 1);
+                bpm = int.Parse(name);
+                offBeatTime = 60 / ((float)bpm * 2);
+                preBeatTime = 60 / (float)bpm - leniency;
+            }
         }
         if (type == FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT)
         {
@@ -190,8 +245,6 @@ public class mainHandler : MonoBehaviour {
     
     void Update() {
 
-        print(bpm);
-
         if (player.GetComponent<playerHandler>().dead)
         {
             if (gameOverTimer == 0) soundMusic.setParameterValue("Die", 1);
@@ -201,9 +254,25 @@ public class mainHandler : MonoBehaviour {
         if (gameOverTimer >= 1.5f)
         {
             txtGameOver.enabled = true;
+            if (level == 100)
+            {
+                SecondDisplay.text = "You survived for " + Mathf.Round(levelTimer) + " seconds";
+                SecondDisplay.enabled = true;
+                SecondCounter.enabled = false;
+            }
         }
         if (gameOverTimer >= 2f && !gameOver)
         {
+            if (level == 100)
+            {
+                if (Mathf.Round(levelTimer) > endlessRecord)
+                {
+                    endlessRecord = (int)Mathf.Round(levelTimer);
+                    txtRecordAnnouncement.enabled = true;
+                }
+                SaveSystem.SavePlayer(this);
+
+            }
             gameOver = true;
             print("buttons");
             btnRetry.gameObject.SetActive(true);
@@ -217,14 +286,14 @@ public class mainHandler : MonoBehaviour {
         
         beatTimer2 += Time.deltaTime;
         
-        if (beatTimer2 <= leniency && currentState != BEAT)
+        if (beatTimer2 <= leniency && currentState != BEAT && songStarted)
         {
             offBeat = false;
             currentState = BEAT;
             rendererIndicator.sprite = spriteIndicatorGreen;
             
         }
-        else if (beatTimer2 >= preBeatTime && currentState != SUCCESS)
+        else if (beatTimer2 >= preBeatTime && currentState != SUCCESS && songStarted)
         {
             currentState = SUCCESS;
             rendererIndicator.sprite = spriteIndicatorOrange;
@@ -245,7 +314,7 @@ public class mainHandler : MonoBehaviour {
 
         if (level == 100 && !player.GetComponent<playerHandler>().dead)
         {
-            SecondCounter.text = Mathf.Round(levelTimer).ToString();
+            SecondCounter.text = "TIME: " + Mathf.Round(levelTimer).ToString();
         }
 
 	}
@@ -300,7 +369,6 @@ public class mainHandler : MonoBehaviour {
 
                 if (tAllDead && victoryTimer == 0)
                 {
-                    print("end wait: " + endWaitTimer[level - 1]);
                     victoryTimer = levelTimer;
                     txtVictory.enabled = true;
                     soundMusic.setParameterValue("Win", 1);
@@ -308,21 +376,29 @@ public class mainHandler : MonoBehaviour {
 
                 if (victoryTimer > 0 && levelTimer > (victoryTimer + endWaitTimer[level - 1]))
                 {
+                    if (level == 1)
+                    {
+                        clearedLevel1 = true;
+                        unlockedLevelsA = true;
+                    }
+                    if (level == 2) clearedLevel2 = true;
+                    if (level == 3) clearedLevel3 = true;
+                    if (clearedLevel2 && clearedLevel3) unlockedLevelsB = true;
+                    SaveSystem.SavePlayer(this);
+                    print("save, clear: " + clearedLevel1 + ", " + clearedLevel2 + ", " + clearedLevel3 + ", unlocked: " + unlockedLevelsA + ", " + unlockedLevelsB + ", record: " + endlessRecord);
                     QuitLevel();
                 }
             }
-            else if (levelTimer > currentLevelSpawn[currentSpawn].spawnTime)
+            else if (levelTimer > prevTime + currentLevelSpawn[currentSpawn].spawnTime)
             {
                 for (int i = 0; i < currentLevelSpawn[currentSpawn].enemies.Length; i++)
                 {
                     enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(currentLevelSpawn[currentSpawn].xPos[i], 0), Quaternion.identity));
                 }
+                prevTime = levelTimer;
                 currentSpawn++;
             }
         }
-
-
-
 
         if (level == 100)
         {
@@ -330,114 +406,55 @@ public class mainHandler : MonoBehaviour {
             {
                 if (levelTimer >= nextSpawn)
                 {
-                    nextSpawn += 15 - (Mathf.Clamp(14 * (levelTimer / 150), 0, 14));
+                    nextSpawn = levelTimer;
+                    nextSpawn += 18 - (Mathf.Clamp(14 * (levelTimer / 300), 0, 16));
                     int tDistance = 0;
-                    for (int i = 0; i < 2 + levelTimer / 30; i++)
+                    print("levelTimer: " + levelTimer + ", nextSpawn: " + nextSpawn);
+                    for (int i = 0; i < 2 + levelTimer / 75; i++)
                     {
-                        if (Random.value > 0.5f) enemies.Add(Instantiate(enemyA, new Vector3((10.1f + tDistance) * RandDirection(), 0f), Quaternion.identity));
+                        print("spawn");
+                        if (Random.value > 0.25f) enemies.Add(Instantiate(enemyA, new Vector3((10.1f + tDistance) * RandDirection(), 0f), Quaternion.identity));
                         else enemies.Add(Instantiate(enemyB, new Vector3((10.1f + tDistance) * RandDirection(), 0.98f), Quaternion.identity));
                         tDistance++;
                     }
                 }
             }
-            /*
-            else if (levelTimer > currentLevelSpawn[currentSpawn].spawnTime)
+            else if (levelTimer > prevTime + currentLevelSpawn[currentSpawn].spawnTime)
             {
                 for (int i = 0; i < currentLevelSpawn[currentSpawn].enemies.Length; i++)
                 {
                     enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(currentLevelSpawn[currentSpawn].xPos[i], 0), Quaternion.identity));
                 }
+                prevTime = levelTimer;
                 currentSpawn++;
             }
-            */
-
-
-            if (levelTimer > 2 && currentSpawn == 0)
-            {
-                enemies.Add(Instantiate(enemyA, new Vector3(10.1f * RandDirection(), 0f), Quaternion.identity));
-                currentSpawn++;
-            }
-            if (levelTimer > 8 && currentSpawn == 1)
-            {
-                enemies.Add(Instantiate(enemyA, new Vector3(10.1f * RandDirection(), 0f), Quaternion.identity));
-                currentSpawn++;
-            }
-            if (levelTimer > 10 && currentSpawn == 2)
-            {
-                enemies.Add(Instantiate(enemyA, new Vector3(10.1f * RandDirection(), 0f), Quaternion.identity));
-                currentSpawn++;
-            }
-            if (levelTimer > 11 && currentSpawn == 3)
-            {
-                enemies.Add(Instantiate(enemyA, new Vector3(10.1f * RandDirection(), 0f), Quaternion.identity));
-                currentSpawn++;
-            }
-            if (levelTimer > 12 && currentSpawn == 4)
-            {
-                enemies.Add(Instantiate(enemyA, new Vector3(10.1f * RandDirection(), 0f), Quaternion.identity));
-                currentSpawn++;
-            }
-            if (levelTimer > 15 && currentSpawn == 5)
-            {
-                enemies.Add(Instantiate(enemyB, new Vector3(10.1f * RandDirection(), 0.98f), Quaternion.identity));
-                currentSpawn++;
-            }
-            if (levelTimer > 18 && currentSpawn == 6)
-            {
-                enemies.Add(Instantiate(enemyA, new Vector3(10.1f * RandDirection(), 0f), Quaternion.identity));
-                currentSpawn++;
-            }
-            if (levelTimer > 24 && currentSpawn == 7)
-            {
-                enemies.Add(Instantiate(enemyA, new Vector3(10.1f * RandDirection(), 0f), Quaternion.identity));
-                currentSpawn++;
-            }
-            if (levelTimer > 28 && currentSpawn == 8)
-            {
-                enemies.Add(Instantiate(enemyB, new Vector3(10.1f * RandDirection(), 0.98f), Quaternion.identity));
-                currentSpawn++;
-            }
-            if (levelTimer > 34 && currentSpawn == 9)
-            {
-                enemies.Add(Instantiate(enemyA, new Vector3(10.1f * RandDirection(), 0f), Quaternion.identity));
-                enemies.Add(Instantiate(enemyA, new Vector3(10.1f * RandDirection(), 0f), Quaternion.identity));
-                currentSpawn++;
-            }
-            if (levelTimer > 38 && currentSpawn == 10)
-            {
-                enemies.Add(Instantiate(enemyA, new Vector3(10.1f * RandDirection(), 0f), Quaternion.identity));
-                enemies.Add(Instantiate(enemyA, new Vector3(10.1f * RandDirection(), 0f), Quaternion.identity));
-                enemies.Add(Instantiate(enemyB, new Vector3(10.1f * RandDirection(), 0.98f), Quaternion.identity));
-                currentSpawn++;
-                nextSpawn = 46;
-            }
-            if (currentSpawn == 11)
-            {
-                if (levelTimer >= nextSpawn)
-                {
-                    nextSpawn += 15 - (Mathf.Clamp(14 * (levelTimer / 150), 0, 14));
-                    int tDistance = 0;
-                    for (int i = 0; i < 2 + levelTimer/30; i++)
-                    {
-                        if (Random.value > 0.5f) enemies.Add(Instantiate(enemyA, new Vector3((10.1f + tDistance) * RandDirection(), 0f), Quaternion.identity));
-                        else enemies.Add(Instantiate(enemyB, new Vector3((10.1f + tDistance) * RandDirection(), 0.98f), Quaternion.identity));
-                        tDistance++;
-                    }
-                }
-            }
-
         }
     }
 
     public void RestartLevel()
     {
+        soundUIClick.start();
+        
         currentSpawn = 0;
         levelTimer = 0;
+        if (level == 3) levelTimer = 6.9f;
+        nextSpawn = 0;
+        prevTime = 0;
         player.GetComponent<playerHandler>().Reset();
         txtGameOver.enabled = false;
         gameOver = false;
+        songStarted = false;
         btnRetry.gameObject.SetActive(false);
         btnGameOver.gameObject.SetActive(false);
+
+        if (level == 100)
+        {
+            txtRecordAnnouncement.enabled = false;
+            SecondCounter.enabled = true;
+            SecondDisplay.enabled = false;
+            txtRecordDisplay.text = "RECORD: " + endlessRecord;
+        }
+
         for (int i = 0; i < enemies.Count; i++)
         {
             Destroy(enemies[i]);
@@ -447,6 +464,7 @@ public class mainHandler : MonoBehaviour {
         soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath);
         soundMusic.setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
+        if (level == 3) soundMusic.setParameterValue("Loop", 1);
         soundMusic.start();
     }
 
