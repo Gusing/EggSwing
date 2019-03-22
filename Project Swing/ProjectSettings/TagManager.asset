@@ -75,3 +75,6 @@ TagManager:
   - name: HUD2
     uniqueID: 3985551457
     locked: 0
+  - name: HUD3
+    uniqueID: 3278037855
+    locked: 0

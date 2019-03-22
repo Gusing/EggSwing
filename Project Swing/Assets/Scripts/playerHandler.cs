@@ -154,7 +154,7 @@ public class playerHandler : MonoBehaviour
 
         // update HP bar
         //rendererHPFill.transform.localScale = new Vector3(((float)currentHP / (float)maxHP) * 1, 1);
-        maskHPFill.transform.localPosition = new Vector3(-4.44f + (((float)currentHP / (float)maxHP * 4.77f)), 0);
+        maskHPFill.transform.localPosition = new Vector3(-4.47f + (((float)currentHP / (float)maxHP * 4.77f)), 0);
 
         // update special charges
         for (int i = 2; i >= 0; i--)
