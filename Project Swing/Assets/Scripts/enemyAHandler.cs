@@ -19,7 +19,7 @@ public class enemyAHandler : enemyHandler {
     {
         base.Start();
 
-        transform.position = new Vector3(transform.position.x, -2.12f);
+        transform.position = new Vector3(transform.position.x, -2.12f, Random.Range(0f, 0.1f));
 
         maxHP = 10;
         currentHP = maxHP;

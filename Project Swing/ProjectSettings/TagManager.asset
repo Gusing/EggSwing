@@ -45,12 +45,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Background3
-    uniqueID: 3603062625
-    locked: 0
-  - name: Background2
-    uniqueID: 521323897
-    locked: 0
   - name: Background
     uniqueID: 3746283569
     locked: 0
@@ -71,7 +65,4 @@ TagManager:
     locked: 0
   - name: HUD
     uniqueID: 2402223477
-    locked: 0
-  - name: HUD2
-    uniqueID: 3985551457
     locked: 0

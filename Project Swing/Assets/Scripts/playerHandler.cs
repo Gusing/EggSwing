@@ -54,6 +54,8 @@ public class playerHandler : MonoBehaviour
     int attackType;
     bool usingSuper;
     bool beatPassed;
+    bool lastAttackHit;
+    int lastHitBeat;
 
     bool dodgeSucces;
     bool dodgeFail;
@@ -75,10 +77,15 @@ public class playerHandler : MonoBehaviour
     int maxSpecialCharges;
     float specialChargeTimer;
     float specialChargeExtraTime;
+    public int currentStreak;
+    float streakDisappearDelay;
+    float streakTimer;
+    public int streakLevel;
 
     public SpriteRenderer rendererHPFill;
     public SpriteMask maskHPFill;
     public SpriteRenderer[] renderersSpecialCharges;
+    public Text textStreak;
 
     public bool dead;
     
@@ -93,6 +100,8 @@ public class playerHandler : MonoBehaviour
 
     List<Attack[]> allCombos;
     List<Attack[]> currentCombos;
+
+    GameObject mainCamera;
 
     readonly int QUICK = 0, SLOW = 1;
     
@@ -115,6 +124,8 @@ public class playerHandler : MonoBehaviour
         soundDie = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Die");
         soundFail = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Miss_Brad");
 
+        mainCamera = GameObject.Find("Main Camera");
+
         allCombos = new List<Attack[]>();
 
         // populate available combos
@@ -130,6 +141,7 @@ public class playerHandler : MonoBehaviour
         maxSpecialCharges = 3;
         specialCharges = maxSpecialCharges;
         specialChargeExtraTime = 15;
+        streakDisappearDelay = 3;
         direction = 1;
         blockTime = (60f / mainHandler.currentBpm) * 1.5f;
         blockBeat = -10;
@@ -150,24 +162,31 @@ public class playerHandler : MonoBehaviour
         //txtComboState.text = "Current combo state: " + comboState;
         //txtNumberCombos.text = "Number of available combos: " + currentCombos.Count;
 
+        // update animations
         UpdateAnimations();
 
-        // update HP bar
-        //rendererHPFill.transform.localScale = new Vector3(((float)currentHP / (float)maxHP) * 1, 1);
+        // update HUD
         maskHPFill.transform.localPosition = new Vector3(-4.44f + (((float)currentHP / (float)maxHP * 4.77f)), 0);
-
-        // update special charges
+        
         for (int i = 2; i >= 0; i--)
         {
             if (specialCharges > i) renderersSpecialCharges[i].enabled = true;
             else renderersSpecialCharges[i].enabled = false;
         }
 
+        if (currentStreak > 0)
+        {
+            textStreak.text = "Streak: " + currentStreak;
+            textStreak.transform.localScale = new Vector3((0.5f + streakLevel * 0.15f) - (streakTimer / streakDisappearDelay) * 0.5f, (0.5f + streakLevel * 0.15f) - (streakTimer / streakDisappearDelay) * 0.5f, 1);
+        }
+
+        // return if dead
         if (dead)
         {
             return;
         }
 
+        // update moves
         if (punchingSuccess)
         {
             if (attackType == 1) SuccessfulQuickPunch();
@@ -181,7 +200,8 @@ public class playerHandler : MonoBehaviour
         if (countering) SuccessfulCounterPunch();
 
         if (hitstun) Hitstun();
-
+        
+        // update special charges
         if (specialCharges < 3) specialChargeTimer += Time.deltaTime;
 
         if (specialChargeTimer >= specialChargeExtraTime)
@@ -189,14 +209,25 @@ public class playerHandler : MonoBehaviour
             specialCharges++;
             specialChargeTimer = 0;
         }
-        
+
+        // update streak
+        if (currentStreak > 0) streakTimer += Time.deltaTime;
+
+        if (streakTimer >= streakDisappearDelay)
+        {
+            streakTimer = 0;
+            streakLevel = 0;
+            currentStreak = 0;
+            textStreak.enabled = false;
+        }
+
+
         if (mainHandler.currentState == BEAT)
         {
             beatState = BEAT;
         }
         else if (mainHandler.currentState == SUCCESS)
         {
-            
             beatState = SUCCESS;
             
             if (!switchBeat)
@@ -211,22 +242,30 @@ public class playerHandler : MonoBehaviour
                 successfullBlock = false;
             }
 
-            if ((currentBeat > lastAttackBeat + 1 && !lastAttackSlow) || (currentBeat > lastAttackBeat + 2 && lastAttackSlow))
+            if ((currentBeat > lastAttackBeat + 1 && !lastAttackSlow) || 
+                (currentBeat > lastAttackBeat + 2 && lastAttackSlow) || 
+                (!lastAttackHit && (
+                (currentBeat > lastAttackBeat && !lastAttackSlow) || 
+                (currentBeat > lastAttackBeat + 1 && lastAttackSlow))))
             {
                 RestockCombos();
             }
 
+             //lastAttackHit = false;
+
         }
         else
         {
+            if ((currentBeat > lastHitBeat + 0 && !lastAttackSlow) ||
+                (currentBeat > lastHitBeat + 1 && lastAttackSlow))
+            {
+                lastAttackHit = false;
+            }
+
             switchBeat = false;
             beatState = FAIL;
         }
-        
-        if (mainHandler.offBeat)
-        {
 
-        }
         if (!busy && mainHandler.songStarted)
         {
             if (Input.GetButtonDown("Heavy Attack"))
@@ -389,7 +428,7 @@ public class playerHandler : MonoBehaviour
                     
                     currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 1);
                     currentCombos[0][comboState].soundAttackHit.start();
-                    
+
                     currentCombos[0][comboState].hitbox.enabled = true;
                     transform.Translate(new Vector3(currentCombos[0][comboState].push * direction, 0));
                     
@@ -504,6 +543,7 @@ public class playerHandler : MonoBehaviour
         attackType = 3;
         if (beatState == SUCCESS || beatState == BEAT)
         {
+            mainCamera.GetComponent<ScreenShake>().TriggerShake(0.8f, 0.5f, 1.2f);
             soundAttackSuper.start();
             Instantiate(pSpecialAttack, transform.position, new Quaternion(0, 0, 0, 0));
             UpdateHitboxes();
@@ -546,6 +586,7 @@ public class playerHandler : MonoBehaviour
 
     void CounterPunch()
     {
+        mainCamera.GetComponent<ScreenShake>().TriggerShake(0.3f, 0.3f, 1.2f);
         Instantiate(pCounter, hitboxAttack4A.transform.position, new Quaternion(0, 0, 0, 0));
         UpdateHitboxes();
         punchingSuccess = true;
@@ -720,6 +761,11 @@ public class playerHandler : MonoBehaviour
         }
         else
         {
+            streakTimer = 0;
+            currentStreak = 0;
+            streakLevel = 0;
+            textStreak.enabled = false;
+
             hitstunDirection = hitDirection;
 
             currentHP -= dmg;
@@ -770,6 +816,10 @@ public class playerHandler : MonoBehaviour
         RestockCombos();
         comboState = 0;
         hitboxBody.enabled = true;
+        streakTimer = 0;
+        streakLevel = 0;
+        currentStreak = 0;
+        textStreak.enabled = false;
     }
 
     public void SetBeatState(int state)
@@ -813,9 +863,51 @@ public class playerHandler : MonoBehaviour
 
         if (tDmg > 0)
         {
+            if (mainHandler.level > 0)
+            {
+                currentStreak++;
+                textStreak.enabled = true;
+                textStreak.transform.localEulerAngles = new Vector3(0, 0, Random.Range(-4f, 4f));
+                streakTimer = 0;
+
+                if (currentStreak >= 100 && streakLevel != 6)
+                {
+                    streakLevel = 6;
+                    textStreak.color = new Color(0.3f, 1f, 0.9f);
+                }
+                if (currentStreak >= 75 && currentStreak < 100 && streakLevel != 5)
+                {
+                    streakLevel = 5;
+                    textStreak.color = new Color(0.74f, 0.31f, 1f);
+                }
+                if (currentStreak >= 50 && currentStreak < 75 && streakLevel != 4)
+                {
+                    streakLevel = 4;
+                    textStreak.color = new Color(0.1f, 1f, 0.1f);
+                }
+                else if (currentStreak >= 30 && currentStreak < 50 && streakLevel != 3)
+                {
+                    streakLevel = 3;
+                    textStreak.color = new Color(0.93f, 0.26f, 0.37f);
+                }
+                else if (currentStreak >= 10 && currentStreak < 30 && streakLevel != 2)
+                {
+                    streakLevel = 2;
+                    textStreak.color = new Color(0.85f, 0.85f, 0.4f);
+                }
+                else if (currentStreak >= 0 && currentStreak < 10 && streakLevel != 1)
+                {
+                    streakLevel = 1;
+                    textStreak.color = new Color(0.4f, 0.49f, 0.41f);
+                }
+            }
+
+            lastAttackHit = true;
+            lastHitBeat = currentBeat;
             if (other.tag == "enemy") other.GetComponent<enemyHandler>().TakeDamage(tDmg);
-            if (other.tag == "enemyDummy") other.GetComponent<enemyDummyHandler>().TakeDamage(tDmg);
             
+            if (comboState == currentCombos[0].Length - 1) mainCamera.GetComponent<ScreenShake>().TriggerShake(0.07f + 0.027f * tDmg, 0.2f + 0.08f * tDmg, 1.2f);
+
             Instantiate(pAttackHit, tBox, new Quaternion(0, 0, 0, 0));
             GameObject tDmgNumber = Instantiate(damageNumber, other.transform.position + new Vector3(0, 0.4f), new Quaternion(0, 0, 0, 0));
             tDmgNumber.GetComponent<dmgNumberHandler>().Init(tDmg);

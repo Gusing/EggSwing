@@ -19,6 +19,10 @@ public class menuHandler : MonoBehaviour {
     public Text txtClearLvl1;
     public Text txtClearLvl2;
     public Text txtClearLvl3;
+    public Text txtStreakLvl1;
+    public Text txtStreakLvl2;
+    public Text txtStreakLvl3;
+    public Text txtStreakLvlEndless;
     public Text txtEndlessRecord;
     bool clickedLevel;
 
@@ -51,15 +55,36 @@ public class menuHandler : MonoBehaviour {
             btnEndless.interactable = false;
             spriteLockEndless.enabled = true;
         }
-        if (!data.clearedLevel1) txtClearLvl1.enabled = false;
-        if (!data.clearedLevel2) txtClearLvl2.enabled = false;
-        if (!data.clearedLevel3) txtClearLvl3.enabled = false;
+        if (!data.clearedLevel1)
+        {
+            txtClearLvl1.enabled = false;
+            txtStreakLvl1.enabled = false;
+        }
+        else txtStreakLvl1.text = "Best Streak: " + data.streakLevel1Record;
+        if (!data.clearedLevel2)
+        {
+            txtClearLvl2.enabled = false;
+            txtStreakLvl2.enabled = false;
+        }
+        else txtStreakLvl2.text = "Best Streak: " + data.streakLevel2Record;
+        if (!data.clearedLevel3)
+        {
+            txtClearLvl3.enabled = false;
+            txtStreakLvl3.enabled = false;
+        }
+        else txtStreakLvl3.text = "Best Streak: " + data.streakLevel3Record;
         if (data.endlessRecord > 0)
         {
             txtEndlessRecord.enabled = true;
             txtEndlessRecord.text = "RECORD: " + data.endlessRecord;
+            txtStreakLvlEndless.enabled = true;
+            txtStreakLvlEndless.text = "Best Streak: " + data.streakLevelEndlessRecord;
         }
-        else txtEndlessRecord.enabled = false;
+        else
+        {
+            txtEndlessRecord.enabled = false;
+            txtStreakLvlEndless.enabled = false;
+        }
     }
 	
 	// Update is called once per frame

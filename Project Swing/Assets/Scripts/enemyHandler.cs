@@ -218,6 +218,7 @@ public class enemyHandler : MonoBehaviour
 
     public virtual void Die(int dmg)
     {
+        mainHandler.EnemyDead();
         soundDeath.start();
         rendererHPBar.enabled = false;
         rendererHPFill.enabled = false;

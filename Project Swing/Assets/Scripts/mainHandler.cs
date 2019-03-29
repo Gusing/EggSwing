@@ -41,15 +41,17 @@ public class mainHandler : MonoBehaviour {
     float beatTime;
     float beatTimer;
     float offsetTimer;
-
+    
     float indicatorTimer;
     bool indicatorReady;
 
-    public int level;
+    public static int level;
 
     float levelTimer;
     int currentSpawn;
     float prevTime;
+    bool waitingForDeath;
+    public static int enemiesDead;
 
     float nextSpawn;
 
@@ -79,6 +81,11 @@ public class mainHandler : MonoBehaviour {
     public bool clearedLevel3;
     public bool unlockedLevelsA;
     public bool unlockedLevelsB;
+    public int streakLevel1Record;
+    public int streakLevel2Record;
+    public int streakLevel3Record;
+    public int streakLevelEndlessRecord;
+    int currentMaxStreak;
 
     FMOD.Studio.EventInstance soundAmbCafe;
     FMOD.Studio.EventInstance soundAmbSea;
@@ -117,13 +124,16 @@ public class mainHandler : MonoBehaviour {
 
         // load data
         PlayerData data = SaveSystem.LoadPlayer();
-
         endlessRecord = data.endlessRecord;
         clearedLevel1 = data.clearedLevel1;
         clearedLevel2 = data.clearedLevel2;
         clearedLevel3 = data.clearedLevel3;
         unlockedLevelsA = data.unlockedLevelsA;
         unlockedLevelsB = data.unlockedLevelsB;
+        streakLevel1Record = data.streakLevel1Record;
+        streakLevel2Record = data.streakLevel2Record;
+        streakLevel3Record = data.streakLevel3Record;
+        streakLevelEndlessRecord = data.streakLevelEndlessRecord;
 
         currentSpawn = 0;
         levelTimer = 0;
@@ -131,44 +141,44 @@ public class mainHandler : MonoBehaviour {
         levelTrainingSpawn = new EnemySpawn[] { };
 
         levelEndlessSpawn = new EnemySpawn[] {
-            new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
-            new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
+            new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
             new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
             new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
             new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
             new EnemySpawn(3, new GameObject[] { enemyB }, new float[] { 10 * RandDirection() }),
-            new EnemySpawn(3, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
-            new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
+            new EnemySpawn(3, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }, 1),
+            new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }),
             new EnemySpawn(4, new GameObject[] { enemyB }, new float[] { 10 * RandDirection() }),
             new EnemySpawn(8, new GameObject[] { enemyA, enemyA }, new float[] { 10 * RandDirection(), 10 * RandDirection() }),
-            new EnemySpawn(8, new GameObject[] { enemyA, enemyA, enemyB }, new float[] { 10 * RandDirection(), 10 * RandDirection(), 10 * RandDirection() }),
-            new EnemySpawn(10, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() })
+            new EnemySpawn(8, new GameObject[] { enemyA, enemyA, enemyB }, new float[] { 10 * RandDirection(), 10 * RandDirection(), 10 * RandDirection() }, 1),
+            new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() })
         };
 
         level1Spawn = new EnemySpawn[] {
+            new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 }, 0 ),
+            new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { -10 }),
             new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 }),
-            new EnemySpawn(12, new GameObject[] { enemyA }, new float[] { -10 }),
-            new EnemySpawn(8, new GameObject[] { enemyA }, new float[] { 10 }),
-            new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { -10 }),
-            new EnemySpawn(5, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }),
-            new EnemySpawn(13, new GameObject[] { enemyB }, new float[] { 10 }),
-            new EnemySpawn(12, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }),
-            new EnemySpawn(5, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }),
-            new EnemySpawn(5, new GameObject[] { enemyB, enemyA }, new float[] { -10, 10 }),
-            new EnemySpawn(3, new GameObject[] { enemyA }, new float[] { -10 }),
-            new EnemySpawn(12, new GameObject[] { enemyB, enemyB }, new float[] { -10, 10 })
+            new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { -10 }, 1),
+            new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyB }, new float[] { 10 }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }),
+            new EnemySpawn(5, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }, 1),
+            new EnemySpawn(0, new GameObject[] { enemyB, enemyA }, new float[] { -10, 10 }),
+            new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { -10 }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyB, enemyB }, new float[] { -10, 10 })
         };
 
         level2Spawn = new EnemySpawn[] {
             new EnemySpawn(7, new GameObject[] { enemyA, enemyB }, new float[] { -10, 12 }),
-            new EnemySpawn(8, new GameObject[] { enemyB, enemyA }, new float[] { -12, 10 }),
-            new EnemySpawn(12, new GameObject[] { enemyA }, new float[] { 10 }),
+            new EnemySpawn(8, new GameObject[] { enemyB, enemyA }, new float[] { -12, 10 }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { 10 }),
             new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { -10 }),
             new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 10 }),
             new EnemySpawn(2, new GameObject[] { enemyA, enemyA }, new float[] { 10, 11 }),
-            new EnemySpawn(2, new GameObject[] { enemyA, enemyA }, new float[] { -10, -11 }),
-            new EnemySpawn(11, new GameObject[] { enemyB }, new float[] { 12 }),
-            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }),
+            new EnemySpawn(2, new GameObject[] { enemyA, enemyA }, new float[] { -10, -11 }, 2),
+            new EnemySpawn(0, new GameObject[] { enemyB }, new float[] { 12 }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { -10 }),
             new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }),
             new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }),
             new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }),
@@ -178,14 +188,14 @@ public class mainHandler : MonoBehaviour {
         level3Spawn = new EnemySpawn[] {
             new EnemySpawn(10, new GameObject[] { enemyB, enemyB }, new float[] { -11, 11 }),
             new EnemySpawn(12, new GameObject[] { enemyA, enemyA }, new float[] { -10, -12 }),
-            new EnemySpawn(6, new GameObject[] { enemyA, enemyA }, new float[] { 10, 12 }),
-            new EnemySpawn(4, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { -10, -12, -14 }),
-            new EnemySpawn(4, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { 10, 12, 14 }),
-            new EnemySpawn(14, new GameObject[] { enemyB, enemyA, enemyB, enemyA, enemyA }, new float[] { -10, -11, -12, 10, 12 }),
-            new EnemySpawn(18, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11 }),
+            new EnemySpawn(6, new GameObject[] { enemyA, enemyA }, new float[] { 10, 12 }, 2),
+            new EnemySpawn(0, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { -10, -12, -14 }),
+            new EnemySpawn(4, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { 10, 12, 14 }, 2),
+            new EnemySpawn(0, new GameObject[] { enemyB, enemyA, enemyB, enemyA, enemyA }, new float[] { -10, -11, -12, 10, 12 }, 1),
+            new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11 }),
             new EnemySpawn(3, new GameObject[] { enemyB, enemyB }, new float[] { -10, -12 }),
-            new EnemySpawn(8, new GameObject[] { enemyB, enemyB }, new float[] { 10, 12 }),
-            new EnemySpawn(20, new GameObject[] { enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA }, new float[] { 10, 11, 12, 13, 14, 15, -10, -11, -12, -13, -14, -15 })
+            new EnemySpawn(8, new GameObject[] { enemyB, enemyB }, new float[] { 10, 12 }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA }, new float[] { 10, 11, 12, 13, 14, 15, -10, -11, -12, -13, -14, -15 })
         };
 
         testSpawn = new EnemySpawn[] {
@@ -239,11 +249,19 @@ public class mainHandler : MonoBehaviour {
         {
             //FMOD.Studio.TIMELINE_BEAT_PROPERTIES beat = (FMOD.Studio.TIMELINE_BEAT_PROPERTIES)Marshal.PtrToStructure(parameters, typeof(FMOD.Studio.TIMELINE_BEAT_PROPERTIES));
             beatTimer2 = 0;
+            if (songStarted)
+            {
+                offBeat = false;
+                currentState = BEAT;
+                rendererIndicator.sprite = spriteIndicatorGreen;
+
+            }
         }
         return FMOD.RESULT.OK;
     }
     
-    void Update() {
+    void Update()
+    {
 
         if (player.GetComponent<playerHandler>().dead)
         {
@@ -270,14 +288,28 @@ public class mainHandler : MonoBehaviour {
                     endlessRecord = (int)Mathf.Round(levelTimer);
                     txtRecordAnnouncement.enabled = true;
                 }
+                if (currentMaxStreak > streakLevelEndlessRecord) streakLevelEndlessRecord = currentMaxStreak;
                 SaveSystem.SavePlayer(this);
-
             }
             gameOver = true;
             print("buttons");
             btnRetry.gameObject.SetActive(true);
             btnGameOver.gameObject.SetActive(true);
         }
+
+        // update streak parameter
+        if (player.GetComponent<playerHandler>().streakLevel > 2)
+        {
+            soundMusic.setParameterValue("Cool", 1);
+        }
+        else soundMusic.setParameterValue("Cool", 0);
+
+        if (player.GetComponent<playerHandler>().currentStreak > currentMaxStreak) currentMaxStreak = player.GetComponent<playerHandler>().currentStreak;
+
+        print(beatTimer2);
+
+        if (player.GetComponent<playerHandler>().streakLevel >= 3) GetComponent<Camera>().orthographicSize = 5.35f + (beatTimer2 / 0.6f) * 0.05f;
+        else GetComponent<Camera>().orthographicSize = 5.4f;
 
         if (Input.GetButtonDown("Cancel"))
         {
@@ -286,6 +318,7 @@ public class mainHandler : MonoBehaviour {
         
         beatTimer2 += Time.deltaTime;
         
+        /*
         if (beatTimer2 <= leniency && currentState != BEAT && songStarted)
         {
             offBeat = false;
@@ -293,7 +326,8 @@ public class mainHandler : MonoBehaviour {
             rendererIndicator.sprite = spriteIndicatorGreen;
             
         }
-        else if (beatTimer2 >= preBeatTime && currentState != SUCCESS && songStarted)
+        */
+        if (beatTimer2 >= preBeatTime && currentState != SUCCESS && songStarted)
         {
             currentState = SUCCESS;
             rendererIndicator.sprite = spriteIndicatorOrange;
@@ -346,11 +380,17 @@ public class mainHandler : MonoBehaviour {
 
     public void QuitLevel()
     {
+        enemiesDead = 0;
         if (level == 2) soundAmbCafe.setParameterValue("End", 1);
         if (level == 3) soundAmbSea.setParameterValue("End", 1);
         soundMusic.setCallback(null, 0);
         soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         SceneManager.LoadScene("MenuScene");
+    }
+
+    public static void EnemyDead()
+    {
+        enemiesDead++;
     }
 
     void ProgressLevel()
@@ -378,25 +418,48 @@ public class mainHandler : MonoBehaviour {
                 {
                     if (level == 1)
                     {
+                        if (currentMaxStreak > streakLevel1Record) streakLevel1Record = currentMaxStreak;
                         clearedLevel1 = true;
                         unlockedLevelsA = true;
                     }
-                    if (level == 2) clearedLevel2 = true;
-                    if (level == 3) clearedLevel3 = true;
+                    if (level == 2)
+                    {
+                        if (currentMaxStreak > streakLevel2Record) streakLevel2Record = currentMaxStreak;
+                        clearedLevel2 = true;
+                    }
+                    if (level == 3)
+                    {
+                        if (currentMaxStreak > streakLevel3Record) streakLevel3Record = currentMaxStreak;
+                        clearedLevel3 = true;
+                    }
                     if (clearedLevel2 && clearedLevel3) unlockedLevelsB = true;
                     SaveSystem.SavePlayer(this);
-                    print("save, clear: " + clearedLevel1 + ", " + clearedLevel2 + ", " + clearedLevel3 + ", unlocked: " + unlockedLevelsA + ", " + unlockedLevelsB + ", record: " + endlessRecord);
+                    print("save, clear: " + clearedLevel1 + ", " + clearedLevel2 + ", " + clearedLevel3 + ", unlocked: " + unlockedLevelsA + ", " + unlockedLevelsB + ", record: " + endlessRecord + ", streak records: " + streakLevel1Record + " " + streakLevel2Record + " " + streakLevel3Record);
                     QuitLevel();
                 }
             }
-            else if (levelTimer > prevTime + currentLevelSpawn[currentSpawn].spawnTime)
+            else if (levelTimer > prevTime + currentLevelSpawn[currentSpawn].spawnTime && !waitingForDeath)
             {
                 for (int i = 0; i < currentLevelSpawn[currentSpawn].enemies.Length; i++)
                 {
                     enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(currentLevelSpawn[currentSpawn].xPos[i], 0), Quaternion.identity));
                 }
-                prevTime = levelTimer;
-                currentSpawn++;
+                if (currentLevelSpawn[currentSpawn].waitForDeath) waitingForDeath = true;
+                else
+                {
+                    prevTime = levelTimer;
+                    currentSpawn++;
+                }
+            }
+            else if (waitingForDeath)
+            {
+                if (enemies.Count - enemiesDead <= currentLevelSpawn[currentSpawn].nextWaveReq)
+                {
+                    print("dead req met");
+                    prevTime = levelTimer;
+                    currentSpawn++;
+                    waitingForDeath = false;
+                }
             }
         }
 
@@ -440,12 +503,15 @@ public class mainHandler : MonoBehaviour {
         if (level == 3) levelTimer = 6.9f;
         nextSpawn = 0;
         prevTime = 0;
+        currentMaxStreak = 0;
         player.GetComponent<playerHandler>().Reset();
         txtGameOver.enabled = false;
         gameOver = false;
         songStarted = false;
         btnRetry.gameObject.SetActive(false);
         btnGameOver.gameObject.SetActive(false);
+        waitingForDeath = false;
+        enemiesDead = 0;
 
         if (level == 100)
         {

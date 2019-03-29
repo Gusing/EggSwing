@@ -11,6 +11,10 @@ public class PlayerData
     public bool unlockedLevelsA;
     public bool unlockedLevelsB;
     public int endlessRecord;
+    public int streakLevel1Record;
+    public int streakLevel2Record;
+    public int streakLevel3Record;
+    public int streakLevelEndlessRecord;
 
     public PlayerData()
     {
@@ -27,6 +31,11 @@ public class PlayerData
         unlockedLevelsB = handler.unlockedLevelsB;
 
         endlessRecord = handler.endlessRecord;
+
+        streakLevel1Record = handler.streakLevel1Record;
+        streakLevel2Record = handler.streakLevel2Record;
+        streakLevel3Record = handler.streakLevel3Record;
+        streakLevelEndlessRecord = handler.streakLevelEndlessRecord;
     }
 
 }

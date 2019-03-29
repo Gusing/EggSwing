@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-public class SaveSystem
+public class SaveSystem : MonoBehaviour
 {
     public static void SavePlayer(mainHandler handler)
     {
@@ -23,6 +23,8 @@ public class SaveSystem
         {
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = new FileStream(path, FileMode.Open);
+
+            print(path);
 
             PlayerData data = formatter.Deserialize(stream) as PlayerData;
             stream.Close();

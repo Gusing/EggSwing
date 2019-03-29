@@ -9,6 +9,9 @@ public class environmentHandler : MonoBehaviour
     public int count;
     int currentCount;
 
+    public Light[] lightsA;
+    public Light[] lightsB;
+
     SpriteRenderer localRenderer;
 
     bool currentBeat;
@@ -18,7 +21,7 @@ public class environmentHandler : MonoBehaviour
     void Start()
     {
         localRenderer = GetComponent<SpriteRenderer>();
-        currentCount = -1;
+        currentCount = 1;
     }
 
     // Update is called once per frame
@@ -34,11 +37,27 @@ public class environmentHandler : MonoBehaviour
                 currentCount = 0;
                 if (currentSprite)
                 {
+                    for (int i = 0; i < lightsA.Length; i++)
+                    {
+                        lightsA[i].intensity = 0f;
+                    }
+                    for (int i = 0; i < lightsB.Length; i++)
+                    {
+                        lightsB[i].intensity = 0.5f;
+                    }
                     currentSprite = false;
                     localRenderer.sprite = imgB;
                 }
                 else if (!currentSprite)
                 {
+                    for (int i = 0; i < lightsA.Length; i++)
+                    {
+                        lightsA[i].intensity = 0.5f;
+                    }
+                    for (int i = 0; i < lightsB.Length; i++)
+                    {
+                        lightsB[i].intensity = 0f;
+                    }
                     currentSprite = true;
                     localRenderer.sprite = imgA;
                 }

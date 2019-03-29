@@ -116,7 +116,7 @@ QualitySettings:
     - Standalone
   - serializedVersion: 2
     name: Default
-    pixelLightCount: 2
+    pixelLightCount: 15
     shadows: 0
     shadowResolution: 1
     shadowProjection: 1
