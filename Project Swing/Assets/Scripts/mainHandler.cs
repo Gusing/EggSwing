@@ -45,7 +45,8 @@ public class mainHandler : MonoBehaviour {
     float indicatorTimer;
     bool indicatorReady;
 
-    public static int level;
+    public int level;
+    public static int staticLevel;
 
     float levelTimer;
     int currentSpawn;
@@ -220,6 +221,8 @@ public class mainHandler : MonoBehaviour {
 
         if (level == 2) soundAmbCafe.start();
         if (level == 3) soundAmbSea.start();
+
+        staticLevel = level;
     }
 
     public FMOD.RESULT StudioEventCallback(FMOD.Studio.EVENT_CALLBACK_TYPE type, FMOD.Studio.EventInstance eventInstance, System.IntPtr parameters)
@@ -262,7 +265,6 @@ public class mainHandler : MonoBehaviour {
     
     void Update()
     {
-
         if (player.GetComponent<playerHandler>().dead)
         {
             if (gameOverTimer == 0) soundMusic.setParameterValue("Die", 1);
@@ -305,9 +307,7 @@ public class mainHandler : MonoBehaviour {
         else soundMusic.setParameterValue("Cool", 0);
 
         if (player.GetComponent<playerHandler>().currentStreak > currentMaxStreak) currentMaxStreak = player.GetComponent<playerHandler>().currentStreak;
-
-        print(beatTimer2);
-
+        
         if (player.GetComponent<playerHandler>().streakLevel >= 3) GetComponent<Camera>().orthographicSize = 5.35f + (beatTimer2 / 0.6f) * 0.05f;
         else GetComponent<Camera>().orthographicSize = 5.4f;
 
@@ -343,7 +343,7 @@ public class mainHandler : MonoBehaviour {
         {
             offBeat = true;
         }
-
+        
         ProgressLevel();
 
         if (level == 100 && !player.GetComponent<playerHandler>().dead)

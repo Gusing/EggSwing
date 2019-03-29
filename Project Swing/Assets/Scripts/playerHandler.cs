@@ -863,7 +863,7 @@ public class playerHandler : MonoBehaviour
 
         if (tDmg > 0)
         {
-            if (mainHandler.level > 0)
+            if (mainHandler.staticLevel > 0)
             {
                 currentStreak++;
                 textStreak.enabled = true;
