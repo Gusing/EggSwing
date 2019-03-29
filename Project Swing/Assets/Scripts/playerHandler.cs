@@ -909,7 +909,7 @@ public class playerHandler : MonoBehaviour
             if (comboState == currentCombos[0].Length - 1) mainCamera.GetComponent<ScreenShake>().TriggerShake(0.07f + 0.027f * tDmg, 0.2f + 0.08f * tDmg, 1.2f);
 
             Instantiate(pAttackHit, tBox, new Quaternion(0, 0, 0, 0));
-            GameObject tDmgNumber = Instantiate(damageNumber, other.transform.position + new Vector3(0, 0.4f), new Quaternion(0, 0, 0, 0));
+            GameObject tDmgNumber = Instantiate(damageNumber, other.transform.position + new Vector3(0, 0.7f), new Quaternion(0, 0, 0, 0));
             tDmgNumber.GetComponent<dmgNumberHandler>().Init(tDmg);
         }
     }

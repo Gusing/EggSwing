@@ -481,6 +481,7 @@ MonoBehaviour:
   txtGameOver: {fileID: 0}
   btnRetry: {fileID: 0}
   btnGameOver: {fileID: 0}
+  level: 0
   SecondCounter: {fileID: 0}
   SecondDisplay: {fileID: 0}
   txtRecordDisplay: {fileID: 0}
@@ -988,7 +989,7 @@ SpriteRenderer:
   m_SortingLayerID: -1892743819
   m_SortingLayer: 7
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 3803c966a185bd84b90087039068fb54, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e91eaca3709d55746a4f3c727a33238c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -138,6 +138,7 @@ public class mainHandler : MonoBehaviour {
 
         currentSpawn = 0;
         levelTimer = 0;
+        enemiesDead = 0;
 
         levelTrainingSpawn = new EnemySpawn[] { };
 
@@ -183,7 +184,9 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }),
             new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }),
             new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }),
-            new EnemySpawn(3, new GameObject[] { enemyB }, new float[] { -10 }),
+            new EnemySpawn(3, new GameObject[] { enemyB }, new float[] { -10 }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyB, enemyA, enemyB, enemyA }, new float[] { -13, -10,  11, 14}, 2),
+            new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { -11, 11}),
         };
 
         level3Spawn = new EnemySpawn[] {
