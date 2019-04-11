@@ -598,6 +598,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2141540808862620262}
   - component: {fileID: 2141540808862620257}
+  - component: {fileID: 889215}
   m_Layer: 0
   m_Name: BeatIndicator
   m_TagString: Untagged
@@ -656,7 +657,7 @@ SpriteRenderer:
   m_SortingLayerID: -1892743819
   m_SortingLayer: 7
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: bb292e521e4e9df418666b454eae99c4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 84414735c9512c3489f5a2fddd7137cd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -667,6 +668,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &889215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141540808862620256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb46afb7d930f914fb4b20926c83aa90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  indicatorRing: {fileID: 2943476834918928342, guid: 9e49f23f50c3ca141a44f348423b074b,
+    type: 3}
+  spriteEmpty: {fileID: 21300000, guid: 84414735c9512c3489f5a2fddd7137cd, type: 3}
+  spriteGreat: {fileID: 21300000, guid: 03482dff7c8d66248b46c46a01e2adf0, type: 3}
+  spriteOk: {fileID: 21300000, guid: d596db4a5736fb1409e509390a85ab18, type: 3}
+  spriteBad: {fileID: 21300000, guid: f97c5f495d3c1d541af8721a0a561ee1, type: 3}
+  timeBeforeCollision: 0.4
+  startingScale: 2.5
+  greatLimit: 0.04
 --- !u!1 &4813939583015148638
 GameObject:
   m_ObjectHideFlags: 0

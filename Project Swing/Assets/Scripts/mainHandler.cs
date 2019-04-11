@@ -15,14 +15,10 @@ public class mainHandler : MonoBehaviour {
     public static int currentBpm;
     public float offset;
     public float leniency = 0.1f;
+    public static float currentLeniency;
     float offBeatTime;
     float preBeatTime;
-
-    public SpriteRenderer rendererIndicator;
-    public Sprite spriteIndicatorEmpty;
-    public Sprite spriteIndicatorOrange;
-    public Sprite spriteIndicatorGreen;
-
+    
     public GameObject enemyA;
     public GameObject enemyB;
 
@@ -34,6 +30,8 @@ public class mainHandler : MonoBehaviour {
     public Text txtGameOver;
     float gameOverTimer;
     bool gameOver;
+
+    bool gotCool;
 
     public Button btnRetry;
     public Button btnGameOver;
@@ -99,10 +97,12 @@ public class mainHandler : MonoBehaviour {
     public string musicPath;
 
     float beatTimer2;
+    public static float currentBeatTimer;
 
     void Awake()
     {
         currentBpm = bpm;
+        currentLeniency = leniency;
     }
     
     void Start()
@@ -247,6 +247,7 @@ public class mainHandler : MonoBehaviour {
             {
                 if (name == "128") soundMusic.setParameterValue("Intro", 1);
                 bpm = int.Parse(name);
+                currentBpm = bpm;
                 offBeatTime = 60 / ((float)bpm * 2);
                 preBeatTime = 60 / (float)bpm - leniency;
             }
@@ -255,11 +256,12 @@ public class mainHandler : MonoBehaviour {
         {
             //FMOD.Studio.TIMELINE_BEAT_PROPERTIES beat = (FMOD.Studio.TIMELINE_BEAT_PROPERTIES)Marshal.PtrToStructure(parameters, typeof(FMOD.Studio.TIMELINE_BEAT_PROPERTIES));
             beatTimer2 = 0;
+            currentBeatTimer = 0;
             if (songStarted)
             {
                 offBeat = false;
                 currentState = BEAT;
-                rendererIndicator.sprite = spriteIndicatorGreen;
+                //rendererIndicator.sprite = spriteIndicatorGreen;
 
             }
         }
@@ -306,8 +308,18 @@ public class mainHandler : MonoBehaviour {
         if (player.GetComponent<playerHandler>().streakLevel > 2)
         {
             soundMusic.setParameterValue("Cool", 1);
+            soundMusic.setParameterValue("CoolFail", 0);
+            gotCool = true;
         }
-        else soundMusic.setParameterValue("Cool", 0);
+        else
+        {
+            if (gotCool)
+            {
+                soundMusic.setParameterValue("CoolFail", 1);
+                gotCool = false;
+            }
+            soundMusic.setParameterValue("Cool", 0);
+        }
 
         if (player.GetComponent<playerHandler>().currentStreak > currentMaxStreak) currentMaxStreak = player.GetComponent<playerHandler>().currentStreak;
         
@@ -320,6 +332,7 @@ public class mainHandler : MonoBehaviour {
         }
         
         beatTimer2 += Time.deltaTime;
+        currentBeatTimer += Time.deltaTime;
         
         /*
         if (beatTimer2 <= leniency && currentState != BEAT && songStarted)
@@ -333,13 +346,13 @@ public class mainHandler : MonoBehaviour {
         if (beatTimer2 >= preBeatTime && currentState != SUCCESS && songStarted)
         {
             currentState = SUCCESS;
-            rendererIndicator.sprite = spriteIndicatorOrange;
+            //rendererIndicator.sprite = spriteIndicatorOrange;
             
         }
         else if (beatTimer2 > 0.15f && beatTimer2 < preBeatTime && currentState != FAIL)
         {
             currentState = FAIL;
-            rendererIndicator.sprite = spriteIndicatorEmpty;
+            //rendererIndicator.sprite = spriteIndicatorEmpty;
         }
         
         if (beatTimer2 >= offBeatTime)
@@ -358,19 +371,19 @@ public class mainHandler : MonoBehaviour {
 
     void SetReady()
     {
-        rendererIndicator.sprite = spriteIndicatorOrange;
+        //rendererIndicator.sprite = spriteIndicatorOrange;
     }
 
     void SetBeat()
     {
-        rendererIndicator.sprite = spriteIndicatorGreen;
+        //rendererIndicator.sprite = spriteIndicatorGreen;
 
         indicatorTimer += Time.deltaTime;
 
         if (indicatorTimer >= 0.1f)
         {
             indicatorTimer = 0;
-            rendererIndicator.sprite = spriteIndicatorEmpty;
+            //rendererIndicator.sprite = spriteIndicatorEmpty;
         }
     }
 
@@ -485,14 +498,28 @@ public class mainHandler : MonoBehaviour {
                     }
                 }
             }
-            else if (levelTimer > prevTime + currentLevelSpawn[currentSpawn].spawnTime)
+            else if (levelTimer > prevTime + currentLevelSpawn[currentSpawn].spawnTime && !waitingForDeath)
             {
                 for (int i = 0; i < currentLevelSpawn[currentSpawn].enemies.Length; i++)
                 {
                     enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(currentLevelSpawn[currentSpawn].xPos[i], 0), Quaternion.identity));
                 }
-                prevTime = levelTimer;
-                currentSpawn++;
+                if (currentLevelSpawn[currentSpawn].waitForDeath) waitingForDeath = true;
+                else
+                {
+                    prevTime = levelTimer;
+                    currentSpawn++;
+                }
+            }
+            else if (waitingForDeath)
+            {
+                if (enemies.Count - enemiesDead <= currentLevelSpawn[currentSpawn].nextWaveReq)
+                {
+                    print("dead req met");
+                    prevTime = levelTimer;
+                    currentSpawn++;
+                    waitingForDeath = false;
+                }
             }
         }
     }

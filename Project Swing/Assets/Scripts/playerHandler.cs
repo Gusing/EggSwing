@@ -17,6 +17,10 @@ public class playerHandler : MonoBehaviour
     public ParticleSystem pBlock;
     public ParticleSystem pCounter;
 
+    public GameObject effectHitBlue;
+    public GameObject effectHitRed;
+    public GameObject effectHitSuper;
+
     public GameObject damageNumber;
 
     int comboState;
@@ -102,6 +106,7 @@ public class playerHandler : MonoBehaviour
     List<Attack[]> currentCombos;
 
     GameObject mainCamera;
+    GameObject beatIndicator;
 
     readonly int QUICK = 0, SLOW = 1;
     
@@ -125,6 +130,7 @@ public class playerHandler : MonoBehaviour
         soundFail = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Miss_Brad");
 
         mainCamera = GameObject.Find("Main Camera");
+        beatIndicator = GameObject.Find("BeatIndicator");
 
         allCombos = new List<Attack[]>();
 
@@ -271,14 +277,17 @@ public class playerHandler : MonoBehaviour
             if (Input.GetButtonDown("Heavy Attack"))
             {
                 Punch();
+                beatIndicator.GetComponent<beatIndicatorHandler>().PlayerInput();
             }
             if (Input.GetButtonDown("Light Attack"))
             {
                 QuickPunch();
+                beatIndicator.GetComponent<beatIndicatorHandler>().PlayerInput();
             }
             if (Input.GetButtonDown("Super"))
             {
                 SpecialPunch();
+                beatIndicator.GetComponent<beatIndicatorHandler>().PlayerInput();
             }
             if (Input.GetButtonDown("Dodge"))
             {
@@ -287,6 +296,7 @@ public class playerHandler : MonoBehaviour
             if (Input.GetButtonDown("Block"))
             {
                 Block();
+                beatIndicator.GetComponent<beatIndicatorHandler>().PlayerInput();
             }
         }
         if ((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0 || Input.GetAxisRaw("Move Axis 2") > 0) && !busy)
@@ -543,9 +553,10 @@ public class playerHandler : MonoBehaviour
         attackType = 3;
         if (beatState == SUCCESS || beatState == BEAT)
         {
+            Instantiate(effectHitSuper, transform.position + new Vector3(0, 1.5f), new Quaternion(0, 0, 0, 0));
             mainCamera.GetComponent<ScreenShake>().TriggerShake(0.8f, 0.5f, 1.2f);
             soundAttackSuper.start();
-            Instantiate(pSpecialAttack, transform.position, new Quaternion(0, 0, 0, 0));
+            //Instantiate(pSpecialAttack, transform.position, new Quaternion(0, 0, 0, 0));
             UpdateHitboxes();
             specialCharges--;
             lastAttackBeat = currentBeat;
@@ -905,10 +916,15 @@ public class playerHandler : MonoBehaviour
             lastAttackHit = true;
             lastHitBeat = currentBeat;
             if (other.tag == "enemy") other.GetComponent<enemyHandler>().TakeDamage(tDmg);
-            
-            if (comboState == currentCombos[0].Length - 1) mainCamera.GetComponent<ScreenShake>().TriggerShake(0.07f + 0.027f * tDmg, 0.2f + 0.08f * tDmg, 1.2f);
 
-            Instantiate(pAttackHit, tBox, new Quaternion(0, 0, 0, 0));
+            if (comboState == currentCombos[0].Length - 1)
+            {
+                mainCamera.GetComponent<ScreenShake>().TriggerShake(0.07f + 0.027f * tDmg, 0.2f + 0.08f * tDmg, 1.2f);
+                Instantiate(effectHitRed, tBox, new Quaternion(0, 0, 0, 0));
+            }
+            else if (tDmg < 8) Instantiate(effectHitBlue, tBox, new Quaternion(0, 0, 0, 0));
+
+            //Instantiate(pAttackHit, tBox, new Quaternion(0, 0, 0, 0));
             GameObject tDmgNumber = Instantiate(damageNumber, other.transform.position + new Vector3(0, 0.7f), new Quaternion(0, 0, 0, 0));
             tDmgNumber.GetComponent<dmgNumberHandler>().Init(tDmg);
         }
