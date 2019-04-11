@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
 
 public class menuHandler : MonoBehaviour {
 
@@ -30,6 +31,13 @@ public class menuHandler : MonoBehaviour {
     FMOD.Studio.EventInstance soundUIClick;
     FMOD.Studio.EventInstance soundUIStart;
 
+    PlayerData data;
+
+    void Awake()
+    {
+        data = SaveSystem.LoadPlayer();
+    }
+    
     // Use this for initialization
     void Start () {
 
@@ -39,8 +47,7 @@ public class menuHandler : MonoBehaviour {
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
         soundUIStart = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_Start");
 
-        PlayerData data = SaveSystem.LoadPlayer();
-
+        
         if (!data.unlockedLevelsA)
         {
             btnLvl2.interactable = false;
@@ -114,5 +121,17 @@ public class menuHandler : MonoBehaviour {
     {
         soundUIClick.start();
         Application.Quit();
+    }
+
+    public void VisitDiscord()
+    {
+        AnalyticsEvent.Custom("clicked_discord");
+        Application.OpenURL("https://discord.gg/3bAe6GC");
+    }
+
+    public void VisitSunscale()
+    {
+        AnalyticsEvent.Custom("clicked_sunscale");
+        Application.OpenURL("http://www.sunscalestudios.com/");
     }
 }

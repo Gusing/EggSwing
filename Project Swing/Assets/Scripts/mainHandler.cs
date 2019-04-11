@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Runtime.InteropServices;
 using System.Text;
+using UnityEngine.Analytics;
 
 
 public class mainHandler : MonoBehaviour {
@@ -29,7 +30,7 @@ public class mainHandler : MonoBehaviour {
     public Text txtVictory;
     public Text txtGameOver;
     float gameOverTimer;
-    bool gameOver;
+    public bool gameOver;
 
     bool gotCool;
 
@@ -139,6 +140,7 @@ public class mainHandler : MonoBehaviour {
         currentSpawn = 0;
         levelTimer = 0;
         enemiesDead = 0;
+        victoryTimer = 0;
 
         levelTrainingSpawn = new EnemySpawn[] { };
 
@@ -209,7 +211,7 @@ public class mainHandler : MonoBehaviour {
 
         endWaitTimer = new float[] { 6.3f, 5f, 7.4f, 0, 0, 0, 0, 5, 5, 5 };
 
-        if (level == 0) currentLevelSpawn = levelTrainingSpawn;
+        if (level <= 0) currentLevelSpawn = levelTrainingSpawn;
         if (level == 1) currentLevelSpawn = level1Spawn;
         if (level == 2) currentLevelSpawn = level2Spawn;
         if (level == 3) currentLevelSpawn = level3Spawn;
@@ -226,6 +228,8 @@ public class mainHandler : MonoBehaviour {
         if (level == 3) soundAmbSea.start();
 
         staticLevel = level;
+
+        AnalyticsEvent.LevelStart("Level_" + level, level);
     }
 
     public FMOD.RESULT StudioEventCallback(FMOD.Studio.EVENT_CALLBACK_TYPE type, FMOD.Studio.EventInstance eventInstance, System.IntPtr parameters)
@@ -272,7 +276,11 @@ public class mainHandler : MonoBehaviour {
     {
         if (player.GetComponent<playerHandler>().dead)
         {
-            if (gameOverTimer == 0) soundMusic.setParameterValue("Die", 1);
+            if (gameOverTimer == 0)
+            {
+                soundMusic.setParameterValue("Die", 1);
+                if (level != 100) AnalyticsEvent.LevelFail("Level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
+            }
             gameOverTimer += Time.deltaTime;
         }
 
@@ -290,6 +298,9 @@ public class mainHandler : MonoBehaviour {
         {
             if (level == 100)
             {
+                // send analytics
+                AnalyticsEvent.LevelComplete("level_100", 100, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_survived", Mathf.Round(levelTimer) } });
+
                 if (Mathf.Round(levelTimer) > endlessRecord)
                 {
                     endlessRecord = (int)Mathf.Round(levelTimer);
@@ -396,6 +407,7 @@ public class mainHandler : MonoBehaviour {
 
     public void QuitLevel()
     {
+        if (victoryTimer == 0) AnalyticsEvent.LevelQuit("level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
         enemiesDead = 0;
         if (level == 2) soundAmbCafe.setParameterValue("End", 1);
         if (level == 3) soundAmbSea.setParameterValue("End", 1);
@@ -450,6 +462,10 @@ public class mainHandler : MonoBehaviour {
                     }
                     if (clearedLevel2 && clearedLevel3) unlockedLevelsB = true;
                     SaveSystem.SavePlayer(this);
+
+                    // send analytics
+                    AnalyticsEvent.LevelComplete("Level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } } );
+
                     print("save, clear: " + clearedLevel1 + ", " + clearedLevel2 + ", " + clearedLevel3 + ", unlocked: " + unlockedLevelsA + ", " + unlockedLevelsB + ", record: " + endlessRecord + ", streak records: " + streakLevel1Record + " " + streakLevel2Record + " " + streakLevel3Record);
                     QuitLevel();
                 }
@@ -527,7 +543,9 @@ public class mainHandler : MonoBehaviour {
     public void RestartLevel()
     {
         soundUIClick.start();
-        
+
+        AnalyticsEvent.LevelStart("Level_" + level, level);
+
         currentSpawn = 0;
         levelTimer = 0;
         if (level == 3) levelTimer = 6.9f;
