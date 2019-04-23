@@ -22,6 +22,7 @@ public class mainHandler : MonoBehaviour {
     
     public GameObject enemyA;
     public GameObject enemyB;
+    public GameObject enemyBird;
 
     List<GameObject> enemies;
 
@@ -254,6 +255,10 @@ public class mainHandler : MonoBehaviour {
                 currentBpm = bpm;
                 offBeatTime = 60 / ((float)bpm * 2);
                 preBeatTime = 60 / (float)bpm - leniency;
+            }
+            if (name == "Bird")
+            {
+                player.GetComponent<playerHandler>().birds.Add(Instantiate(enemyBird, new Vector3(0f, 0f), Quaternion.identity));
             }
         }
         if (type == FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT)

@@ -23,6 +23,8 @@ public class playerHandler : MonoBehaviour
 
     public GameObject damageNumber;
 
+    public List<GameObject> birds;
+
     int comboState;
     int currentBeat;
     int lastAttackBeat;
@@ -60,6 +62,7 @@ public class playerHandler : MonoBehaviour
     bool beatPassed;
     bool lastAttackHit;
     int lastHitBeat;
+    bool birdHitReady;
 
     bool dodgeSucces;
     bool dodgeFail;
@@ -133,6 +136,7 @@ public class playerHandler : MonoBehaviour
         beatIndicator = GameObject.Find("BeatIndicator");
 
         allCombos = new List<Attack[]>();
+        birds = new List<GameObject>();
 
         // populate available combos
         allCombos.Add(new Attack[] { new Attack2A(hitboxAttack2A), new Attack2B(hitboxAttack2B), new Attack2C(hitboxAttack2C) });
@@ -227,6 +231,27 @@ public class playerHandler : MonoBehaviour
             textStreak.enabled = false;
         }
 
+        // update birds
+        print(birds.Count);
+        /*
+        for (int i = 0; i < birds.Count; i++)
+        {
+            print("bird check");
+            if (birds[i].GetComponent<enemyBirdHandler>().dead)
+            {
+                print("bird dead");
+                Destroy(birds[i]);
+                birds.RemoveAt(i);
+            }
+            print("bird post check");
+            i--;
+        }
+        */
+        birdHitReady = false;
+        for (int i = 0; i < birds.Count; i++)
+        {
+            if (birds[i].GetComponent<enemyBirdHandler>().readyToBeHit) birdHitReady = true;
+        }
 
         if (mainHandler.currentState == BEAT)
         {
@@ -270,6 +295,24 @@ public class playerHandler : MonoBehaviour
 
             switchBeat = false;
             beatState = FAIL;
+        }
+
+        
+        if (Input.GetButtonDown("Light Attack"))
+        {
+            if (birdHitReady)
+            {
+                soundAttackSuper.start();
+                birdHitReady = false;
+                for (int i = 0; i < birds.Count; i++)
+                {
+                    if (birds[i].GetComponent<enemyBirdHandler>().readyToBeHit)
+                    {
+                        birds[i].GetComponent<enemyBirdHandler>().setHit();
+                        break;
+                    }
+                }
+            }
         }
 
         if (!busy && mainHandler.songStarted)
@@ -505,7 +548,7 @@ public class playerHandler : MonoBehaviour
             }
 
             comboState++;
-
+            
             currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 0);
             currentCombos[0][comboState].soundAttackHit.start();
             currentCombos[0][comboState].hitbox.enabled = true;
