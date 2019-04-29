@@ -155,7 +155,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4323905063157606, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114204184379518000, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b,
         type: 3}
@@ -278,7 +278,7 @@ Transform:
   m_Children:
   - {fileID: 985819098}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!331 &479428072 stripped
 SpriteMask:
@@ -407,7 +407,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &602683329
 GameObject:
@@ -471,13 +471,17 @@ MonoBehaviour:
   leniency: 0.12
   enemyA: {fileID: 1386477621940742, guid: 79bd281be1189e84aba46e67b9aa7e68, type: 3}
   enemyB: {fileID: 1386477621940742, guid: c28fe41f88cbcca4b8341c862ce5d154, type: 3}
+  enemyBird: {fileID: 8370553139761448980, guid: cfee2d09f6fddee4dab3c0b33913eab2,
+    type: 3}
   player: {fileID: 330489805}
   txtVictory: {fileID: 0}
   txtGameOver: {fileID: 0}
   gameOver: 0
   btnRetry: {fileID: 0}
   btnGameOver: {fileID: 0}
+  maskProgressFill: {fileID: 0}
   level: -1
+  totalEnemies: 0
   SecondCounter: {fileID: 0}
   SecondDisplay: {fileID: 0}
   txtRecordDisplay: {fileID: 0}
@@ -492,6 +496,7 @@ MonoBehaviour:
   streakLevel2Record: 0
   streakLevel3Record: 0
   streakLevelEndlessRecord: 0
+  currency: 0
   musicPath: event:/SpaceBagle_loop
 --- !u!20 &602683335
 Camera:
@@ -707,7 +712,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &985819097
 GameObject:

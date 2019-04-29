@@ -7,7 +7,13 @@ public class enemyBirdHandler : MonoBehaviour
     public SpriteRenderer[] renderers;
 
     public Sprite spriteBirdA;
+    public Sprite spriteBirdA2;
+    public Sprite spriteBirdA3;
     public Sprite spriteBirdB;
+    public Sprite spriteBirdB2;
+    public Sprite spriteBirdB3;
+
+    public SpriteRenderer localRenderer;
 
     int[] spawns;
     float localBpm;
@@ -15,22 +21,47 @@ public class enemyBirdHandler : MonoBehaviour
     float timeUntilCrash;
     float timeToCharge;
     bool charging;
+    int type;
     public bool dead;
+    public bool readyToBeDestroyed;
     float lifeTimer;
 
     public bool readyToBeHit;
 
-    FMOD.Studio.EventInstance soundCharge;
+    FMOD.Studio.EventInstance soundWarning;
+    FMOD.Studio.EventInstance soundAttack;
+    FMOD.Studio.EventInstance soundPlayerHit;
 
-    public void init(int[] spawnIntervals)
+    public void init(int speedType)
     {
-        spawns = spawnIntervals;
+        localBpm = mainHandler.currentBpm;
+
+        bpmInSeconds = (float)60 / (float)localBpm;
+
+        type = speedType;
+        if (type == 1)
+        {
+            localRenderer.sprite = spriteBirdA3;
+            timeToCharge = bpmInSeconds * 1;
+        }
+        if (type == 2)
+        {
+            localRenderer.sprite = spriteBirdA;
+            timeToCharge = bpmInSeconds * 2;
+        }
+        if (type == 4)
+        {
+            localRenderer.sprite = spriteBirdA2;
+            timeToCharge = bpmInSeconds * 4;
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        soundCharge = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_short");
+        soundWarning = FMODUnity.RuntimeManager.CreateInstance("event:/Birds/Birds_warning");
+        soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Birds/Birds_attack");
+        soundPlayerHit = FMODUnity.RuntimeManager.CreateInstance("event:/Birds/Birds_player_attack");
 
         spawns = new int[1] { 1 };
 
@@ -46,13 +77,14 @@ public class enemyBirdHandler : MonoBehaviour
         bpmInSeconds = (float)60 / (float)localBpm;
 
         timeUntilCrash = bpmInSeconds * 4;
-        timeToCharge = bpmInSeconds * 2;
 
     }
 
     public void setHit()
     {
+        soundPlayerHit.start();
         readyToBeHit = false;
+        readyToBeDestroyed = true;
     }
 
     // Update is called once per frame
@@ -64,10 +96,21 @@ public class enemyBirdHandler : MonoBehaviour
         {
             if (lifeTimer >= timeUntilCrash && !charging)
             {
-                soundCharge.setParameterValue("Hit", 0);
-                soundCharge.start();
+                soundWarning.start();
                 charging = true;
-                renderers[0].sprite = spriteBirdB;
+                if (type == 1)
+                {
+                    renderers[0].sprite = spriteBirdB3;
+                }
+                if (type == 2)
+                {
+                    renderers[0].sprite = spriteBirdB;
+                }
+                if (type == 4)
+                {
+                    renderers[0].sprite = spriteBirdB2;
+                }
+                
             }
 
             if (charging && !readyToBeHit && lifeTimer >= (timeUntilCrash + timeToCharge) - mainHandler.currentLeniency)
@@ -77,10 +120,10 @@ public class enemyBirdHandler : MonoBehaviour
 
             if (charging && lifeTimer >= timeUntilCrash + timeToCharge)
             {
+                soundAttack.start();
                 dead = true;
                 transform.Translate(new Vector3(0, -3f));
-                soundCharge.setParameterValue("Hit", 1);
-                soundCharge.start();
+               
             }
 
             if (!charging) transform.Translate(new Vector3(-3f * Time.deltaTime, 0));
@@ -89,7 +132,11 @@ public class enemyBirdHandler : MonoBehaviour
 
         if (dead && readyToBeHit && lifeTimer >= timeUntilCrash + timeToCharge + mainHandler.currentLeniency)
         {
+            GameObject.Find("Player").GetComponent<playerHandler>().TakeDamage(1, 0, true);
             readyToBeHit = false;
+            readyToBeDestroyed = true;
+           
+
         }
 
 

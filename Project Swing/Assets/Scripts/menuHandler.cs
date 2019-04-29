@@ -93,11 +93,15 @@ public class menuHandler : MonoBehaviour {
             txtStreakLvlEndless.enabled = false;
         }
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetButtonDown("Cancel"))
+        {
+            Back();
+        }
+    }
 
     public void PlayLevel(int num)
     {
@@ -117,10 +121,11 @@ public class menuHandler : MonoBehaviour {
         if (num == 100) SceneManager.LoadScene("LevelEndless");
     }
 
-    public void QuitGame()
+    public void Back()
     {
+        soundMenuMusic.setParameterValue("End", 1);
         soundUIClick.start();
-        Application.Quit();
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     public void VisitDiscord()

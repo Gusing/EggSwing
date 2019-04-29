@@ -15,6 +15,7 @@ public class enemyHandler : MonoBehaviour
     protected float velX;
     protected int direction;
     protected readonly int RIGHT = -1, LEFT = 1;
+    protected float groundY;
     
     protected bool hitstun;
     protected bool knockback;
@@ -39,12 +40,19 @@ public class enemyHandler : MonoBehaviour
     protected float attackRecovery;
     protected float attackDistance;
     protected bool attackActive;
+    protected bool fallFromAbove;
+    protected bool inTheSky;
+
+    protected int currencyValue;
 
     protected bool busy;
+
+    protected bool playedFallSound;
 
     protected int attackState;
     protected bool timeToMoveOn;
     protected bool newBeat;
+    protected int lastAttackHitBy;
 
     // when enemy has multiple attacks
     protected int currentAttack;
@@ -56,6 +64,8 @@ public class enemyHandler : MonoBehaviour
 
     public ParticleSystem pYellowWarning;
     public ParticleSystem pRedWarning;
+    public GameObject currency;
+    public GameObject HPPickup;
 
     protected GameObject player;
 
@@ -65,6 +75,7 @@ public class enemyHandler : MonoBehaviour
 
     protected BoxCollider2D hitboxBody;
     public List<BoxCollider2D> hitboxAttacks;
+    public BoxCollider2D hitboxAttackFall;
 
     protected Animator animator;
 
@@ -74,10 +85,25 @@ public class enemyHandler : MonoBehaviour
 
     protected FMOD.Studio.EventInstance soundAttack;
     protected FMOD.Studio.EventInstance soundDeath;
+    protected FMOD.Studio.EventInstance soundFall;
+    protected FMOD.Studio.EventInstance soundImpact;
 
     public enemyHandler()
     {
         
+    }
+
+    public virtual void Init(bool fromAbove)
+    {
+        fallFromAbove = fromAbove;
+        inTheSky = fromAbove;
+        if (fallFromAbove)
+        {
+            busy = true;
+            attackState = 1;
+            timeToMoveOn = false;
+            newBeat = false;
+        }
     }
 
     public virtual void Start()
@@ -86,6 +112,7 @@ public class enemyHandler : MonoBehaviour
         {
             hitboxAttacks[i].enabled = false;
         }
+        hitboxAttackFall.enabled = false;
 
         animator = GetComponent<Animator>();
 
@@ -110,8 +137,8 @@ public class enemyHandler : MonoBehaviour
         rendererHPFill.transform.localScale = new Vector3(((float)currentHP / (float)maxHP) * 1, 1);
 
         // update invincibility
-        if (invincible) GetComponent<BoxCollider2D>().enabled = false;
-        else GetComponent<BoxCollider2D>().enabled = true;
+        //if (invincible) GetComponent<BoxCollider2D>().enabled = false;
+        //else GetComponent<BoxCollider2D>().enabled = true;
 
         // turn around
         if (!attacking && !hitstun && attackRecovery <= 1 && !player.GetComponent<playerHandler>().dead)
@@ -145,12 +172,13 @@ public class enemyHandler : MonoBehaviour
         animator.SetBool("offBeat", mainHandler.offBeat);
         animator.SetBool("dead", dead);
         animator.SetFloat("randomHitValue", randomHitValue);
+        animator.SetBool("falling", inTheSky);
     }
 
     public virtual void UpdateMovement()
     {
         // keep moving if not busy
-        if (attacking) accX = -0.001f * direction;
+        if (attacking || fallFromAbove) accX = -0.001f * direction;
         else if (!busy) accX = walkAcc * direction;
 
         // update velocity
@@ -174,14 +202,16 @@ public class enemyHandler : MonoBehaviour
         transform.Translate(new Vector3(velX * Time.deltaTime, 0));
     }
 
-    public virtual void TakeDamage(int dmg)
+    public virtual void TakeDamage(int dmg, int attackID, bool specialHitstun = false)
     {
+        lastAttackHitBy = attackID;
+
         randomHitValue = Random.Range(0f, 1f);
         currentHP -= dmg;
         if (currentHP <= 0) Die(dmg);
         else
         {
-            if (dmg >= hitstunLimit)
+            if (dmg >= hitstunLimit || specialHitstun)
             {
                 attackActive = false;
                 hitstun = true;
@@ -216,9 +246,37 @@ public class enemyHandler : MonoBehaviour
         }
     }
 
+    public virtual bool CheckHit(int attackID)
+    {
+        if (lastAttackHitBy == attackID)
+        {
+            return false;
+        }
+        else return true;
+    }
+
     public virtual void Die(int dmg)
     {
+        GameObject tempObject;
         mainHandler.EnemyDead();
+        int numCurrency = Random.Range(currencyValue, currencyValue + 4) + (player.GetComponent<playerHandler>().currentStreak / 10);
+        for (int i = 0; i < numCurrency; i++)
+        {
+            if (i <= numCurrency / 2)
+            {
+                tempObject = Instantiate(currency, transform.position + new Vector3(Random.Range(-0.2f, 0), 0), new Quaternion(0, 0, 0, 0));
+                tempObject.GetComponent<currencyHandler>().Init(false, 0);
+            }
+            else
+            {
+                tempObject = Instantiate(currency, transform.position + new Vector3(Random.Range(0, 0.2f), 0), new Quaternion(0, 0, 0, 0));
+                tempObject.GetComponent<currencyHandler>().Init(true, 0);
+            }
+        }
+        if (Random.Range((int)0, (int)9) == 0)
+        {
+            Instantiate(HPPickup, transform.position + new Vector3(Random.Range(-0.2f, 0.2f), 0), new Quaternion(0, 0, 0, 0));
+        }
         soundDeath.start();
         rendererHPBar.enabled = false;
         rendererHPFill.enabled = false;
@@ -293,6 +351,68 @@ public class enemyHandler : MonoBehaviour
         if (mainHandler.currentState == NOTBEAT) timeToMoveOn = true;
     }
 
+    protected virtual void FallFromAbove()
+    {
+        if (!playedFallSound)
+        {
+            playedFallSound = true;
+            soundFall.start();
+        }
+
+        velX = 0;
+        accX = 0;
+
+        if (mainHandler.currentState == NOTBEAT) timeToMoveOn = true;
+
+        if (timeToMoveOn && mainHandler.currentState == PREBEAT)
+        {
+            timeToMoveOn = false;
+            if (attackState == 1)
+            {
+                //soundFall.setParameterValue("Pre", 1);
+                soundAttack.setParameterValue("Pre", 1);
+                soundAttack.start();
+                Instantiate(pYellowWarning, transform.position + new Vector3(0, -10), new Quaternion(0, 0, 0, 0));
+                attackState = 2;
+            }
+            else if (attackState == 2)
+            {
+                //soundFall.setParameterValue("Pre", 2);
+                soundAttack.setParameterValue("Pre", 2);
+                soundAttack.start();
+                Instantiate(pRedWarning, transform.position + new Vector3(0, -10), new Quaternion(0, 0, 0, 0));
+                attackState = 3;
+            }
+            else if (attackState == 3)
+            {
+                attackActive = true;
+                //soundFall.setParameterValue("Pre", 3);
+                soundFall.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                soundImpact.start();
+                //soundAttack.setParameterValue("Pre", 4);
+                //soundAttack.start();
+                attackHitboxTimer = 0;
+                attackHitboxActive = true;
+                inTheSky = false;
+                UpdateAnimations();
+                hitboxAttackFall.enabled = true;
+                transform.position = new Vector3(transform.position.x, groundY, Random.Range(0f, 0.1f));
+                attackState = 4;
+            }
+            else if (attackState == 4)
+            {
+                soundFall.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                attackActive = false;
+                attacking = false;
+                hitboxAttackFall.enabled = false;
+                busy = false;
+                fallFromAbove = false;
+                attackState = 0;
+                attackRecovery = Random.Range(2, 3);
+            }
+        }
+    }
+
     protected virtual void UpdateAttackHitbox()
     {
         attackHitboxTimer += Time.deltaTime;
@@ -305,6 +425,7 @@ public class enemyHandler : MonoBehaviour
             {
                 hitboxAttacks[i].enabled = false;
             }
+            hitboxAttackFall.enabled = false;
         }
     }
 

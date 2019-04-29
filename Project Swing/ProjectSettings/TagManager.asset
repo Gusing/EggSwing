@@ -8,6 +8,8 @@ TagManager:
   - enemy
   - enemyB
   - enemyDummy
+  - currency
+  - HPPickup
   layers:
   - Default
   - TransparentFX

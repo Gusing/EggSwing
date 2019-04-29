@@ -124,7 +124,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.7, y: 0.67}
+  m_Size: {x: 1, y: 0.67}
   m_EdgeRadius: 0
 --- !u!1 &1052327495831036
 GameObject:
@@ -181,7 +181,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.52, y: 0.78}
+  m_Size: {x: 1.06, y: 0.78}
   m_EdgeRadius: 0
 --- !u!1 &1087621541019354
 GameObject:
@@ -339,6 +339,8 @@ Transform:
   - {fileID: 4158233858731332}
   - {fileID: 4667480647374723808}
   - {fileID: 1022021449}
+  - {fileID: 10079803161669158}
+  - {fileID: 6523323541077638924}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -437,14 +439,22 @@ MonoBehaviour:
     type: 3}
   pBlock: {fileID: 198766640297364512, guid: 77b7be9f65e21e742994f6e9c73730c1, type: 3}
   pCounter: {fileID: 198933463995965036, guid: 178076d87dc6626468c40ee0008c5f4f, type: 3}
+  pBirdHit: {fileID: 198933463995965036, guid: 62eb24eb070584941afac600dd794e98, type: 3}
+  pCurrencyPick: {fileID: 198933463995965036, guid: a8cba08a04fafa248a535f26ad5953cc,
+    type: 3}
+  pHPPickupPick: {fileID: 198933463995965036, guid: a29b5e37ba17032488e6c7fe0b5c2676,
+    type: 3}
   effectHitBlue: {fileID: 1811336824147919723, guid: 8b2ab7fc34013944ebb0191fb8d5f9fd,
     type: 3}
   effectHitRed: {fileID: 1811336824147919723, guid: 99184936697973a4fbeedf39474b3513,
     type: 3}
   effectHitSuper: {fileID: 1811336824147919723, guid: 8b2bfff9ca467534cbb29f6e1d189558,
     type: 3}
-  damageNumber: {fileID: 1188790007723088, guid: be7b358b633dad04b97c1664f125b762,
+  damageNumberEnemy: {fileID: 1188790007723088, guid: be7b358b633dad04b97c1664f125b762,
     type: 3}
+  damageNumberPlayer: {fileID: 1188790007723088, guid: c7a6b36ed9e1d6747909971dea30d693,
+    type: 3}
+  birds: []
   hitboxAttack1A: {fileID: 61741449176305972}
   hitboxAttack1B: {fileID: 61559435943942068}
   hitboxAttack1C: {fileID: 61935381213087658}
@@ -454,8 +464,11 @@ MonoBehaviour:
   hitboxAttack2D: {fileID: 61058314780536884}
   hitboxAttack3A: {fileID: 61580625990617342}
   hitboxAttack4A: {fileID: 5831932050899131963}
+  hitboxAttackBird: {fileID: 7024313204007356432}
+  hitboxPickup: {fileID: 2233312929610599042}
   currentStreak: 0
   streakLevel: 0
+  currentCurrency: 0
   rendererHPFill: {fileID: 0}
   maskHPFill: {fileID: 0}
   renderersSpecialCharges:
@@ -463,6 +476,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   textStreak: {fileID: 0}
+  textCurrency: {fileID: 0}
   dead: 0
   direction: 0
   txtComboState: {fileID: 0}
@@ -562,7 +576,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.47, y: 0.68}
+  m_Size: {x: 1.1, y: 0.68}
   m_EdgeRadius: 0
 --- !u!1 &1746771681752726
 GameObject:
@@ -619,7 +633,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.6, y: 0.77}
+  m_Size: {x: 0.84, y: 0.77}
   m_EdgeRadius: 0
 --- !u!1 &1969874269086964
 GameObject:
@@ -735,6 +749,63 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.64, y: 1.37}
   m_EdgeRadius: 0
+--- !u!1 &3370090201178512918
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6523323541077638924}
+  - component: {fileID: 2233312929610599042}
+  m_Layer: 0
+  m_Name: PickupHitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6523323541077638924
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3370090201178512918}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4323905063157606}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &2233312929610599042
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3370090201178512918}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.12}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.37, y: 1.8}
+  m_EdgeRadius: 0
 --- !u!1 &3974198168455559833
 GameObject:
   m_ObjectHideFlags: 0
@@ -791,4 +862,61 @@ BoxCollider2D:
   m_AutoTiling: 0
   serializedVersion: 2
   m_Size: {x: 1.5, y: 1.5}
+  m_EdgeRadius: 0
+--- !u!1 &8769299738461975400
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 10079803161669158}
+  - component: {fileID: 7024313204007356432}
+  m_Layer: 0
+  m_Name: AttackHitBoxBird
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &10079803161669158
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8769299738461975400}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4323905063157606}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &7024313204007356432
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8769299738461975400}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.21}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 3.5, y: 1.5}
   m_EdgeRadius: 0

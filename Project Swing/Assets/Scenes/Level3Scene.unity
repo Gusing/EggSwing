@@ -266,6 +266,11 @@ PrefabInstance:
       propertyPath: textStreak
       value: 
       objectReference: {fileID: 719814398}
+    - target: {fileID: 114204184379518000, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b,
+        type: 3}
+      propertyPath: textCurrency
+      value: 
+      objectReference: {fileID: 667511302}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b, type: 3}
 --- !u!1 &369400237 stripped
@@ -401,6 +406,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 303937643396106906, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1503807543}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 024694b4cb46c694581f8476382507b3, type: 3}
 --- !u!114 &667511298 stripped
@@ -451,6 +461,24 @@ MonoBehaviour:
   m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &667511302 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7896835723065743882, guid: 024694b4cb46c694581f8476382507b3,
+    type: 3}
+  m_PrefabInstance: {fileID: 667511297}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!331 &667511303 stripped
+SpriteMask:
+  m_CorrespondingSourceObject: {fileID: 1921131581602709135, guid: 024694b4cb46c694581f8476382507b3,
+    type: 3}
+  m_PrefabInstance: {fileID: 667511297}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &719814397
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -629,12 +657,6 @@ SpriteMask:
 --- !u!212 &719814403 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 2141540807531368916, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
-    type: 3}
-  m_PrefabInstance: {fileID: 719814397}
-  m_PrefabAsset: {fileID: 0}
---- !u!212 &719814404 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 2141540808862620257, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
     type: 3}
   m_PrefabInstance: {fileID: 719814397}
   m_PrefabAsset: {fileID: 0}
@@ -1100,21 +1122,19 @@ MonoBehaviour:
   bpm: 148
   offset: 0
   leniency: 0.1
-  rendererIndicator: {fileID: 719814404}
-  spriteIndicatorEmpty: {fileID: 21300000, guid: bb292e521e4e9df418666b454eae99c4,
-    type: 3}
-  spriteIndicatorOrange: {fileID: 21300000, guid: 9bc983df456555e4996fce84cf162146,
-    type: 3}
-  spriteIndicatorGreen: {fileID: 21300000, guid: 052be21d25bd67143bbe76e24d34c968,
-    type: 3}
   enemyA: {fileID: 1386477621940742, guid: 79bd281be1189e84aba46e67b9aa7e68, type: 3}
   enemyB: {fileID: 1386477621940742, guid: c28fe41f88cbcca4b8341c862ce5d154, type: 3}
+  enemyBird: {fileID: 8370553139761448980, guid: cfee2d09f6fddee4dab3c0b33913eab2,
+    type: 3}
   player: {fileID: 369400237}
   txtVictory: {fileID: 667511301}
   txtGameOver: {fileID: 667511300}
+  gameOver: 0
   btnRetry: {fileID: 667511299}
   btnGameOver: {fileID: 667511298}
-  level: 3
+  maskProgressFill: {fileID: 667511303}
+  level: 0
+  totalEnemies: 0
   SecondCounter: {fileID: 0}
   SecondDisplay: {fileID: 0}
   txtRecordDisplay: {fileID: 0}
@@ -1129,7 +1149,8 @@ MonoBehaviour:
   streakLevel2Record: 0
   streakLevel3Record: 0
   streakLevelEndlessRecord: 0
-  musicPath: event:/PirateBoy
+  currency: 0
+  musicPath: event:/PirateBoy (2)
 --- !u!20 &1503807543
 Camera:
   m_ObjectHideFlags: 0

@@ -288,4 +288,12 @@ MonoBehaviour:
   - {fileID: 5758268652245634406}
   - {fileID: 702076605632384508}
   spriteBirdA: {fileID: 21300000, guid: bebce495b1f31f84e8cc03cd40c0f7ac, type: 3}
+  spriteBirdA2: {fileID: 21300000, guid: d8a42eac3663cf14796c2e2ee14d959e, type: 3}
+  spriteBirdA3: {fileID: 21300000, guid: d3e15c4a5fcc0fb428ca3c0bbcaddeb0, type: 3}
   spriteBirdB: {fileID: 21300000, guid: d2318363a907fc842b17696789ff74dd, type: 3}
+  spriteBirdB2: {fileID: 21300000, guid: fca78e7ca32b1e64d8f68d8c661930a4, type: 3}
+  spriteBirdB3: {fileID: 21300000, guid: e8e9138dbf25ead49b810afd8993ae2b, type: 3}
+  localRenderer: {fileID: 4556594473579365534}
+  dead: 0
+  readyToBeDestroyed: 0
+  readyToBeHit: 0

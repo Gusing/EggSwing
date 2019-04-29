@@ -18,9 +18,7 @@ public class enemyAHandler : enemyHandler {
     public override void Start()
     {
         base.Start();
-
-        transform.position = new Vector3(transform.position.x, -2.12f, Random.Range(0f, 0.1f));
-
+        
         maxHP = 10;
         currentHP = maxHP;
         
@@ -31,12 +29,27 @@ public class enemyAHandler : enemyHandler {
         knockbackLimit = 3;
         bigKnockbackLimit = 8;
 
+        currencyValue = 3;
+
         stopDistance = 1.4f;
 
         damage.Add(3);
 
         soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_attack");
         soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_death");
+        soundFall = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_warning");
+        soundImpact = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_impact");
+    }
+
+    public override void Init(bool fromAbove)
+    {
+        base.Init(fromAbove);
+
+        groundY = -2.12f;
+
+        if (fallFromAbove) transform.position = new Vector3(transform.position.x, 8, Random.Range(0f, 0.1f));
+        else transform.position = new Vector3(transform.position.x, groundY, Random.Range(0f, 0.1f));
+
     }
 	
 	public override void Update()
@@ -49,10 +62,11 @@ public class enemyAHandler : enemyHandler {
 
         if (invincible) Invincible();
         if (attacking) AttackA();
+        if (fallFromAbove) FallFromAbove();
         if (attackHitboxActive) UpdateAttackHitbox();
         
         // check for attack
-        if (Vector2.Distance(transform.position, player.transform.position) < 1.8f && !attacking && !hitstun && attackRecovery <= 0 && !player.GetComponent<playerHandler>().dead)
+        if (Vector2.Distance(transform.position, player.transform.position) < 1.8f && !attacking && !fallFromAbove && !hitstun && attackRecovery <= 0 && !player.GetComponent<playerHandler>().dead)
         {
             localSpriteRenderer.sprite = spriteIdle;
             UpdateHitboxes();

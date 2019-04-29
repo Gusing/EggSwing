@@ -22,8 +22,6 @@ public class enemyBHandler : enemyHandler
     {
         base.Start();
 
-        transform.position = new Vector3(transform.position.x, -1.71f, Random.Range(0f, 0.1f));
-
         maxHP = 23;
         currentHP = maxHP;
 
@@ -34,6 +32,8 @@ public class enemyBHandler : enemyHandler
         knockbackLimit = 5;
         bigKnockbackLimit = 8;
 
+        currencyValue = 6;
+
         stopDistance = 1.8f;
 
         damage.Add(4);
@@ -41,8 +41,21 @@ public class enemyBHandler : enemyHandler
         
         soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_attack");
         soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_death");
+        soundFall = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_warning");
+        soundImpact = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_impact");
     }
-    
+
+    public override void Init(bool fromAbove)
+    {
+        base.Init(fromAbove);
+
+        groundY = -1.71f;
+
+        if (fallFromAbove) transform.position = new Vector3(transform.position.x, 8, Random.Range(0f, 0.1f));
+        else transform.position = new Vector3(transform.position.x, groundY, Random.Range(0f, 0.1f));
+
+    }
+
     public override void Update()
     {
         base.UpdateAnimations();
@@ -57,10 +70,11 @@ public class enemyBHandler : enemyHandler
             if (currentAttack == 0) AttackA();
             if (currentAttack == 1) AttackB();
         }
+        if (fallFromAbove) FallFromAbove();
         if (attackHitboxActive) UpdateAttackHitbox();
         
         // check for attack
-        if (Vector2.Distance(transform.position, player.transform.position) < 2.5f && !attacking && !hitstun && attackRecovery <= 0 && !player.GetComponent<playerHandler>().dead)
+        if (Vector2.Distance(transform.position, player.transform.position) < 2.5f && !attacking && !hitstun && !fallFromAbove && attackRecovery <= 0 && !player.GetComponent<playerHandler>().dead)
         {
             localSpriteRenderer.sprite = spriteIdle;
             UpdateHitboxes();
@@ -143,6 +157,7 @@ public class enemyBHandler : enemyHandler
                 soundAttack.start();
                 attackHitboxTimer = 0;
                 attackHitboxActive = true;
+                print("hitboxes: " + hitboxAttacks.Count);
                 hitboxAttacks[0].enabled = true;
                 attackState = 6;
                 localSpriteRenderer.sprite = spriteAttackAActive;

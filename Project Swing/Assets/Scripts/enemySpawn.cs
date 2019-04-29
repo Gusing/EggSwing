@@ -9,12 +9,14 @@ public class EnemySpawn
     public bool waitForDeath;
     public GameObject[] enemies;
     public float[] xPos;
+    public bool[] fallFromAbove;
 
-    public EnemySpawn(float pSpawnTime, GameObject[] pEnemies, float[] pXPos, int pNextWaveReq = -1)
+    public EnemySpawn(float pSpawnTime, GameObject[] pEnemies, float[] pXPos, bool[] pFallFromAbove, int pNextWaveReq = -1)
     {
         spawnTime = pSpawnTime;
         enemies = pEnemies;
         xPos = pXPos;
+        fallFromAbove = pFallFromAbove;
         if (pNextWaveReq == -1) waitForDeath = false;
         else waitForDeath = true;
         nextWaveReq = pNextWaveReq;

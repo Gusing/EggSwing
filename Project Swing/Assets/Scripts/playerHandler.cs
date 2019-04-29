@@ -16,12 +16,16 @@ public class playerHandler : MonoBehaviour
     public ParticleSystem pSpecialAttack;
     public ParticleSystem pBlock;
     public ParticleSystem pCounter;
+    public ParticleSystem pBirdHit;
+    public ParticleSystem pCurrencyPick;
+    public ParticleSystem pHPPickupPick;
 
     public GameObject effectHitBlue;
     public GameObject effectHitRed;
     public GameObject effectHitSuper;
 
-    public GameObject damageNumber;
+    public GameObject damageNumberEnemy;
+    public GameObject damageNumberPlayer;
 
     public List<GameObject> birds;
 
@@ -44,6 +48,10 @@ public class playerHandler : MonoBehaviour
 
     public BoxCollider2D hitboxAttack4A;
 
+    public BoxCollider2D hitboxAttackBird;
+
+    public BoxCollider2D hitboxPickup;
+
     BoxCollider2D hitboxBody;
     SpriteRenderer localRenderer;
 
@@ -63,6 +71,12 @@ public class playerHandler : MonoBehaviour
     bool lastAttackHit;
     int lastHitBeat;
     bool birdHitReady;
+    bool birdHitting;
+    float birdPunchSuccessTime = 0.2f;
+    bool birdHitstun;
+
+    int attackID;
+    int attackIDStart;
 
     bool dodgeSucces;
     bool dodgeFail;
@@ -72,7 +86,7 @@ public class playerHandler : MonoBehaviour
     bool blocking;
     float blockTime;
     int blockBeat;
-    bool successfullBlock;
+    bool successfulBlock;
    
     bool counterReady;
     float counterTime = 0.4f;
@@ -88,11 +102,14 @@ public class playerHandler : MonoBehaviour
     float streakDisappearDelay;
     float streakTimer;
     public int streakLevel;
+    public int currentCurrency;
+    int startingCurrency;
 
     public SpriteRenderer rendererHPFill;
     public SpriteMask maskHPFill;
     public SpriteRenderer[] renderersSpecialCharges;
     public Text textStreak;
+    public Text textCurrency;
 
     public bool dead;
     
@@ -120,6 +137,8 @@ public class playerHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundDie;
     FMOD.Studio.EventInstance soundFail;
 
+    FMOD.Studio.EventInstance soundPickupCurrency;
+
     // debug
     public Text txtComboState;
     public Text txtNumberCombos;
@@ -131,6 +150,7 @@ public class playerHandler : MonoBehaviour
         soundDodge = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Dodge");
         soundDie = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Die");
         soundFail = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Miss_Brad");
+        soundPickupCurrency = FMODUnity.RuntimeManager.CreateInstance("event:/Object/Pickup_gold_random");
 
         mainCamera = GameObject.Find("Main Camera");
         beatIndicator = GameObject.Find("BeatIndicator");
@@ -146,7 +166,7 @@ public class playerHandler : MonoBehaviour
         currentCombos = new List<Attack[]>();
         RestockCombos();
 
-        maxHP = 10;
+        maxHP = 15;
         currentHP = maxHP;
         maxSpecialCharges = 3;
         specialCharges = maxSpecialCharges;
@@ -162,11 +182,18 @@ public class playerHandler : MonoBehaviour
         {
             x.enabled = false;
         }
+        hitboxPickup.enabled = true;
 
         hitboxBody = GetComponent<BoxCollider2D>();
         hitboxBody.enabled = true;
     }
     
+    public void Init(int numCurrency)
+    {
+        currentCurrency = numCurrency;
+        startingCurrency = currentCurrency;
+    }
+
     void Update()
     {
         //txtComboState.text = "Current combo state: " + comboState;
@@ -190,6 +217,8 @@ public class playerHandler : MonoBehaviour
             textStreak.transform.localScale = new Vector3((0.5f + streakLevel * 0.15f) - (streakTimer / streakDisappearDelay) * 0.5f, (0.5f + streakLevel * 0.15f) - (streakTimer / streakDisappearDelay) * 0.5f, 1);
         }
 
+        if (mainHandler.staticLevel > 0) textCurrency.text = "Munny: " + currentCurrency;
+
         // return if dead
         if (dead)
         {
@@ -208,6 +237,7 @@ public class playerHandler : MonoBehaviour
         if (dodgeFail) FailedDodge();
         if (blocking) SuccessfulBlock();
         if (countering) SuccessfulCounterPunch();
+        if (birdHitting) SuccessfulBirdPunch();
 
         if (hitstun) Hitstun();
         
@@ -232,27 +262,19 @@ public class playerHandler : MonoBehaviour
         }
 
         // update birds
-        print(birds.Count);
-        /*
-        for (int i = 0; i < birds.Count; i++)
-        {
-            print("bird check");
-            if (birds[i].GetComponent<enemyBirdHandler>().dead)
-            {
-                print("bird dead");
-                Destroy(birds[i]);
-                birds.RemoveAt(i);
-            }
-            print("bird post check");
-            i--;
-        }
-        */
         birdHitReady = false;
         for (int i = 0; i < birds.Count; i++)
         {
-            if (birds[i].GetComponent<enemyBirdHandler>().readyToBeHit) birdHitReady = true;
+            if (birds[i].GetComponent<enemyBirdHandler>().readyToBeDestroyed)
+            {
+                Destroy(birds[i]);
+                birds.RemoveAt(i);
+                i--;
+            }
+            else if (birds[i].GetComponent<enemyBirdHandler>().readyToBeHit) birdHitReady = true;
         }
 
+        // update beat and combo state
         if (mainHandler.currentState == BEAT)
         {
             beatState = BEAT;
@@ -267,10 +289,10 @@ public class playerHandler : MonoBehaviour
                 currentBeat++;
             }
 
-            if (successfullBlock)
+            if (successfulBlock)
             {
                 blockBeat = currentBeat;
-                successfullBlock = false;
+                successfulBlock = false;
             }
 
             if ((currentBeat > lastAttackBeat + 1 && !lastAttackSlow) || 
@@ -281,8 +303,6 @@ public class playerHandler : MonoBehaviour
             {
                 RestockCombos();
             }
-
-             //lastAttackHit = false;
 
         }
         else
@@ -297,21 +317,14 @@ public class playerHandler : MonoBehaviour
             beatState = FAIL;
         }
 
-        
-        if (Input.GetButtonDown("Light Attack"))
+        // check if hit bird
+        if (birdHitReady)
         {
-            if (birdHitReady)
+            if (Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Heavy Attack"))
             {
-                soundAttackSuper.start();
-                birdHitReady = false;
-                for (int i = 0; i < birds.Count; i++)
-                {
-                    if (birds[i].GetComponent<enemyBirdHandler>().readyToBeHit)
-                    {
-                        birds[i].GetComponent<enemyBirdHandler>().setHit();
-                        break;
-                    }
-                }
+                attackID++;
+                attackIDStart = attackID;
+                BirdPunch();
             }
         }
 
@@ -319,16 +332,22 @@ public class playerHandler : MonoBehaviour
         {
             if (Input.GetButtonDown("Heavy Attack"))
             {
+                attackID++;
+                attackIDStart = attackID;
                 Punch();
                 beatIndicator.GetComponent<beatIndicatorHandler>().PlayerInput();
             }
             if (Input.GetButtonDown("Light Attack"))
             {
+                attackID++;
+                attackIDStart = attackID;
                 QuickPunch();
                 beatIndicator.GetComponent<beatIndicatorHandler>().PlayerInput();
             }
             if (Input.GetButtonDown("Super"))
             {
+                attackID++;
+                attackIDStart = attackID;
                 SpecialPunch();
                 beatIndicator.GetComponent<beatIndicatorHandler>().PlayerInput();
             }
@@ -657,6 +676,13 @@ public class playerHandler : MonoBehaviour
     {
         actionTimer += Time.deltaTime;
 
+        print((actionTimer >= counterTime / 3) + " " + (attackID == attackIDStart));
+
+        if (actionTimer >= counterTime / 3 && attackID == attackIDStart)
+        {
+            attackID++;
+        }
+
         if (actionTimer >= counterTime)
         {
             hitboxAttack4A.enabled = false;
@@ -667,6 +693,56 @@ public class playerHandler : MonoBehaviour
             beatPassed = false;
             punchingActive = false;
 
+        }
+    }
+
+    void BirdPunch()
+    {
+        accX = 0;
+        velX = 0;
+        hitboxAttackBird.enabled = false;
+        birdHitReady = false;
+        for (int i = 0; i < birds.Count; i++)
+        {
+            if (birds[i].GetComponent<enemyBirdHandler>().readyToBeHit)
+            {
+                birds[i].GetComponent<enemyBirdHandler>().setHit();
+                break;
+            }
+        }
+        birdHitting = true;
+
+        hitboxBody.enabled = true;
+        hitboxAttackBird.enabled = true;
+        Instantiate(pBirdHit, transform);
+
+        actionTimer = 0;
+        punchingSuccess = false;
+        punchingFail = false;
+        usingSuper = false;
+        dodgeFail = false;
+        busy = true;
+        beatPassed = false;
+        punchingActive = false;
+        DisableHurtboxes();
+        RestockCombos();
+        SuccessfulBirdPunch();
+    }
+
+    void SuccessfulBirdPunch()
+    {
+        actionTimer += Time.deltaTime;
+
+        if (actionTimer >= birdPunchSuccessTime)
+        {
+            hitboxAttackBird.enabled = false;
+            RestockCombos();
+            birdHitting = false;
+            actionTimer = 0;
+            punchingSuccess = false;
+            busy = false;
+            beatPassed = false;
+            punchingActive = false;
         }
     }
 
@@ -747,6 +823,8 @@ public class playerHandler : MonoBehaviour
                 currentCombos[i][j].hitbox.enabled = false;
             }
         }
+        hitboxAttack3A.enabled = false;
+        hitboxAttack4A.enabled = false;
     }
 
     void Dodge()
@@ -803,11 +881,13 @@ public class playerHandler : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int dmg, int hitDirection)
+    public void TakeDamage(int dmg, int hitDirection, bool alwaysHit = false)
     {
+        if (hitstun && !alwaysHit) return;
+        
         if (blocking)
         {
-            successfullBlock = true;
+            successfulBlock = true;
             
             Instantiate(pBlock, transform.position, new Quaternion(0, 0, 0, 0));
             //blockBeat = currentBeat;
@@ -823,6 +903,9 @@ public class playerHandler : MonoBehaviour
             hitstunDirection = hitDirection;
 
             currentHP -= dmg;
+
+            GameObject tDmgNumber = Instantiate(damageNumberPlayer, transform.position + new Vector3(0, 0.7f), new Quaternion(0, 0, 0, 0));
+            tDmgNumber.GetComponent<dmgNumberHandler>().Init(dmg);
 
             hitboxBody.enabled = false;
 
@@ -869,11 +952,13 @@ public class playerHandler : MonoBehaviour
         hitstun = false;
         RestockCombos();
         comboState = 0;
+        currentCurrency = startingCurrency;
         hitboxBody.enabled = true;
         streakTimer = 0;
         streakLevel = 0;
         currentStreak = 0;
         textStreak.enabled = false;
+        transform.position = new Vector3(0, transform.position.y, transform.position.z);
     }
 
     public void SetBeatState(int state)
@@ -883,93 +968,130 @@ public class playerHandler : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D col)
     {
-
     }
-
-    void OnTriggerEnter2D(Collider2D other)
+    
+    void OnTriggerStay2D(Collider2D other)
     {
-        int tDmg = 0;
-        Vector3 tBox = new Vector3();
-
-        if (comboState >= 0)
+        // pick up
+        if (other.tag == "currency" && hitboxPickup.IsTouching(other))
         {
-            if (currentCombos[0][comboState].hitbox.IsTouching(other))
+            soundPickupCurrency.start();
+            currentCurrency++;
+            Instantiate(pCurrencyPick, other.transform.position, new Quaternion(0, 0, 0, 0));
+            GameObject.Destroy(other.gameObject);
+        }
+
+        if (other.tag == "HPPickup" && hitboxPickup.IsTouching(other))
+        {
+            soundPickupCurrency.start();
+            currentHP += 5;
+            if (currentHP > maxHP) currentHP = maxHP;
+            Instantiate(pHPPickupPick, other.transform.position, new Quaternion(0, 0, 0, 0));
+            GameObject.Destroy(other.gameObject);
+        }
+
+        // hit enemy
+        if (other.tag.Contains("enemy"))
+        {
+            if (!other.GetComponent<enemyHandler>().CheckHit(attackID)) return;
+
+            birdHitstun = false;
+            int tDmg = 0;
+            Vector3 tBox = new Vector3();
+
+            if (comboState >= 0)
             {
-                currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 2);
-                if (other.tag == "enemyDummy") currentCombos[0][comboState].soundAttackHit.setParameterValue("Material", 1);
-                currentCombos[0][comboState].soundAttackHit.start();
-                tDmg = currentCombos[0][comboState].damage;
-                tBox = (Vector2)currentCombos[0][comboState].hitbox.transform.position + currentCombos[0][comboState].hitbox.offset;
-            }
-        }
-
-        if (hitboxAttack3A.IsTouching(other))
-        {
-            tDmg = 8;
-            tBox = (Vector2)hitboxAttack3A.transform.position + hitboxAttack3A.offset;
-        }
-
-        if (hitboxAttack4A.IsTouching(other))
-        {
-            tDmg = 4;
-            tBox = (Vector2)hitboxAttack4A.transform.position + hitboxAttack4A.offset;
-        }
-
-        if (tDmg > 0)
-        {
-            if (mainHandler.staticLevel > 0)
-            {
-                currentStreak++;
-                textStreak.enabled = true;
-                textStreak.transform.localEulerAngles = new Vector3(0, 0, Random.Range(-4f, 4f));
-                streakTimer = 0;
-
-                if (currentStreak >= 100 && streakLevel != 6)
+                if (currentCombos[0][comboState].hitbox.IsTouching(other))
                 {
-                    streakLevel = 6;
-                    textStreak.color = new Color(0.3f, 1f, 0.9f);
-                }
-                if (currentStreak >= 75 && currentStreak < 100 && streakLevel != 5)
-                {
-                    streakLevel = 5;
-                    textStreak.color = new Color(0.74f, 0.31f, 1f);
-                }
-                if (currentStreak >= 50 && currentStreak < 75 && streakLevel != 4)
-                {
-                    streakLevel = 4;
-                    textStreak.color = new Color(0.1f, 1f, 0.1f);
-                }
-                else if (currentStreak >= 30 && currentStreak < 50 && streakLevel != 3)
-                {
-                    streakLevel = 3;
-                    textStreak.color = new Color(0.93f, 0.26f, 0.37f);
-                }
-                else if (currentStreak >= 10 && currentStreak < 30 && streakLevel != 2)
-                {
-                    streakLevel = 2;
-                    textStreak.color = new Color(0.85f, 0.85f, 0.4f);
-                }
-                else if (currentStreak >= 0 && currentStreak < 10 && streakLevel != 1)
-                {
-                    streakLevel = 1;
-                    textStreak.color = new Color(0.4f, 0.49f, 0.41f);
+                    currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 2);
+                    if (other.tag == "enemyDummy") currentCombos[0][comboState].soundAttackHit.setParameterValue("Material", 1);
+                    currentCombos[0][comboState].soundAttackHit.start();
+                    tDmg = currentCombos[0][comboState].damage;
+                    tBox = (Vector2)currentCombos[0][comboState].hitbox.transform.position + currentCombos[0][comboState].hitbox.offset;
                 }
             }
 
-            lastAttackHit = true;
-            lastHitBeat = currentBeat;
-            if (other.tag == "enemy") other.GetComponent<enemyHandler>().TakeDamage(tDmg);
-
-            if (comboState == currentCombos[0].Length - 1)
+            if (hitboxAttack3A.IsTouching(other))
             {
-                mainCamera.GetComponent<ScreenShake>().TriggerShake(0.07f + 0.027f * tDmg, 0.2f + 0.08f * tDmg, 1.2f);
-                Instantiate(effectHitRed, tBox, new Quaternion(0, 0, 0, 0));
+                tDmg = 8;
+                tBox = (Vector2)hitboxAttack3A.transform.position + hitboxAttack3A.offset;
             }
-            else if (tDmg < 8) Instantiate(effectHitBlue, tBox, new Quaternion(0, 0, 0, 0));
 
-            //Instantiate(pAttackHit, tBox, new Quaternion(0, 0, 0, 0));
-            GameObject tDmgNumber = Instantiate(damageNumber, other.transform.position + new Vector3(0, 0.7f), new Quaternion(0, 0, 0, 0));
-            tDmgNumber.GetComponent<dmgNumberHandler>().Init(tDmg);
+            if (hitboxAttack4A.IsTouching(other))
+            {
+                tDmg = 4;
+                tBox = (Vector2)hitboxAttack4A.transform.position + hitboxAttack4A.offset;
+            }
+
+            if (hitboxAttackBird.IsTouching(other))
+            {
+                birdHitstun = true;
+                tDmg = 1;
+                tBox = (Vector2)hitboxAttackBird.transform.position + hitboxAttackBird.offset;
+            }
+
+            if (tDmg > 0)
+            {
+                if (other.tag == "enemy")
+                {
+                    other.GetComponent<enemyHandler>().TakeDamage(tDmg, attackID, birdHitstun);
+                }
+
+                // update streak
+                if (mainHandler.staticLevel > 0)
+                {
+                    currentStreak++;
+                    textStreak.enabled = true;
+                    textStreak.transform.localEulerAngles = new Vector3(0, 0, Random.Range(-4f, 4f));
+                    streakTimer = 0;
+
+                    if (currentStreak >= 100 && streakLevel != 6)
+                    {
+                        streakLevel = 6;
+                        textStreak.color = new Color(0.3f, 1f, 0.9f);
+                    }
+                    if (currentStreak >= 75 && currentStreak < 100 && streakLevel != 5)
+                    {
+                        streakLevel = 5;
+                        textStreak.color = new Color(0.74f, 0.31f, 1f);
+                    }
+                    if (currentStreak >= 50 && currentStreak < 75 && streakLevel != 4)
+                    {
+                        streakLevel = 4;
+                        textStreak.color = new Color(0.1f, 1f, 0.1f);
+                    }
+                    else if (currentStreak >= 30 && currentStreak < 50 && streakLevel != 3)
+                    {
+                        streakLevel = 3;
+                        textStreak.color = new Color(0.93f, 0.26f, 0.37f);
+                    }
+                    else if (currentStreak >= 10 && currentStreak < 30 && streakLevel != 2)
+                    {
+                        streakLevel = 2;
+                        textStreak.color = new Color(0.85f, 0.85f, 0.4f);
+                    }
+                    else if (currentStreak >= 0 && currentStreak < 10 && streakLevel != 1)
+                    {
+                        streakLevel = 1;
+                        textStreak.color = new Color(0.4f, 0.49f, 0.41f);
+                    }
+                }
+
+                lastAttackHit = true;
+                lastHitBeat = currentBeat;
+
+                if (comboState == currentCombos[0].Length - 1)
+                {
+                    mainCamera.GetComponent<ScreenShake>().TriggerShake(0.07f + 0.027f * tDmg, 0.2f + 0.08f * tDmg, 1.2f);
+                    Instantiate(effectHitRed, tBox, new Quaternion(0, 0, 0, 0));
+                }
+                else if (tDmg < 8 && !birdHitstun) Instantiate(effectHitBlue, tBox, new Quaternion(0, 0, 0, 0));
+
+                //Instantiate(pAttackHit, tBox, new Quaternion(0, 0, 0, 0));
+                GameObject tDmgNumber = Instantiate(damageNumberEnemy, other.transform.position + new Vector3(0, 0.7f), new Quaternion(0, 0, 0, 0));
+                tDmgNumber.GetComponent<dmgNumberHandler>().Init(tDmg);
+            }
         }
+
     }
 }

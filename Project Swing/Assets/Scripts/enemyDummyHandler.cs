@@ -39,30 +39,32 @@ public class enemyDummyHandler : enemyHandler
         base.UpdateMovement();
     }
 
-    public override void TakeDamage(int dmg)
+    public override void TakeDamage(int dmg, int attackID, bool specialHitstun = false)
     {
+        lastAttackHitBy = attackID;
+
         randomHitValue = Random.Range(0f, 1f);
-            if (dmg >= hitstunLimit)
+        if (dmg >= hitstunLimit)
+        {
+            hitstun = true;
+            busy = true;
+        }
+        else if (!attacking)
+        {
+            if (player.transform.position.x < transform.position.x)
             {
-                hitstun = true;
-                busy = true;
+                direction = LEFT;
+                localSpriteRenderer.flipX = false;
             }
-            else if (!attacking)
+            else
             {
-                if (player.transform.position.x < transform.position.x)
-                {
-                    direction = LEFT;
-                    localSpriteRenderer.flipX = false;
-                }
-                else
-                {
-                    direction = RIGHT;
-                    localSpriteRenderer.flipX = true;
-                }
+                direction = RIGHT;
+                localSpriteRenderer.flipX = true;
             }
-            if (player.transform.position.x < transform.position.x) hitstunDirection = LEFT;
-            else hitstunDirection = RIGHT;
-            invincible = true;
+        }
+        if (player.transform.position.x < transform.position.x) hitstunDirection = LEFT;
+        else hitstunDirection = RIGHT;
+        invincible = true;
     }
 
     void Hitstun()
