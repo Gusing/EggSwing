@@ -38,6 +38,7 @@ public class mainHandler : MonoBehaviour {
     public Button btnRetry;
     public Button btnGameOver;
     public SpriteMask maskProgressFill;
+    public SpriteRenderer rendererProgressMarker;
 
     float beatTime;
     float beatTimer;
@@ -218,7 +219,7 @@ public class mainHandler : MonoBehaviour {
         };
 
         testSpawn = new EnemySpawn[] {
-            new EnemySpawn(2, new GameObject[] { enemyB }, new float[] { 10 }, new bool[] { false }),
+            new EnemySpawn(5, new GameObject[] { enemyB }, new float[] { 2 }, new bool[] { true }),
 
         };
 
@@ -348,7 +349,11 @@ public class mainHandler : MonoBehaviour {
         }
 
         // update progress bar
-        if (level > 0 && level < 100) maskProgressFill.transform.localPosition = new Vector3(-2.05f * (1- ((float)enemiesDead / (float)totalEnemies)), 0);
+        if (level > 0 && level < 100)
+        {
+            maskProgressFill.transform.localPosition = new Vector3(-4.66f * (1 - ((float)enemiesDead / (float)totalEnemies)), 0);
+            rendererProgressMarker.transform.localPosition = new Vector3(-2.22f + 4.44f * ((float)enemiesDead / (float)totalEnemies), 0);
+        }
 
         // update streak parameter
         if (player.GetComponent<playerHandler>().streakLevel > 2)

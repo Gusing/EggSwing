@@ -183,7 +183,8 @@ MonoBehaviour:
   btnRetry: {fileID: 1643678102}
   btnGameOver: {fileID: 1643678101}
   maskProgressFill: {fileID: 1643678106}
-  level: 0
+  rendererProgressMarker: {fileID: 833614326}
+  level: 2
   totalEnemies: 0
   SecondCounter: {fileID: 0}
   SecondDisplay: {fileID: 0}
@@ -200,7 +201,7 @@ MonoBehaviour:
   streakLevel3Record: 0
   streakLevelEndlessRecord: 0
   currency: 0
-  musicPath: event:/Music_test_birds
+  musicPath: event:/Elextroswing_loop
 --- !u!20 &25819224
 Camera:
   m_ObjectHideFlags: 0
@@ -488,6 +489,12 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!212 &833614326 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 153360346053888935, guid: 024694b4cb46c694581f8476382507b3,
+    type: 3}
+  m_PrefabInstance: {fileID: 1643678100}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &879072932
 GameObject:
   m_ObjectHideFlags: 0
@@ -1309,6 +1316,11 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 25819224}
+    - target: {fileID: 3416327858612403832, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
+        type: 3}
+      propertyPath: timeBeforeCollision
+      value: 1.8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba4024dc994b0f0449c7fa5a6dffaecb, type: 3}
 --- !u!114 &1858204346 stripped

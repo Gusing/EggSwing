@@ -453,6 +453,7 @@ MonoBehaviour:
   btnRetry: {fileID: 947761879}
   btnGameOver: {fileID: 1319720067}
   maskProgressFill: {fileID: 303937643440660902}
+  rendererProgressMarker: {fileID: 739228893}
   level: 1
   totalEnemies: 0
   SecondCounter: {fileID: 0}
@@ -884,6 +885,12 @@ Transform:
   m_Father: {fileID: 1078396382}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &739228893 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 153360346053888935, guid: 024694b4cb46c694581f8476382507b3,
+    type: 3}
+  m_PrefabInstance: {fileID: 303937643440660901}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &796776793
 GameObject:
   m_ObjectHideFlags: 0
@@ -1355,6 +1362,21 @@ PrefabInstance:
       propertyPath: textCurrency
       value: 
       objectReference: {fileID: 1246377675}
+    - target: {fileID: 212263714625456538, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212263714625456538, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212263714625456538, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b, type: 3}
 --- !u!1 &1078396380
@@ -2309,6 +2331,11 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 8200025180201035766, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 024694b4cb46c694581f8476382507b3, type: 3}
 --- !u!331 &303937643440660902 stripped

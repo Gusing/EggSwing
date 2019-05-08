@@ -26,11 +26,17 @@ public class enemyBirdHandler : MonoBehaviour
     public bool readyToBeDestroyed;
     float lifeTimer;
 
+    int beatPassed;
+    int beatLimit;
+    int localState;
+
     public bool readyToBeHit;
 
     FMOD.Studio.EventInstance soundWarning;
     FMOD.Studio.EventInstance soundAttack;
     FMOD.Studio.EventInstance soundPlayerHit;
+
+    readonly int FAIL = 0, SUCCESS = 1, BEAT = 2, OFFBEAT = 3;
 
     public void init(int speedType)
     {
@@ -41,16 +47,19 @@ public class enemyBirdHandler : MonoBehaviour
         type = speedType;
         if (type == 1)
         {
+            beatLimit = 5;
             localRenderer.sprite = spriteBirdA3;
             timeToCharge = bpmInSeconds * 1;
         }
         if (type == 2)
         {
+            beatLimit = 6;
             localRenderer.sprite = spriteBirdA;
             timeToCharge = bpmInSeconds * 2;
         }
         if (type == 4)
         {
+            beatLimit = 8;
             localRenderer.sprite = spriteBirdA2;
             timeToCharge = bpmInSeconds * 4;
         }
@@ -76,7 +85,13 @@ public class enemyBirdHandler : MonoBehaviour
 
         bpmInSeconds = (float)60 / (float)localBpm;
 
-        timeUntilCrash = bpmInSeconds * 4;
+        print("spawn with offset: " + mainHandler.currentBeatTimer);
+
+        timeUntilCrash = mainHandler.currentBeatTimer;
+
+        localState = mainHandler.currentState;
+
+        //timeUntilCrash = bpmInSeconds * 4;
 
     }
 
@@ -90,10 +105,62 @@ public class enemyBirdHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        lifeTimer += Time.deltaTime;
+        if (localState != mainHandler.currentState)
+        {
+            localState = mainHandler.currentState;
+            if (mainHandler.currentState == BEAT)
+            {
+                beatPassed++;
+            }
+        }
 
         if (!dead)
         {
+            if (beatPassed >= 4)
+            {
+                if (mainHandler.currentBeatTimer >= timeUntilCrash && !charging)
+                {
+                    soundWarning.start();
+                    charging = true;
+                    if (type == 1)
+                    {
+                        renderers[0].sprite = spriteBirdB3;
+                    }
+                    if (type == 2)
+                    {
+                        renderers[0].sprite = spriteBirdB;
+                    }
+                    if (type == 4)
+                    {
+                        renderers[0].sprite = spriteBirdB2;
+                    }
+                }
+            }
+
+            if (timeUntilCrash == 0 && beatPassed == beatLimit - 1)
+            {
+                if (mainHandler.currentBeatTimer >= (bpmInSeconds - mainHandler.currentLeniency))
+                {
+                    readyToBeHit = true;
+                }
+            }
+
+            if (beatPassed >= beatLimit)
+            {
+                if (mainHandler.currentBeatTimer >= timeUntilCrash - mainHandler.currentLeniency)
+                {
+                    readyToBeHit = true;
+                }
+
+                if (mainHandler.currentBeatTimer >= timeUntilCrash)
+                {
+                    soundAttack.start();
+                    dead = true;
+                    transform.Translate(new Vector3(0, -3f));
+                }
+            }
+
+            /*
             if (lifeTimer >= timeUntilCrash && !charging)
             {
                 soundWarning.start();
@@ -125,19 +192,31 @@ public class enemyBirdHandler : MonoBehaviour
                 transform.Translate(new Vector3(0, -3f));
                
             }
+            */
 
             if (!charging) transform.Translate(new Vector3(-3f * Time.deltaTime, 0));
 
         }
 
+        if (beatPassed >= beatLimit && readyToBeHit)
+        {
+            if (mainHandler.currentBeatTimer >= timeUntilCrash + mainHandler.currentLeniency)
+            {
+                GameObject.Find("Player").GetComponent<playerHandler>().TakeDamage(1, 0, true);
+                readyToBeHit = false;
+                readyToBeDestroyed = true;
+            }
+
+        }
+
+        /*
         if (dead && readyToBeHit && lifeTimer >= timeUntilCrash + timeToCharge + mainHandler.currentLeniency)
         {
             GameObject.Find("Player").GetComponent<playerHandler>().TakeDamage(1, 0, true);
             readyToBeHit = false;
             readyToBeDestroyed = true;
-           
-
         }
+        */
 
 
     }

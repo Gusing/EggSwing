@@ -136,6 +136,7 @@ public class playerHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundDodge;
     FMOD.Studio.EventInstance soundDie;
     FMOD.Studio.EventInstance soundFail;
+    FMOD.Studio.EventInstance soundBlock;
 
     FMOD.Studio.EventInstance soundPickupCurrency;
 
@@ -151,9 +152,10 @@ public class playerHandler : MonoBehaviour
         soundDie = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Die");
         soundFail = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Miss_Brad");
         soundPickupCurrency = FMODUnity.RuntimeManager.CreateInstance("event:/Object/Pickup_gold_random");
+        soundBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Block");
 
         mainCamera = GameObject.Find("Main Camera");
-        beatIndicator = GameObject.Find("BeatIndicator");
+        beatIndicator = GameObject.Find("BeatIndicatorB");
 
         allCombos = new List<Attack[]>();
         birds = new List<GameObject>();
@@ -320,7 +322,7 @@ public class playerHandler : MonoBehaviour
         // check if hit bird
         if (birdHitReady)
         {
-            if (Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Heavy Attack"))
+            if ((Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Heavy Attack")) && !busy)
             {
                 attackID++;
                 attackIDStart = attackID;
@@ -335,21 +337,21 @@ public class playerHandler : MonoBehaviour
                 attackID++;
                 attackIDStart = attackID;
                 Punch();
-                beatIndicator.GetComponent<beatIndicatorHandler>().PlayerInput();
+                beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
             }
             if (Input.GetButtonDown("Light Attack"))
             {
                 attackID++;
                 attackIDStart = attackID;
                 QuickPunch();
-                beatIndicator.GetComponent<beatIndicatorHandler>().PlayerInput();
+                beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
             }
             if (Input.GetButtonDown("Super"))
             {
                 attackID++;
                 attackIDStart = attackID;
                 SpecialPunch();
-                beatIndicator.GetComponent<beatIndicatorHandler>().PlayerInput();
+                beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
             }
             if (Input.GetButtonDown("Dodge"))
             {
@@ -358,7 +360,7 @@ public class playerHandler : MonoBehaviour
             if (Input.GetButtonDown("Block"))
             {
                 Block();
-                beatIndicator.GetComponent<beatIndicatorHandler>().PlayerInput();
+                beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
             }
         }
         if ((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0 || Input.GetAxisRaw("Move Axis 2") > 0) && !busy)
@@ -753,7 +755,7 @@ public class playerHandler : MonoBehaviour
         attackType = 0;
         if (beatState == SUCCESS || beatState == BEAT)
         {
-            //soundBlock.start();
+            soundBlock.start();
             UpdateHitboxes();
             lastAttackBeat = currentBeat;
             blocking = true;
@@ -883,7 +885,7 @@ public class playerHandler : MonoBehaviour
 
     public void TakeDamage(int dmg, int hitDirection, bool alwaysHit = false)
     {
-        if (hitstun && !alwaysHit) return;
+        if ((hitstun && !alwaysHit) || dead) return;
         
         if (blocking)
         {
@@ -978,7 +980,7 @@ public class playerHandler : MonoBehaviour
             soundPickupCurrency.start();
             currentCurrency++;
             Instantiate(pCurrencyPick, other.transform.position, new Quaternion(0, 0, 0, 0));
-            GameObject.Destroy(other.gameObject);
+            Destroy(other.gameObject);
         }
 
         if (other.tag == "HPPickup" && hitboxPickup.IsTouching(other))
@@ -987,7 +989,7 @@ public class playerHandler : MonoBehaviour
             currentHP += 5;
             if (currentHP > maxHP) currentHP = maxHP;
             Instantiate(pHPPickupPick, other.transform.position, new Quaternion(0, 0, 0, 0));
-            GameObject.Destroy(other.gameObject);
+            Destroy(other.gameObject);
         }
 
         // hit enemy

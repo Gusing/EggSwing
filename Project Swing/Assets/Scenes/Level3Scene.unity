@@ -616,6 +616,11 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3416327858612403832, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
+        type: 3}
+      propertyPath: timeBeforeCollision
+      value: 1.6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba4024dc994b0f0449c7fa5a6dffaecb, type: 3}
 --- !u!114 &719814398 stripped
@@ -1133,6 +1138,7 @@ MonoBehaviour:
   btnRetry: {fileID: 667511299}
   btnGameOver: {fileID: 667511298}
   maskProgressFill: {fileID: 667511303}
+  rendererProgressMarker: {fileID: 1625721109}
   level: 0
   totalEnemies: 0
   SecondCounter: {fileID: 0}
@@ -1207,6 +1213,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &1625721109 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 153360346053888935, guid: 024694b4cb46c694581f8476382507b3,
+    type: 3}
+  m_PrefabInstance: {fileID: 667511297}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1638881149
 GameObject:
   m_ObjectHideFlags: 0

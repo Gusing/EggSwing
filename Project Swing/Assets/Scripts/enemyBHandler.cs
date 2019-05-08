@@ -51,8 +51,7 @@ public class enemyBHandler : enemyHandler
 
         groundY = -1.71f;
 
-        if (fallFromAbove) transform.position = new Vector3(transform.position.x, 8, Random.Range(0f, 0.1f));
-        else transform.position = new Vector3(transform.position.x, groundY, Random.Range(0f, 0.1f));
+        transform.position = new Vector3(transform.position.x, groundY, Random.Range(0f, 0.1f));
 
     }
 
@@ -121,7 +120,7 @@ public class enemyBHandler : enemyHandler
         base.Attack();
         
         // move to next attack state
-        if (timeToMoveOn && mainHandler.currentState == PREBEAT)
+        if (timeToMoveOn && mainHandler.currentState == BEAT)
         {
             timeToMoveOn = false;
             if (attackState == 1)
@@ -180,7 +179,7 @@ public class enemyBHandler : enemyHandler
         base.Attack();
 
         // move to next attack state
-        if (timeToMoveOn && mainHandler.currentState == PREBEAT)
+        if (timeToMoveOn && mainHandler.currentState == BEAT)
         {
             timeToMoveOn = false;
             if (attackState == 1)

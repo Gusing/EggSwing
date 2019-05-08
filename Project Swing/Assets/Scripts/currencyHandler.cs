@@ -11,6 +11,8 @@ public class currencyHandler : MonoBehaviour
     public int value;
     bool landed;
 
+    float lifeTimer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +45,16 @@ public class currencyHandler : MonoBehaviour
 
         if (transform.position.y > -3f)
         {
+            if (transform.position.x > 9.3f)
+            {
+                transform.position = new Vector3(9.3f, transform.position.y);
+                velX = Mathf.Abs(velX) * -1;
+            }
+            if (transform.position.x < -9.3f)
+            {
+                transform.position = new Vector3(-9.3f, transform.position.y);
+                velX = Mathf.Abs(velX);
+            }
             transform.Translate(new Vector3(velX * Time.deltaTime, velY * Time.deltaTime), Space.World);
             transform.Rotate(new Vector3(0, 0, spinRotation * Time.deltaTime));
         }
@@ -50,6 +62,13 @@ public class currencyHandler : MonoBehaviour
         {
             GetComponent<BoxCollider2D>().enabled = true;
             landed = true;
+        }
+
+        if (landed) lifeTimer += Time.deltaTime;
+
+        if (lifeTimer >= 6)
+        {
+            Destroy(gameObject);
         }
 
     }
