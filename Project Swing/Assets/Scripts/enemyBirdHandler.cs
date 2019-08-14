@@ -13,6 +13,8 @@ public class enemyBirdHandler : MonoBehaviour
     public Sprite spriteBirdB2;
     public Sprite spriteBirdB3;
 
+    GameObject player;
+
     public SpriteRenderer localRenderer;
 
     int[] spawns;
@@ -85,11 +87,11 @@ public class enemyBirdHandler : MonoBehaviour
 
         bpmInSeconds = (float)60 / (float)localBpm;
 
-        print("spawn with offset: " + mainHandler.currentBeatTimer);
-
         timeUntilCrash = mainHandler.currentBeatTimer;
 
         localState = mainHandler.currentState;
+
+        player = GameObject.Find("Player");
 
         //timeUntilCrash = bpmInSeconds * 4;
 
@@ -202,7 +204,7 @@ public class enemyBirdHandler : MonoBehaviour
         {
             if (mainHandler.currentBeatTimer >= timeUntilCrash + mainHandler.currentLeniency)
             {
-                GameObject.Find("Player").GetComponent<playerHandler>().TakeDamage(1, 0, true);
+                player.GetComponent<playerHandler>().TakeDamage(1, 0, player.transform.position, true);
                 readyToBeHit = false;
                 readyToBeDestroyed = true;
             }

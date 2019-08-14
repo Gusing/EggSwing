@@ -10,11 +10,22 @@ public class mainMenuHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundUIClick;
     FMOD.Studio.EventInstance soundUIStart;
 
+    bool started = false;
+
     // Start is called before the first frame update
     void Start()
     {
         soundMenuMusic = FMODUnity.RuntimeManager.CreateInstance("event:/MenuMusic");
-        soundMenuMusic.start();
+
+        menuMusicPlayerHandler.Instance.checkStarted();
+
+        /*
+        if (!menuMusicPlayerHandler.Instance.started)
+        {
+            menuMusicPlayerHandler.Instance.setStarted();
+            soundMenuMusic.start();
+        }
+        */
 
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
         soundUIStart = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_Start");
@@ -33,7 +44,7 @@ public class mainMenuHandler : MonoBehaviour
 
     public void ClickPlay()
     {
-        soundMenuMusic.setParameterValue("End", 1);
+        //soundMenuMusic.setParameterValue("End", 1);
         soundUIClick.start();
         SceneManager.LoadScene("MenuScene");
     }
@@ -52,7 +63,7 @@ public class mainMenuHandler : MonoBehaviour
 
     public void QuitGame()
     {
-        soundMenuMusic.setParameterValue("End", 1);
+        menuMusicPlayerHandler.Instance.stopMusic();
         soundUIClick.start();
         Application.Quit();
     }

@@ -450,6 +450,8 @@ MonoBehaviour:
     type: 3}
   effectHitSuper: {fileID: 1811336824147919723, guid: 8b2bfff9ca467534cbb29f6e1d189558,
     type: 3}
+  effectHitPlayer: {fileID: 1811336824147919723, guid: e960c932351d8814c9c2a5fed5f95489,
+    type: 3}
   damageNumberEnemy: {fileID: 1188790007723088, guid: be7b358b633dad04b97c1664f125b762,
     type: 3}
   damageNumberPlayer: {fileID: 1188790007723088, guid: c7a6b36ed9e1d6747909971dea30d693,
@@ -493,7 +495,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.0001
+  m_Mass: 100
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 0

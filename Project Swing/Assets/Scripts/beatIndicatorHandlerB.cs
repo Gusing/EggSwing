@@ -45,8 +45,6 @@ public class beatIndicatorHandlerB : MonoBehaviour
         bpmInSeconds = (float)60 / (float)localBpm;
 
         timeToSpawn = ((bpmInSeconds - timeBeforeCollision) + bpmInSeconds) % bpmInSeconds;
-
-        print("60 / bpm: " + (float)60 / (float)localBpm + ", time to spawn: " + timeToSpawn);
     }
 
     // Update is called once per frame
@@ -59,8 +57,6 @@ public class beatIndicatorHandlerB : MonoBehaviour
             bpmInSeconds = (float)60 / (float)localBpm;
 
             timeToSpawn = ((bpmInSeconds - timeBeforeCollision) + bpmInSeconds) % bpmInSeconds;
-
-            print("60 / bpm: " + (float)60 / (float)localBpm + ", time to spawn: " + timeToSpawn);
         }
 
         if (lines.Count > 0)

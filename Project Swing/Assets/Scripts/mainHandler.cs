@@ -343,7 +343,6 @@ public class mainHandler : MonoBehaviour {
                 SaveSystem.SavePlayer(this);
             }
             gameOver = true;
-            print("buttons");
             btnRetry.gameObject.SetActive(true);
             btnGameOver.gameObject.SetActive(true);
         }
@@ -530,7 +529,6 @@ public class mainHandler : MonoBehaviour {
             {
                 if (enemies.Count - enemiesDead <= currentLevelSpawn[currentSpawn].nextWaveReq)
                 {
-                    print("dead req met");
                     prevTime = levelTimer;
                     currentSpawn++;
                     waitingForDeath = false;
@@ -551,7 +549,6 @@ public class mainHandler : MonoBehaviour {
                     for (int i = 0; i < 2 + levelTimer / 75; i++)
                     {
                         bool tAbove = false;
-                        print("spawn");
                         if (Random.value > 0.25f)
                         {
                             if (Random.value < 0.3f)
@@ -593,7 +590,6 @@ public class mainHandler : MonoBehaviour {
             {
                 if (enemies.Count - enemiesDead <= currentLevelSpawn[currentSpawn].nextWaveReq)
                 {
-                    print("dead req met");
                     prevTime = levelTimer;
                     currentSpawn++;
                     waitingForDeath = false;

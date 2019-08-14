@@ -109,6 +109,10 @@ public class enemyHandler : MonoBehaviour
             newBeat = false;
         }
         else fallState = -1;
+
+        GetComponent<Explodable>().generate();
+        GetComponent<PolygonCollider2D>().enabled = false;
+
     }
 
     public virtual void Start()
@@ -294,6 +298,11 @@ public class enemyHandler : MonoBehaviour
         hitboxBody.enabled = false;
         GetComponent<SpriteRenderer>().sortingLayerName = "EnemiesDead";
         dead = true;
+        UpdateAnimations();
+        GetComponent<Explodable>().explode();
+        ExplosionForce ef = GameObject.FindObjectOfType<ExplosionForce>();
+        ef.doExplosion(transform.position);
+        
     }
 
     protected virtual void Invincible()
@@ -446,7 +455,7 @@ public class enemyHandler : MonoBehaviour
         {
             soundAttack.setParameterValue("Pre", 3);
             soundAttack.start();
-            other.GetComponent<playerHandler>().TakeDamage(damage[currentAttack], direction);
+            other.GetComponent<playerHandler>().TakeDamage(damage[currentAttack], direction, new Vector2(transform.position.x, transform.position.y) + hitboxAttacks[currentAttack].offset + hitboxAttacks[currentAttack].size / 2);
         }
     }
 

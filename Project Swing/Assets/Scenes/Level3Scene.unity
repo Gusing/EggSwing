@@ -1139,7 +1139,7 @@ MonoBehaviour:
   btnGameOver: {fileID: 667511298}
   maskProgressFill: {fileID: 667511303}
   rendererProgressMarker: {fileID: 1625721109}
-  level: 0
+  level: 3
   totalEnemies: 0
   SecondCounter: {fileID: 0}
   SecondDisplay: {fileID: 0}
@@ -1156,7 +1156,7 @@ MonoBehaviour:
   streakLevel3Record: 0
   streakLevelEndlessRecord: 0
   currency: 0
-  musicPath: event:/PirateBoy (2)
+  musicPath: event:/PirateBoy
 --- !u!20 &1503807543
 Camera:
   m_ObjectHideFlags: 0

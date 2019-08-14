@@ -23,6 +23,7 @@ public class playerHandler : MonoBehaviour
     public GameObject effectHitBlue;
     public GameObject effectHitRed;
     public GameObject effectHitSuper;
+    public GameObject effectHitPlayer;
 
     public GameObject damageNumberEnemy;
     public GameObject damageNumberPlayer;
@@ -139,6 +140,7 @@ public class playerHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundBlock;
 
     FMOD.Studio.EventInstance soundPickupCurrency;
+    FMOD.Studio.EventInstance soundPickupHP;
 
     // debug
     public Text txtComboState;
@@ -152,6 +154,7 @@ public class playerHandler : MonoBehaviour
         soundDie = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Die");
         soundFail = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Miss_Brad");
         soundPickupCurrency = FMODUnity.RuntimeManager.CreateInstance("event:/Object/Pickup_gold_random");
+        soundPickupHP = FMODUnity.RuntimeManager.CreateInstance("event:/Object/Pickup_hp");
         soundBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Block");
 
         mainCamera = GameObject.Find("Main Camera");
@@ -390,7 +393,9 @@ public class playerHandler : MonoBehaviour
         if (transform.position.x < -9.2f) transform.position = new Vector3(-9.2f, transform.position.y);
         if (transform.position.x > 9.3f) transform.position = new Vector3(9.3f, transform.position.y);
 
-        
+        if (transform.position.y < -2.3f) transform.position = new Vector3(transform.position.x, -2.2f);
+
+
     }
 
     void UpdateAnimations()
@@ -417,7 +422,7 @@ public class playerHandler : MonoBehaviour
         attackType = 2;
         if (beatState == SUCCESS || beatState == BEAT)
         {
-            if (blockBeat == currentBeat - 1)
+            if (blockBeat == currentBeat - 2)
             {
                 CounterPunch();
                 return;
@@ -497,7 +502,7 @@ public class playerHandler : MonoBehaviour
             }
             else
             {
-                if (beatState == SUCCESS)
+                if (mainHandler.currentState == BEAT)
                 {
                     
                     currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 1);
@@ -533,7 +538,7 @@ public class playerHandler : MonoBehaviour
         attackType = 1;
         if (beatState == SUCCESS || beatState == BEAT)
         {
-            if (blockBeat == currentBeat - 1)
+            if (blockBeat == currentBeat - 0)
             {
                 CounterPunch();
                 return;
@@ -883,7 +888,7 @@ public class playerHandler : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int dmg, int hitDirection, bool alwaysHit = false)
+    public void TakeDamage(int dmg, int hitDirection, Vector3 hitPoint, bool alwaysHit = false)
     {
         if ((hitstun && !alwaysHit) || dead) return;
         
@@ -926,7 +931,8 @@ public class playerHandler : MonoBehaviour
             DisableHurtboxes();
             RestockCombos();
 
-            Instantiate(pPlayerkHit, transform.position, new Quaternion(0, 0, 0, 0));
+            Instantiate(effectHitPlayer, hitPoint, new Quaternion(0, 0, 0, 0));
+            //Instantiate(pPlayerkHit, transform.position, new Quaternion(0, 0, 0, 0));
 
             if (currentHP <= 0) Die();
             else
@@ -985,7 +991,7 @@ public class playerHandler : MonoBehaviour
 
         if (other.tag == "HPPickup" && hitboxPickup.IsTouching(other))
         {
-            soundPickupCurrency.start();
+            soundPickupHP.start();
             currentHP += 5;
             if (currentHP > maxHP) currentHP = maxHP;
             Instantiate(pHPPickupPick, other.transform.position, new Quaternion(0, 0, 0, 0));

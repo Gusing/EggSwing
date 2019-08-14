@@ -40,9 +40,19 @@ public class menuHandler : MonoBehaviour {
     
     // Use this for initialization
     void Start () {
-
+        
         soundMenuMusic = FMODUnity.RuntimeManager.CreateInstance("event:/MenuMusic");
-        soundMenuMusic.start();
+
+        menuMusicPlayerHandler.Instance.checkStarted();
+        
+
+        /*
+        if (!menuMusicPlayerHandler.Instance.started)
+        {
+            menuMusicPlayerHandler.Instance.setStarted();
+            soundMenuMusic.start();
+        }
+        */
 
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
         soundUIStart = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_Start");
@@ -107,8 +117,9 @@ public class menuHandler : MonoBehaviour {
     {
         if (num > 0) soundUIStart.start();
         else soundUIClick.start();
-        
-        soundMenuMusic.setParameterValue("End", 1);
+
+        menuMusicPlayerHandler.Instance.stopMusic();
+        //soundMenuMusic.setParameterValue("End", 1);
 
         if (num == -3) SceneManager.LoadScene("Practice148");
         if (num == -2) SceneManager.LoadScene("Practice128");
@@ -123,7 +134,7 @@ public class menuHandler : MonoBehaviour {
 
     public void Back()
     {
-        soundMenuMusic.setParameterValue("End", 1);
+        //soundMenuMusic.setParameterValue("End", 1);
         soundUIClick.start();
         SceneManager.LoadScene("MainMenuScene");
     }
