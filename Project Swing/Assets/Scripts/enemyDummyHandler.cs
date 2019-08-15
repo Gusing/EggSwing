@@ -39,7 +39,7 @@ public class enemyDummyHandler : enemyHandler
         base.UpdateMovement();
     }
 
-    public override void TakeDamage(int dmg, int attackID, bool specialHitstun = false)
+    public override int TakeDamage(int dmg, int attackID, bool specialHitstun = false, int attackType = 1)
     {
         lastAttackHitBy = attackID;
 
@@ -65,6 +65,8 @@ public class enemyDummyHandler : enemyHandler
         if (player.transform.position.x < transform.position.x) hitstunDirection = LEFT;
         else hitstunDirection = RIGHT;
         invincible = true;
+
+        return dmg;
     }
 
     void Hitstun()

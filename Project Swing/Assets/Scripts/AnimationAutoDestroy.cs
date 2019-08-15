@@ -8,7 +8,7 @@ public class AnimationAutoDestroy : MonoBehaviour
     
     void Start()
     {
-        print(this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        //print(this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
         Destroy(gameObject, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length + delay);
     }
 }

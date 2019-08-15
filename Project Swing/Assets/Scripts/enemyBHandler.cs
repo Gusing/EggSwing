@@ -156,7 +156,6 @@ public class enemyBHandler : enemyHandler
                 soundAttack.start();
                 attackHitboxTimer = 0;
                 attackHitboxActive = true;
-                print("hitboxes: " + hitboxAttacks.Count);
                 hitboxAttacks[0].enabled = true;
                 attackState = 6;
                 localSpriteRenderer.sprite = spriteAttackAActive;

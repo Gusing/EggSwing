@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class enemyBirdHandler : MonoBehaviour
 {
-    public SpriteRenderer[] renderers;
-
     public Sprite spriteBirdA;
     public Sprite spriteBirdA2;
     public Sprite spriteBirdA3;
@@ -13,7 +11,9 @@ public class enemyBirdHandler : MonoBehaviour
     public Sprite spriteBirdB2;
     public Sprite spriteBirdB3;
 
-    public SpriteRenderer localRenderer;
+    Animator animator;
+
+    SpriteRenderer localRenderer;
 
     int[] spawns;
     float localBpm;
@@ -21,6 +21,7 @@ public class enemyBirdHandler : MonoBehaviour
     float timeUntilCrash;
     float timeToCharge;
     bool charging;
+    public bool startedCharge;
     int type;
     public bool dead;
     public bool readyToBeDestroyed;
@@ -32,32 +33,44 @@ public class enemyBirdHandler : MonoBehaviour
 
     public bool readyToBeHit;
 
+    int offsetAmount;
+
+    GameObject player;
+
     FMOD.Studio.EventInstance soundWarning;
     FMOD.Studio.EventInstance soundAttack;
     FMOD.Studio.EventInstance soundPlayerHit;
 
     readonly int FAIL = 0, SUCCESS = 1, BEAT = 2, OFFBEAT = 3;
 
+    readonly int GREEN = 0, RED = 1, YELLOW = 2;
+
     public void init(int speedType)
     {
+        localRenderer = GetComponent<SpriteRenderer>();
+
+        animator = GetComponent<Animator>();
+
         localBpm = mainHandler.currentBpm;
+
+        player = GameObject.Find("Player");
 
         bpmInSeconds = (float)60 / (float)localBpm;
 
         type = speedType;
-        if (type == 1)
+        if (type == RED)
         {
             beatLimit = 5;
             localRenderer.sprite = spriteBirdA3;
             timeToCharge = bpmInSeconds * 1;
         }
-        if (type == 2)
+        if (type == YELLOW)
         {
             beatLimit = 6;
             localRenderer.sprite = spriteBirdA;
             timeToCharge = bpmInSeconds * 2;
         }
-        if (type == 4)
+        if (type == GREEN)
         {
             beatLimit = 8;
             localRenderer.sprite = spriteBirdA2;
@@ -71,14 +84,7 @@ public class enemyBirdHandler : MonoBehaviour
         soundWarning = FMODUnity.RuntimeManager.CreateInstance("event:/Birds/Birds_warning");
         soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Birds/Birds_attack");
         soundPlayerHit = FMODUnity.RuntimeManager.CreateInstance("event:/Birds/Birds_player_attack");
-
-        spawns = new int[1] { 1 };
-
-        for (int i = 0; i < renderers.Length; i++)
-        {
-            if (spawns.Length + 1 <= i) renderers[i].enabled = true;
-        }
-
+        
         transform.position = new Vector3(10.08f, 3.37f);
 
         localBpm = mainHandler.currentBpm;
@@ -93,6 +99,13 @@ public class enemyBirdHandler : MonoBehaviour
 
         //timeUntilCrash = bpmInSeconds * 4;
 
+    }
+
+    public void setOffset(int amount)
+    {
+        startedCharge = false;
+        offsetAmount = amount;
+        transform.Translate(new Vector3(0, 0.3f * offsetAmount));
     }
 
     public void setHit()
@@ -122,18 +135,7 @@ public class enemyBirdHandler : MonoBehaviour
                 {
                     soundWarning.start();
                     charging = true;
-                    if (type == 1)
-                    {
-                        renderers[0].sprite = spriteBirdB3;
-                    }
-                    if (type == 2)
-                    {
-                        renderers[0].sprite = spriteBirdB;
-                    }
-                    if (type == 4)
-                    {
-                        renderers[0].sprite = spriteBirdB2;
-                    }
+                    startedCharge = true;
                 }
             }
 
@@ -156,7 +158,9 @@ public class enemyBirdHandler : MonoBehaviour
                 {
                     soundAttack.start();
                     dead = true;
-                    transform.Translate(new Vector3(0, -3f));
+                    Vector3 tv = player.transform.position - transform.position;
+                    tv = Vector3.Normalize(tv);
+                    transform.position = player.transform.position - ((Vector3.Distance(player.transform.position, transform.position) / 2) * tv);
                 }
             }
 
@@ -209,6 +213,8 @@ public class enemyBirdHandler : MonoBehaviour
 
         }
 
+        updateAnimations();
+
         /*
         if (dead && readyToBeHit && lifeTimer >= timeUntilCrash + timeToCharge + mainHandler.currentLeniency)
         {
@@ -219,5 +225,11 @@ public class enemyBirdHandler : MonoBehaviour
         */
 
 
+    }
+
+    void updateAnimations()
+    {
+        animator.SetInteger("Color", type);
+        animator.SetBool("Ready", charging);
     }
 }

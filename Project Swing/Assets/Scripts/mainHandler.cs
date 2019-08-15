@@ -22,6 +22,8 @@ public class mainHandler : MonoBehaviour {
     
     public GameObject enemyA;
     public GameObject enemyB;
+    public GameObject enemyC;
+    public GameObject enemyD;
     public GameObject enemyBird;
 
     List<GameObject> enemies;
@@ -174,7 +176,7 @@ public class mainHandler : MonoBehaviour {
         };
 
         level1Spawn = new EnemySpawn[] {
-            new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 }, new bool[] { false }, 0 ),
+            new EnemySpawn(6, new GameObject[] { enemyC }, new float[] { 10 }, new bool[] { false }, 0 ),
             new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false }),
             new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 }, new bool[] { false }),
             new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 0 }, new bool[] { true }, 1),
@@ -284,7 +286,7 @@ public class mainHandler : MonoBehaviour {
                 player.GetComponent<playerHandler>().birds.Add(Instantiate(enemyBird, new Vector3(0f, 0f), Quaternion.identity));
                 if (name == "B1") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(1);
                 if (name == "B2") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(2);
-                if (name == "B4") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(4);
+                if (name == "B4") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(0);
             }
         }
         if (type == FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT)

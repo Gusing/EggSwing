@@ -14,6 +14,7 @@ public class playerHandler : MonoBehaviour
     public ParticleSystem pAttackHit;
     public ParticleSystem pPlayerkHit;
     public ParticleSystem pSpecialAttack;
+    public ParticleSystem pHoldAttack;
     public ParticleSystem pBlock;
     public ParticleSystem pCounter;
     public ParticleSystem pBirdHit;
@@ -48,6 +49,11 @@ public class playerHandler : MonoBehaviour
 
     public BoxCollider2D hitboxAttack4A;
 
+    public BoxCollider2D hitboxAttack5A;
+
+    public BoxCollider2D hitboxAttack6A;
+    public BoxCollider2D hitboxAttack6B;
+
     public BoxCollider2D hitboxAttackBird;
 
     public BoxCollider2D hitboxPickup;
@@ -58,22 +64,28 @@ public class playerHandler : MonoBehaviour
     float actionTimer;
     bool busy;
 
-    bool punchingSuccess;
+    public bool punchingSuccess;
     bool punchingFail;
     bool punchingActive;
     float punchSuccessTime = 0.32f;
     float quickPunchSuccessTime = 0.3f;
     float specialPunchSuccessTime = 0.7f;
+    float rapidPunchSuccessTime = 0.2f;
     float punchFailTime = 0.5f;
-    int attackType;
+    public int attackType;
     bool usingSuper;
     bool beatPassed;
+    bool holdBeatPassed;
     bool lastAttackHit;
     int lastHitBeat;
+    bool heldButton;
+    bool secondRapid;
+
     bool birdHitReady;
     bool birdHitting;
     float birdPunchSuccessTime = 0.2f;
     bool birdHitstun;
+    int birdInSequence;
 
     int attackID;
     int attackIDStart;
@@ -104,12 +116,22 @@ public class playerHandler : MonoBehaviour
     public int streakLevel;
     public int currentCurrency;
     int startingCurrency;
+    float currentSP;
+    public float maxSP = 20;
+    bool chargingSP;
 
     public SpriteRenderer rendererHPFill;
     public SpriteMask maskHPFill;
     public SpriteRenderer[] renderersSpecialCharges;
     public Text textStreak;
     public Text textCurrency;
+    public SpriteMask maskSPFill;
+    public SpriteRenderer rendererSPFill;
+    public Sprite spriteSPBar1;
+    public Sprite spriteSPBar2;
+    bool SPSprite;
+    float SPBarFlickerTimer;
+    float SPBarFlickerTime = 0.07f;
 
     public bool dead;
     
@@ -128,7 +150,9 @@ public class playerHandler : MonoBehaviour
     GameObject mainCamera;
     GameObject beatIndicator;
 
-    readonly int QUICK = 0, SLOW = 1;
+    readonly int QUICK = 0, SLOW = 1, HOLD = 2, RAPID = 3;
+
+    readonly int BLOCK = 0, QUICKATTACK = 1, SLOWATTACK = 2, SUPERATTACK = 3, COUNTERATTACK = 4, HOLDATTACK = 5, RAPIDATTACK = 6;
     
     FMOD.Studio.EventInstance soundAttackSuper;
     FMOD.Studio.EventInstance soundAttackSuperUnable;
@@ -162,8 +186,12 @@ public class playerHandler : MonoBehaviour
 
         // populate available combos
         allCombos.Add(new Attack[] { new Attack2A(hitboxAttack2A), new Attack2B(hitboxAttack2B), new Attack2C(hitboxAttack2C) });
+        allCombos.Add(new Attack[] { new Attack2A(hitboxAttack2A), new Attack2B(hitboxAttack2B), new Attack2C(hitboxAttack2C), new Attack6A(hitboxAttack6A), new Attack6B(hitboxAttack6B) });
         allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack1B(hitboxAttack1B) });
-        allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack2D(hitboxAttack2D), new Attack1C(hitboxAttack1C) });
+        allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack1B(hitboxAttack1B), new Attack5A(hitboxAttack5A) });
+        allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack2D(hitboxAttack2D), new Attack1C(hitboxAttack1C), new Attack5A(hitboxAttack5A), new Attack2D(hitboxAttack2C), new Attack6B(hitboxAttack6B), new Attack6B(hitboxAttack6B) });
+        allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack5A(hitboxAttack5A) });
+        allCombos.Add(new Attack[] { new Attack2A(hitboxAttack2A), new Attack2B(hitboxAttack2B), new Attack6A(hitboxAttack6A), new Attack6B(hitboxAttack6B) });
 
         currentCombos = new List<Attack[]>();
         RestockCombos();
@@ -177,6 +205,11 @@ public class playerHandler : MonoBehaviour
         direction = 1;
         blockTime = (60f / mainHandler.currentBpm) * 1.5f;
         blockBeat = -10;
+        currentSP = maxSP;
+        punchSuccessTime = (60f / mainHandler.currentBpm) * 0.75f;
+        quickPunchSuccessTime = (60f / mainHandler.currentBpm) * 0.6f;
+        specialPunchSuccessTime = (60f / mainHandler.currentBpm) * 1f;
+        rapidPunchSuccessTime = (60f / mainHandler.currentBpm) * 0.5f;
 
         localRenderer = GetComponent<SpriteRenderer>();
 
@@ -227,12 +260,38 @@ public class playerHandler : MonoBehaviour
             return;
         }
 
+        // update SP and SP bar
+        if (currentSP <= 0) chargingSP = true;
+        if (chargingSP)
+        {
+            currentSP += 1.3f * Time.deltaTime;
+            SPBarFlickerTimer += Time.deltaTime;
+            if (SPBarFlickerTimer >= SPBarFlickerTime)
+            {
+                SPBarFlickerTimer = 0;
+                if (SPSprite) rendererSPFill.sprite = spriteSPBar1;
+                else rendererSPFill.sprite = spriteSPBar2;
+                SPSprite = !SPSprite;
+            }
+
+        }
+        if (currentSP < maxSP) currentSP += 1.7f * Time.deltaTime;
+        if (currentSP > maxSP)
+        {
+            currentSP = maxSP;
+            chargingSP = false;
+            rendererSPFill.sprite = spriteSPBar1;
+        }
+        maskSPFill.transform.localPosition = new Vector3(-2.5f + (currentSP / maxSP) * 2.5f, 0);
+
         // update moves
         if (punchingSuccess)
         {
-            if (attackType == 1) SuccessfulQuickPunch();
-            if (attackType == 2) SuccessfulPunch();
-            if (attackType == 3) SuccessfulSpecialPunch();
+            if (attackType == QUICKATTACK) SuccessfulQuickPunch();
+            else if (attackType == SLOWATTACK) SuccessfulPunch();
+            else if (attackType == SUPERATTACK) SuccessfulSpecialPunch();
+            else if (attackType == HOLDATTACK) SuccessfulHoldPunch();
+            else if (attackType == RAPIDATTACK) SuccessfulRapidPunch();
         }
         if (punchingFail) FailedPunch();
         if (dodgeSucces) SuccessfulDodge();
@@ -273,7 +332,16 @@ public class playerHandler : MonoBehaviour
                 birds.RemoveAt(i);
                 i--;
             }
-            else if (birds[i].GetComponent<enemyBirdHandler>().readyToBeHit) birdHitReady = true;
+            else if (birds[i].GetComponent<enemyBirdHandler>().readyToBeHit)
+            {
+                birdInSequence = 0;
+                birdHitReady = true;
+            }
+            else if (birds[i].GetComponent<enemyBirdHandler>().startedCharge)
+            {
+                birds[i].GetComponent<enemyBirdHandler>().setOffset(birdInSequence);
+                birdInSequence++;
+            }
         }
 
         // update beat and combo state
@@ -293,7 +361,7 @@ public class playerHandler : MonoBehaviour
 
             if (successfulBlock)
             {
-                blockBeat = currentBeat;
+                //blockBeat = currentBeat;
                 successfulBlock = false;
             }
 
@@ -322,7 +390,7 @@ public class playerHandler : MonoBehaviour
         // check if hit bird
         if (birdHitReady)
         {
-            if ((Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Heavy Attack")) && !busy)
+            if ((Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Heavy Attack")) && (!busy || birdHitting))
             {
                 attackID++;
                 attackIDStart = attackID;
@@ -363,6 +431,7 @@ public class playerHandler : MonoBehaviour
                 beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
             }
         }
+
         if ((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0 || Input.GetAxisRaw("Move Axis 2") > 0) && !busy)
         {
             accX = 26f;
@@ -414,7 +483,7 @@ public class playerHandler : MonoBehaviour
     {
         accX = 0;
         velX = 0;
-        attackType = 2;
+        attackType = SLOWATTACK;
         if (beatState == SUCCESS || beatState == BEAT)
         {
             if (blockBeat == currentBeat - 1)
@@ -428,11 +497,21 @@ public class playerHandler : MonoBehaviour
             lastAttackSlow = true;
             punchingSuccess = true;
             busy = true;
-            
+            heldButton = true;
+
             // update which combo is used
             for (int i = 0; i < currentCombos.Count; i++)
             {
-                if (currentCombos[i][comboState + 1].type != SLOW)
+                if (currentCombos[i].Length > comboState + 1)
+                {
+                    if (currentCombos[i][comboState + 1].type != SLOW)
+                    {
+                        currentCombos.RemoveAt(i);
+                        i--;
+
+                    }
+                }
+                else
                 {
                     currentCombos.RemoveAt(i);
                     i--;
@@ -479,7 +558,12 @@ public class playerHandler : MonoBehaviour
             if (actionTimer >= punchSuccessTime)
             {
                 DisableHurtboxes();
-                if (currentCombos[0].Length - 1 == comboState) RestockCombos();
+                bool restock = true;
+                for (int i = 0; i < currentCombos.Count; i++)
+                {
+                    if (!(currentCombos[i].Length - 1 == comboState)) restock = false;
+                }
+                if (restock) RestockCombos();
                 
                 actionTimer = 0;
                 punchingSuccess = false;
@@ -490,6 +574,7 @@ public class playerHandler : MonoBehaviour
         }
         else
         {
+            if (!Input.GetButton("Heavy Attack")) heldButton = false;
 
             if (!beatPassed)
             {
@@ -497,17 +582,40 @@ public class playerHandler : MonoBehaviour
             }
             else
             {
-                if (beatState == SUCCESS)
+                if (beatState == BEAT)
                 {
-                    
-                    currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 1);
-                    currentCombos[0][comboState].soundAttackHit.start();
+                    bool holdAvailable = false;
 
-                    currentCombos[0][comboState].hitbox.enabled = true;
-                    transform.Translate(new Vector3(currentCombos[0][comboState].push * direction, 0));
+                    for (int i = 0; i < currentCombos.Count; i++)
+                    {
+                        if (currentCombos[i].Length > comboState + 1)
+                        {
+                            if (currentCombos[i][comboState + 1].type == HOLD)
+                            {
+                                holdAvailable = true;
+                                break;
+                            }
+                        }
+                    }
                     
+                    if (heldButton && holdAvailable && !chargingSP)
+                    {
+                        currentSP -= 8;
+                        actionTimer = 0;
+                        beatPassed = false;
+                        holdBeatPassed = false;
+                        HoldPunch();
+                    }
+                    else
+                    {
+                        currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 1);
+                        currentCombos[0][comboState].soundAttackHit.start();
 
-                    punchingActive = true;
+                        currentCombos[0][comboState].hitbox.enabled = true;
+                        transform.Translate(new Vector3(currentCombos[0][comboState].push * direction, 0));
+                        
+                        punchingActive = true;
+                    }
                 }
             }
         }
@@ -530,7 +638,7 @@ public class playerHandler : MonoBehaviour
     {
         accX = 0;
         velX = 0;
-        attackType = 1;
+        attackType = QUICKATTACK;
         if (beatState == SUCCESS || beatState == BEAT)
         {
             if (blockBeat == currentBeat - 1)
@@ -547,7 +655,16 @@ public class playerHandler : MonoBehaviour
 
             for (int i = 0; i < currentCombos.Count; i++)
             {
-                if (currentCombos[i][comboState+1].type != QUICK)
+                if (currentCombos[i].Length > comboState + 1)
+                {
+                    if (currentCombos[i][comboState + 1].type != QUICK)
+                    {
+                        currentCombos.RemoveAt(i);
+                        i--;
+
+                    }
+                }
+                else
                 {
                     currentCombos.RemoveAt(i);
                     i--;
@@ -588,8 +705,32 @@ public class playerHandler : MonoBehaviour
 
     void SuccessfulQuickPunch()
     {
+        // check for rapid attack
+        if (Input.GetButtonDown("Light Attack") && actionTimer > 0 && beatState == FAIL)
+        {
+            for (int i = 0; i < currentCombos.Count; i++)
+            {
+                if (currentCombos[i].Length > comboState + 1)
+                {
+                    if (currentCombos[i][comboState + 1].type == RAPID && !chargingSP)
+                    {
+                        currentSP -= 5;
+                        actionTimer = 0;
+                        beatPassed = false;
+                        holdBeatPassed = false;
+                        DisableHurtboxes();
+                        attackID++;
+                        attackIDStart = attackID;
+                        RapidPunch();
+                        break;
+                    }
+                }
+            }
+        }
+
         actionTimer += Time.deltaTime;
 
+        // end attack
         if (actionTimer >= quickPunchSuccessTime)
         {
             DisableHurtboxes();
@@ -600,9 +741,119 @@ public class playerHandler : MonoBehaviour
             busy = false;
             beatPassed = false;
             punchingActive = false;
-            
         }
-        
+    }
+
+    void RapidPunch()
+    {
+        accX = 0;
+        velX = 0;
+        attackType = RAPIDATTACK;
+        if (beatState == SUCCESS || beatState == BEAT || (beatState == FAIL && !secondRapid))
+        {
+            UpdateHitboxes();
+            lastAttackBeat = currentBeat;
+            lastAttackSlow = false;
+            punchingSuccess = true;
+            busy = true;
+
+            for (int i = 0; i < currentCombos.Count; i++)
+            {
+                if (currentCombos[i].Length > comboState + 1)
+                {
+                    if (currentCombos[i][comboState + 1].type != RAPID)
+                    {
+                        currentCombos.RemoveAt(i);
+                        i--;
+
+                    }
+                }
+                else
+                {
+                    currentCombos.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            if (currentCombos.Count == 0)
+            {
+                RestockCombos();
+
+                for (int i = 0; i < currentCombos.Count; i++)
+                {
+                    if (currentCombos[i][comboState + 1].type != RAPID)
+                    {
+                        currentCombos.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }
+
+            comboState++;
+
+            currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 0);
+            currentCombos[0][comboState].soundAttackHit.start();
+            currentCombos[0][comboState].hitbox.enabled = true;
+            transform.Translate(new Vector3(currentCombos[0][comboState].push * direction, 0));
+
+            SuccessfulRapidPunch();
+        }
+        else if (beatState == FAIL)
+        {
+            soundFail.start();
+            punchingFail = true;
+            busy = true;
+            secondRapid = false;
+            FailedPunch();
+        }
+    }
+
+    void SuccessfulRapidPunch()
+    {
+        //print(Input.GetButtonDown("Light Attack"));
+        if (Input.GetButtonDown("Light Attack") && actionTimer > 0.01)
+        {
+            for (int i = 0; i < currentCombos.Count; i++)
+            {
+                if (currentCombos[i].Length > comboState + 1)
+                {
+                    if (currentCombos[i][comboState + 1].type == RAPID && !chargingSP)
+                    {
+                        currentSP -= 5;
+                        actionTimer = 0;
+                        beatPassed = false;
+                        holdBeatPassed = false;
+                        secondRapid = true;
+                        DisableHurtboxes();
+                        attackID++;
+                        attackIDStart = attackID;
+                        beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
+                        RapidPunch();
+                        break;
+                    }
+                }
+            }
+        }
+
+        actionTimer += Time.deltaTime;
+
+        if ((actionTimer >= quickPunchSuccessTime && !secondRapid) || (actionTimer >= rapidPunchSuccessTime && secondRapid))
+        {
+            DisableHurtboxes();
+            bool restock = true;
+            for (int i = 0; i < currentCombos.Count; i++)
+            {
+                if (!(currentCombos[i].Length - 1 == comboState)) restock = false;
+            }
+            if (restock) RestockCombos();
+
+            actionTimer = 0;
+            punchingSuccess = false;
+            busy = false;
+            beatPassed = false;
+            punchingActive = false;
+            secondRapid = false;
+        }
     }
 
     void SpecialPunch()
@@ -614,7 +865,7 @@ public class playerHandler : MonoBehaviour
         }
         accX = 0;
         velX = 0;
-        attackType = 3;
+        attackType = SUPERATTACK;
         if (beatState == SUCCESS || beatState == BEAT)
         {
             Instantiate(effectHitSuper, transform.position + new Vector3(0, 1.5f), new Quaternion(0, 0, 0, 0));
@@ -639,6 +890,141 @@ public class playerHandler : MonoBehaviour
             busy = true;
             FailedPunch();
         }
+    }
+
+    void HoldPunch()
+    {
+        accX = 0;
+        velX = 0;
+        attackType = HOLDATTACK;
+        if (beatState == SUCCESS || beatState == BEAT)
+        {
+            if (blockBeat == currentBeat - 1)
+            {
+                CounterPunch();
+                return;
+            }
+
+            UpdateHitboxes();
+            lastAttackBeat = currentBeat;
+            lastAttackSlow = true;
+            punchingSuccess = true;
+            busy = true;
+
+            // update which combo is used
+            for (int i = 0; i < currentCombos.Count; i++)
+            {
+                if (currentCombos[i].Length > comboState + 1)
+                {
+                    if (currentCombos[i][comboState + 1].type != HOLD)
+                    {
+                        currentCombos.RemoveAt(i);
+                        i--;
+
+                    }
+                }
+                else
+                {
+                    currentCombos.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            if (currentCombos.Count == 0)
+            {
+                RestockCombos();
+
+                for (int i = 0; i < currentCombos.Count; i++)
+                {
+                    if (currentCombos[i][comboState + 1].type != HOLD)
+                    {
+                        currentCombos.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }
+
+            comboState++;
+
+            currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 0);
+            currentCombos[0][comboState].soundAttackHit.start();
+
+            SuccessfulHoldPunch();
+        }
+        else if (beatState == FAIL)
+        {
+            soundFail.start();
+            punchingFail = true;
+            busy = true;
+            FailedPunch();
+        }
+
+    }
+
+    void SuccessfulHoldPunch()
+    {
+        if (punchingActive)
+        {
+            actionTimer += Time.deltaTime;
+
+            if (actionTimer >= punchSuccessTime)
+            {
+                DisableHurtboxes();
+                if (currentCombos[0].Length - 1 == comboState) RestockCombos();
+
+                actionTimer = 0;
+                punchingSuccess = false;
+                busy = false;
+                beatPassed = false;
+                punchingActive = false;
+            }
+        }
+        else
+        {
+            if (!beatPassed)
+            {
+                if (beatState == FAIL) beatPassed = true;
+            }
+            else
+            {
+                if (beatState == BEAT || beatState == SUCCESS)
+                {
+                    holdBeatPassed = true;
+                    if (heldButton && Input.GetButtonUp("Heavy Attack"))
+                    {
+                        currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 1);
+                        currentCombos[0][comboState].soundAttackHit.start();
+
+                        currentCombos[0][comboState].hitbox.enabled = true;
+                        transform.Translate(new Vector3(currentCombos[0][comboState].push * direction, 0));
+
+                        Instantiate(pHoldAttack, currentCombos[0][comboState].hitbox.transform.position + new Vector3(0.5f, 0), new Quaternion(0, 0, 0, 0));
+
+                        punchingActive = true;
+                    }
+                }
+
+                if ((!Input.GetButton("Heavy Attack") || (beatState == FAIL && holdBeatPassed)) && !punchingActive)
+                {
+                    DisableHurtboxes();
+                    RestockCombos();
+
+                    soundFail.start();
+                    holdBeatPassed = false;
+                    punchingFail = true;
+                    busy = true;
+                    actionTimer = 0;
+                    punchingSuccess = false;
+                    beatPassed = false;
+                    punchingActive = false;
+                    heldButton = false;
+                    FailedPunch();
+
+                }
+            }
+            
+        }
+
     }
 
     void SuccessfulSpecialPunch()
@@ -677,8 +1063,6 @@ public class playerHandler : MonoBehaviour
     void SuccessfulCounterPunch()
     {
         actionTimer += Time.deltaTime;
-
-        print((actionTimer >= counterTime / 3) + " " + (attackID == attackIDStart));
 
         if (actionTimer >= counterTime / 3 && attackID == attackIDStart)
         {
@@ -890,6 +1274,8 @@ public class playerHandler : MonoBehaviour
         if (blocking)
         {
             successfulBlock = true;
+
+            blockBeat = currentBeat;
             
             Instantiate(pBlock, transform.position, new Quaternion(0, 0, 0, 0));
             //blockBeat = currentBeat;
@@ -922,6 +1308,9 @@ public class playerHandler : MonoBehaviour
             busy = true;
             beatPassed = false;
             punchingActive = false;
+            birdHitting = false;
+            secondRapid = false;
+            holdBeatPassed = false;
 
             DisableHurtboxes();
             RestockCombos();
@@ -996,7 +1385,7 @@ public class playerHandler : MonoBehaviour
         if (other.tag.Contains("enemy"))
         {
             if (!other.GetComponent<enemyHandler>().CheckHit(attackID)) return;
-
+            
             birdHitstun = false;
             int tDmg = 0;
             Vector3 tBox = new Vector3();
@@ -1036,7 +1425,7 @@ public class playerHandler : MonoBehaviour
             {
                 if (other.tag == "enemy")
                 {
-                    other.GetComponent<enemyHandler>().TakeDamage(tDmg, attackID, birdHitstun);
+                    tDmg = other.GetComponent<enemyHandler>().TakeDamage(tDmg, attackID, birdHitstun, attackType);
                 }
 
                 // update streak
@@ -1082,12 +1471,12 @@ public class playerHandler : MonoBehaviour
                 lastAttackHit = true;
                 lastHitBeat = currentBeat;
 
-                if (comboState == currentCombos[0].Length - 1)
+                if (comboState == currentCombos[0].Length - 1 && tDmg > 0)
                 {
                     mainCamera.GetComponent<ScreenShake>().TriggerShake(0.07f + 0.027f * tDmg, 0.2f + 0.08f * tDmg, 1.2f);
                     Instantiate(effectHitRed, tBox, new Quaternion(0, 0, 0, 0));
                 }
-                else if (tDmg < 8 && !birdHitstun) Instantiate(effectHitBlue, tBox, new Quaternion(0, 0, 0, 0));
+                else if (tDmg < 8 && tDmg > 0 && !birdHitstun) Instantiate(effectHitBlue, tBox, new Quaternion(0, 0, 0, 0));
 
                 //Instantiate(pAttackHit, tBox, new Quaternion(0, 0, 0, 0));
                 GameObject tDmgNumber = Instantiate(damageNumberEnemy, other.transform.position + new Vector3(0, 0.7f), new Quaternion(0, 0, 0, 0));

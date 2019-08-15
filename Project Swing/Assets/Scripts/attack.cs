@@ -11,7 +11,7 @@ public class Attack
     public BoxCollider2D hitbox;
     public FMOD.Studio.EventInstance soundAttackHit;
 
-    public readonly int QUICK = 0, SLOW = 1;
+    public readonly int QUICK = 0, SLOW = 1, HOLD = 2, RAPID = 3;
 }
 
 public class Attack1A : Attack
@@ -102,5 +102,44 @@ public class Attack2D : Attack
         damage = 1;
         hitbox = inHitbox;
         soundAttackHit = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_short");
+    }
+}
+
+public class Attack5A : Attack
+{
+    public Attack5A(BoxCollider2D inHitbox)
+    {
+        type = HOLD;
+        ID = 0;
+        push = 0.5f;
+        damage = 7;
+        hitbox = inHitbox;
+        soundAttackHit = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_super");
+    }
+}
+
+public class Attack6A : Attack
+{
+    public Attack6A(BoxCollider2D inHitbox)
+    {
+        type = RAPID;
+        ID = 0;
+        push = 0.2f;
+        damage = 2;
+        hitbox = inHitbox;
+        soundAttackHit = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Combo_donkey_kick");
+    }
+}
+
+public class Attack6B : Attack
+{
+    public Attack6B(BoxCollider2D inHitbox)
+    {
+        type = RAPID;
+        ID = 1;
+        push = 0.3f;
+        damage = 3;
+        hitbox = inHitbox;
+        soundAttackHit = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Combo_donkey_kick");
     }
 }

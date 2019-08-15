@@ -44,6 +44,9 @@ public class enemyHandler : MonoBehaviour
     protected bool inTheSky;
     protected int fallState;
 
+    protected bool immuneToSlow;
+    protected int defense;
+
     protected int currencyValue;
 
     protected bool busy;
@@ -207,16 +210,20 @@ public class enemyHandler : MonoBehaviour
         transform.Translate(new Vector3(velX * Time.deltaTime, 0));
     }
 
-    public virtual void TakeDamage(int dmg, int attackID, bool specialHitstun = false)
+    public virtual int TakeDamage(int dmg, int attackID, bool specialHitstun = false, int attackType = 1)
     {
         lastAttackHitBy = attackID;
 
+        int finalDmg = dmg;
+
         randomHitValue = Random.Range(0f, 1f);
-        currentHP -= dmg;
-        if (currentHP <= 0) Die(dmg);
+        finalDmg -= defense;
+        if (immuneToSlow && (attackType == 1 || attackType == 6)) finalDmg = 0;
+        currentHP -= finalDmg;
+        if (currentHP <= 0) Die(finalDmg);
         else
         {
-            if (dmg >= hitstunLimit || specialHitstun)
+            if (finalDmg >= hitstunLimit || specialHitstun)
             {
                 attackActive = false;
                 hitstun = true;
@@ -246,9 +253,11 @@ public class enemyHandler : MonoBehaviour
             if (player.transform.position.x < transform.position.x) hitstunDirection = LEFT;
             else hitstunDirection = RIGHT;
             invincible = true;
-            if (dmg >= knockbackLimit) knockback = true;
-            if (dmg >= bigKnockbackLimit) bigKnockback = true;
+            if (finalDmg >= knockbackLimit) knockback = true;
+            if (finalDmg >= bigKnockbackLimit) bigKnockback = true;
         }
+
+        return finalDmg;
     }
 
     public virtual bool CheckHit(int attackID)
