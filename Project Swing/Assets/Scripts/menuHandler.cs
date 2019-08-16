@@ -101,6 +101,13 @@ public class menuHandler : MonoBehaviour {
         {
             Back();
         }
+
+        if (Input.GetButtonDown("Heavy Attack"))
+        {
+            soundUIStart.start();
+            soundMenuMusic.setParameterValue("End", 1);
+            SceneManager.LoadScene("Level4Scene");
+        }
     }
 
     public void PlayLevel(int num)

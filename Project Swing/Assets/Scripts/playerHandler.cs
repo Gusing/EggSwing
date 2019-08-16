@@ -66,12 +66,13 @@ public class playerHandler : MonoBehaviour
 
     public bool punchingSuccess;
     bool punchingFail;
-    bool punchingActive;
+    public bool punchingActive;
     float punchSuccessTime = 0.32f;
     float quickPunchSuccessTime = 0.3f;
     float specialPunchSuccessTime = 0.7f;
     float rapidPunchSuccessTime = 0.2f;
     float punchFailTime = 0.5f;
+    int localBPM;
     public int attackType;
     bool usingSuper;
     bool beatPassed;
@@ -161,6 +162,7 @@ public class playerHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundDie;
     FMOD.Studio.EventInstance soundFail;
     FMOD.Studio.EventInstance soundBlock;
+    FMOD.Studio.EventInstance soundEnemyBlock;
 
     FMOD.Studio.EventInstance soundPickupCurrency;
 
@@ -177,6 +179,7 @@ public class playerHandler : MonoBehaviour
         soundFail = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Miss_Brad");
         soundPickupCurrency = FMODUnity.RuntimeManager.CreateInstance("event:/Object/Pickup_gold_random");
         soundBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Block");
+        soundEnemyBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/HitArmor");
 
         mainCamera = GameObject.Find("Main Camera");
         beatIndicator = GameObject.Find("BeatIndicatorB");
@@ -188,10 +191,8 @@ public class playerHandler : MonoBehaviour
         allCombos.Add(new Attack[] { new Attack2A(hitboxAttack2A), new Attack2B(hitboxAttack2B), new Attack2C(hitboxAttack2C) });
         allCombos.Add(new Attack[] { new Attack2A(hitboxAttack2A), new Attack2B(hitboxAttack2B), new Attack2C(hitboxAttack2C), new Attack6A(hitboxAttack6A), new Attack6B(hitboxAttack6B) });
         allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack1B(hitboxAttack1B) });
-        allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack1B(hitboxAttack1B), new Attack5A(hitboxAttack5A) });
         allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack2D(hitboxAttack2D), new Attack1C(hitboxAttack1C), new Attack5A(hitboxAttack5A), new Attack2D(hitboxAttack2C), new Attack6B(hitboxAttack6B), new Attack6B(hitboxAttack6B) });
         allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack5A(hitboxAttack5A) });
-        allCombos.Add(new Attack[] { new Attack2A(hitboxAttack2A), new Attack2B(hitboxAttack2B), new Attack6A(hitboxAttack6A), new Attack6B(hitboxAttack6B) });
 
         currentCombos = new List<Attack[]>();
         RestockCombos();
@@ -210,6 +211,7 @@ public class playerHandler : MonoBehaviour
         quickPunchSuccessTime = (60f / mainHandler.currentBpm) * 0.6f;
         specialPunchSuccessTime = (60f / mainHandler.currentBpm) * 1f;
         rapidPunchSuccessTime = (60f / mainHandler.currentBpm) * 0.5f;
+        localBPM = mainHandler.currentBpm;
 
         localRenderer = GetComponent<SpriteRenderer>();
 
@@ -320,6 +322,16 @@ public class playerHandler : MonoBehaviour
             streakLevel = 0;
             currentStreak = 0;
             textStreak.enabled = false;
+        }
+
+        // update bpm
+        if (localBPM != mainHandler.currentBpm)
+        {
+            localBPM = mainHandler.currentBpm;
+            punchSuccessTime = (60f / mainHandler.currentBpm) * 0.75f;
+            quickPunchSuccessTime = (60f / mainHandler.currentBpm) * 0.6f;
+            specialPunchSuccessTime = (60f / mainHandler.currentBpm) * 1f;
+            rapidPunchSuccessTime = (60f / mainHandler.currentBpm) * 0.5f;
         }
 
         // update birds
@@ -600,7 +612,7 @@ public class playerHandler : MonoBehaviour
                     
                     if (heldButton && holdAvailable && !chargingSP)
                     {
-                        currentSP -= 8;
+                        currentSP -= 10;
                         actionTimer = 0;
                         beatPassed = false;
                         holdBeatPassed = false;
@@ -1000,6 +1012,8 @@ public class playerHandler : MonoBehaviour
 
                         Instantiate(pHoldAttack, currentCombos[0][comboState].hitbox.transform.position + new Vector3(0.5f, 0), new Quaternion(0, 0, 0, 0));
 
+                        beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
+
                         punchingActive = true;
                     }
                 }
@@ -1396,7 +1410,7 @@ public class playerHandler : MonoBehaviour
                 {
                     currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 2);
                     if (other.tag == "enemyDummy") currentCombos[0][comboState].soundAttackHit.setParameterValue("Material", 1);
-                    currentCombos[0][comboState].soundAttackHit.start();
+                    
                     tDmg = currentCombos[0][comboState].damage;
                     tBox = (Vector2)currentCombos[0][comboState].hitbox.transform.position + currentCombos[0][comboState].hitbox.offset;
                 }
@@ -1426,12 +1440,17 @@ public class playerHandler : MonoBehaviour
                 if (other.tag == "enemy")
                 {
                     tDmg = other.GetComponent<enemyHandler>().TakeDamage(tDmg, attackID, birdHitstun, attackType);
+                    if (comboState >= 0)
+                    {
+                        if (tDmg > 0) currentCombos[0][comboState].soundAttackHit.start();
+                        else soundEnemyBlock.start();
+                    }
                 }
 
                 // update streak
                 if (mainHandler.staticLevel > 0)
                 {
-                    currentStreak++;
+                    if (tDmg > 0) currentStreak++;
                     textStreak.enabled = true;
                     textStreak.transform.localEulerAngles = new Vector3(0, 0, Random.Range(-4f, 4f));
                     streakTimer = 0;
@@ -1479,6 +1498,7 @@ public class playerHandler : MonoBehaviour
                 else if (tDmg < 8 && tDmg > 0 && !birdHitstun) Instantiate(effectHitBlue, tBox, new Quaternion(0, 0, 0, 0));
 
                 //Instantiate(pAttackHit, tBox, new Quaternion(0, 0, 0, 0));
+                print("num");
                 GameObject tDmgNumber = Instantiate(damageNumberEnemy, other.transform.position + new Vector3(0, 0.7f), new Quaternion(0, 0, 0, 0));
                 tDmgNumber.GetComponent<dmgNumberHandler>().Init(tDmg);
             }

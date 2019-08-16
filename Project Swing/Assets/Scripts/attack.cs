@@ -112,9 +112,9 @@ public class Attack5A : Attack
         type = HOLD;
         ID = 0;
         push = 0.5f;
-        damage = 7;
+        damage = 6;
         hitbox = inHitbox;
-        soundAttackHit = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_super");
+        soundAttackHit = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/HoldAttack");
     }
 }
 

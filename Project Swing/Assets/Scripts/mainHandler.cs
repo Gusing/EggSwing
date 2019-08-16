@@ -77,6 +77,7 @@ public class mainHandler : MonoBehaviour {
     EnemySpawn[] level1Spawn;
     EnemySpawn[] level2Spawn;
     EnemySpawn[] level3Spawn;
+    EnemySpawn[] level4Spawn;
     EnemySpawn[] testSpawn;
     EnemySpawn[] currentLevelSpawn;
     float[] endWaitTimer;
@@ -176,7 +177,7 @@ public class mainHandler : MonoBehaviour {
         };
 
         level1Spawn = new EnemySpawn[] {
-            new EnemySpawn(6, new GameObject[] { enemyC }, new float[] { 10 }, new bool[] { false }, 0 ),
+            new EnemySpawn(6, new GameObject[] { enemyD }, new float[] { 10 }, new bool[] { false }, 0 ),
             new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false }),
             new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 }, new bool[] { false }),
             new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 0 }, new bool[] { true }, 1),
@@ -220,17 +221,36 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(0, new GameObject[] { enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA }, new float[] { 10, 11, 12, 13, 14, 15, -10, -11, -12, -13, -14, -15, 0 }, new bool[] { false, false,false,false,false,false,false,false,false,false,false,false,true })
         };
 
+        level4Spawn = new EnemySpawn[] {
+            new EnemySpawn(8, new GameObject[] { enemyA, enemyC }, new float[] { -4, 11 }, new bool[] { true, false }),
+            new EnemySpawn(5, new GameObject[] { enemyA, enemyA }, new float[] { -11, -13 }, new bool[] { false, false }),
+            new EnemySpawn(2, new GameObject[] { enemyA, enemyA }, new float[] { 11, 13 }, new bool[] { false, false }),
+            new EnemySpawn(6, new GameObject[] { enemyB, enemyC }, new float[] { -2, 7 }, new bool[] { true, true }, 1),
+            new EnemySpawn(0, new GameObject[] { enemyD, enemyA }, new float[] { -13, 2 }, new bool[] { false, true }),
+            new EnemySpawn(3, new GameObject[] { enemyA, enemyB }, new float[] { 0, 15 }, new bool[] { true, false }, 1),
+            new EnemySpawn(1, new GameObject[] { enemyD, enemyD }, new float[] { -2, 2 }, new bool[] { true, true }),
+            new EnemySpawn(3, new GameObject[] { enemyB, enemyB }, new float[] { -11, 11 }, new bool[] { false, false }),
+            new EnemySpawn(6, new GameObject[] { enemyC, enemyC }, new float[] { 13, 15 }, new bool[] { true, false }, 1),
+            new EnemySpawn(2, new GameObject[] { enemyD }, new float[] { -6 }, new bool[] { true }),
+            new EnemySpawn(2, new GameObject[] { enemyD }, new float[] { 5 }, new bool[] { true }),
+            new EnemySpawn(2, new GameObject[] { enemyC }, new float[] { -2 }, new bool[] { true }),
+            new EnemySpawn(2, new GameObject[] { enemyC }, new float[] { 3 }, new bool[] { true }),
+            new EnemySpawn(8, new GameObject[] { enemyB, enemyB }, new float[] { -11, 11 }, new bool[] { false, false }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyB, enemyC, enemyD, enemyA, enemyA, enemyD, enemyC, enemyB }, new float[] { -8, -6, -4, -2, 2, 4, 6, 8 }, new bool[] { true, true, true, true, true, true, true, true }),
+        };
+
         testSpawn = new EnemySpawn[] {
             new EnemySpawn(5, new GameObject[] { enemyB }, new float[] { 2 }, new bool[] { true }),
 
         };
 
-        endWaitTimer = new float[] { 6.3f, 5f, 7.4f, 0, 0, 0, 0, 5, 5, 5 };
+        endWaitTimer = new float[] { 6.3f, 5f, 7.4f, 5f, 0, 0, 0, 5, 5, 5 };
 
         if (level <= 0) currentLevelSpawn = levelTrainingSpawn;
         if (level == 1) currentLevelSpawn = level1Spawn;
         if (level == 2) currentLevelSpawn = level2Spawn;
         if (level == 3) currentLevelSpawn = level3Spawn;
+        if (level == 4) currentLevelSpawn = level4Spawn;
         if (level == 10) currentLevelSpawn = testSpawn;
         if (level == 100)
         {
@@ -273,7 +293,7 @@ public class mainHandler : MonoBehaviour {
             {
                 songStarted = false;
             }
-            if (name.Contains("12") || name.Contains("11") || name.Contains("10") || name.Contains("13") || name.Contains("14"))
+            if (name.Contains("12") || name.Contains("11") || name.Contains("10") || name.Contains("13") || name.Contains("14") || name.Contains("21"))
             {
                 if (name == "128") soundMusic.setParameterValue("Intro", 1);
                 bpm = int.Parse(name);

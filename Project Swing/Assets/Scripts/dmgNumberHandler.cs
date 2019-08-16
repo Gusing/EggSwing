@@ -19,6 +19,7 @@ public class dmgNumberHandler : MonoBehaviour {
     {
         dmgText.text = dmg.ToString();
         transform.Translate(new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f)));
+        if (dmg == 0) GetComponentInChildren<Text>().color = new Color(0.5f, 0.5f, 0.5f);
     }
 	
 	// Update is called once per frame

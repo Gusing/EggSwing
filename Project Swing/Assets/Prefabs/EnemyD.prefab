@@ -332,6 +332,7 @@ MonoBehaviour:
   spriteAttackPre: {fileID: 0}
   spriteAttackActive: {fileID: 0}
   spriteHitstun: {fileID: 0}
+  rendererTemp: {fileID: 5858825561181051302}
 --- !u!1 &1535724378489824
 GameObject:
   m_ObjectHideFlags: 0

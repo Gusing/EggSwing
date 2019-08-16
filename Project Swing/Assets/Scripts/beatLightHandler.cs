@@ -42,5 +42,6 @@ public class beatLightHandler : MonoBehaviour
         if (level == 1) localRenderer.sprite = spriteGood;
         if (level == 2) localRenderer.sprite = spriteGreat;
         activated = true;
+        timer = 0;
     }
 }

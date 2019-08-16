@@ -13,10 +13,10 @@ public class beatIndicatorHandlerB : MonoBehaviour
     public SpriteRenderer rendererIcon;
     public SpriteRenderer rendererFeedback;
 
-    public float timeBeforeCollision = 0.5f;
-    public static float staticTimeBeforeCollision;
-    public float startingX = 2;
-    public static float staticStartingX;
+    float timeBeforeCollision = 0.5f;
+    static float staticTimeBeforeCollision;
+    float startingX = 2;
+    static float staticStartingX;
     public float greatLimit = 0.04f;
     float bpmInSeconds;
     float timeToSpawn;
@@ -24,8 +24,10 @@ public class beatIndicatorHandlerB : MonoBehaviour
     bool readyforNextRing;
     bool ringChanged;
     float hitTimer;
+    float hitTime;
     int localBpm;
     int hitState;
+    bool songStarted;
     
     List<GameObject> lines;
 
@@ -44,8 +46,13 @@ public class beatIndicatorHandlerB : MonoBehaviour
 
         bpmInSeconds = (float)60 / (float)localBpm;
 
-        timeToSpawn = ((bpmInSeconds - timeBeforeCollision) + bpmInSeconds) % bpmInSeconds;
+        hitTime = 0.13f;
+        if (localBpm > 130) hitTime = 0.1f;
 
+        recordedBeat = false;
+
+        //timeToSpawn = ((bpmInSeconds - timeBeforeCollision) + bpmInSeconds) % bpmInSeconds;
+        
         print("60 / bpm: " + (float)60 / (float)localBpm + ", time to spawn: " + timeToSpawn);
     }
 
@@ -54,11 +61,39 @@ public class beatIndicatorHandlerB : MonoBehaviour
     {
         if (mainHandler.currentBpm != localBpm)
         {
+           
             localBpm = mainHandler.currentBpm;
 
             bpmInSeconds = (float)60 / (float)localBpm;
 
-            timeToSpawn = ((bpmInSeconds - timeBeforeCollision) + bpmInSeconds) % bpmInSeconds;
+            hitTime = 0.13f;
+            if (localBpm > 130) hitTime = 0.1f;
+
+            for (int i = lines.Count - 8; i < lines.Count; i++)
+            {
+                lines[i].GetComponent<beatLineHandler>().Kill();
+            }
+            lines.Clear();
+            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+            lines[lines.Count - 1].transform.parent = gameObject.transform;
+            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(true, bpmInSeconds, 1);
+            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+            lines[lines.Count - 1].transform.parent = gameObject.transform;
+            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(true, bpmInSeconds, 2);
+            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+            lines[lines.Count - 1].transform.parent = gameObject.transform;
+            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(true, bpmInSeconds, 3);
+            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+            lines[lines.Count - 1].transform.parent = gameObject.transform;
+            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false, bpmInSeconds, 1);
+            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+            lines[lines.Count - 1].transform.parent = gameObject.transform;
+            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false, bpmInSeconds, 2);
+            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+            lines[lines.Count - 1].transform.parent = gameObject.transform;
+            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false, bpmInSeconds, 3);
+
+            //timeToSpawn = ((bpmInSeconds - timeBeforeCollision) + bpmInSeconds) % bpmInSeconds;
 
             print("60 / bpm: " + (float)60 / (float)localBpm + ", time to spawn: " + timeToSpawn);
         }
@@ -72,25 +107,56 @@ public class beatIndicatorHandlerB : MonoBehaviour
         {
             hitTimer += Time.deltaTime;
 
-            if (hitState > 0) rendererIcon.transform.localScale = new Vector3(1.5f - 0.5f * (hitTimer / 0.13f), 1.5f - 0.5f * (hitTimer / 0.13f), 1);
+            if (hitState > 0) rendererIcon.transform.localScale = new Vector3(1.5f - 0.5f * (hitTimer / hitTime), 1.5f - 0.5f * (hitTimer / hitTime), 1);
 
-            if (hitTimer >= 0.13f)
+            if (hitTimer >= hitTime)
             {
                 hitTimer = 0;
                 ringChanged = false;
             }
         }
+        
+        if (mainHandler.songStarted && !songStarted)
+        {
+            songStarted = true;
+            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+            lines[lines.Count - 1].transform.parent = gameObject.transform;
+            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(true, bpmInSeconds, 1);
+            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+            lines[lines.Count - 1].transform.parent = gameObject.transform;
+            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(true, bpmInSeconds, 2);
+            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+            lines[lines.Count - 1].transform.parent = gameObject.transform;
+            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(true, bpmInSeconds, 3);
+            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+            lines[lines.Count - 1].transform.parent = gameObject.transform;
+            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false, bpmInSeconds, 1);
+            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+            lines[lines.Count - 1].transform.parent = gameObject.transform;
+            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false, bpmInSeconds, 2);
+            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+            lines[lines.Count - 1].transform.parent = gameObject.transform;
+            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false, bpmInSeconds, 3);
+        }
+        
 
         if (mainHandler.currentState == 2 && !recordedBeat)
         {
             recordedBeat = true;
-            readyforNextRing = true;
+            //readyforNextRing = true;
+            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+            lines[lines.Count - 1].transform.parent = gameObject.transform;
+            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(true, bpmInSeconds);
+            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+            lines[lines.Count - 1].transform.parent = gameObject.transform;
+            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false, bpmInSeconds);
         }
         if (mainHandler.currentState == 0 && recordedBeat)
         {
             recordedBeat = false;
         }
 
+        /*
         if (mainHandler.currentBeatTimer >= timeToSpawn && readyforNextRing)
         {
             readyforNextRing = false;
@@ -101,6 +167,7 @@ public class beatIndicatorHandlerB : MonoBehaviour
             lines[lines.Count - 1].transform.parent = gameObject.transform;
             lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false);
         }
+        */
     }
 
     public void PlayerInput()

@@ -16,6 +16,8 @@ public class enemyDHandler : enemyHandler
     public Sprite spriteAttackActive;
     public Sprite spriteHitstun;
 
+    public SpriteRenderer rendererTemp;
+
     float dodgeTimer;
     float dodgeTime;
     bool dodging;
@@ -41,8 +43,8 @@ public class enemyDHandler : enemyHandler
 
         stopDistance = 1.1f;
 
-        dodgeTime = 0.3f;
-        dodgeCooldownTime = 1;
+        dodgeTime = 0.2f;
+        dodgeCooldownTime = (60f / mainHandler.currentBpm) * 1.1f;
 
         damage.Add(3);
 
@@ -68,7 +70,7 @@ public class enemyDHandler : enemyHandler
 
         if (dead) return;
 
-        base.Update();
+        if (!dodging) base.Update();
 
         if (invincible) Invincible();
         if (attacking) AttackA();
@@ -77,7 +79,7 @@ public class enemyDHandler : enemyHandler
         if (dodging) Dodge();
 
         // check for attack
-        if (Vector2.Distance(transform.position, player.transform.position) < 1.8f && !attacking && !fallFromAbove && !hitstun && attackRecovery <= 0 && !player.GetComponent<playerHandler>().dead && !dodging)
+        if (Vector2.Distance(transform.position, player.transform.position) < 1.7f && !attacking && !fallFromAbove && !hitstun && attackRecovery <= 0 && !player.GetComponent<playerHandler>().dead && !dodging)
         {
             localSpriteRenderer.sprite = spriteIdle;
             UpdateHitboxes();
@@ -102,11 +104,24 @@ public class enemyDHandler : enemyHandler
                 dodgeCooldown = false;
             }
         }
-        else if (player.GetComponent<playerHandler>().punchingSuccess && player.GetComponent<playerHandler>().attackType == 2 && !dodging)
+        else if (player.GetComponent<playerHandler>().punchingSuccess && player.GetComponent<playerHandler>().attackType == 2 && !player.GetComponent<playerHandler>().punchingActive && !dodging && Vector2.Distance(transform.position, player.transform.position) < 2f)
         {
+            print("start dodge");
+            attackRecovery = 0;
+            hitboxBody.offset = new Vector2(Mathf.Abs(hitboxBody.offset.x) * direction, hitboxBody.offset.y);
+            if (player.transform.position.x < transform.position.x)
+            {
+                direction = LEFT;
+                localSpriteRenderer.flipX = false;
+            }
+            else
+            {
+                direction = RIGHT;
+                localSpriteRenderer.flipX = true;
+            }
             attacking = false;
             busy = true;
-            velX = -20 * direction;
+            velX = -15 * direction;
             dodging = true;
             hitboxBody.enabled = false;
         }
@@ -164,8 +179,19 @@ public class enemyDHandler : enemyHandler
     {
         dodgeTimer += Time.deltaTime;
         transform.Translate(new Vector3(velX * Time.deltaTime, 0));
-        if (dodgeTimer >= dodgeTime)
+        if ((dodgeTimer >= dodgeTime) || (transform.position.x < player.transform.position.x - 1.5f && direction == LEFT) || (transform.position.x > player.transform.position.x + 1.5f && direction == RIGHT))
         {
+            hitboxBody.offset = new Vector2(Mathf.Abs(hitboxBody.offset.x) * direction, hitboxBody.offset.y);
+            if (player.transform.position.x < transform.position.x)
+            {
+                direction = LEFT;
+                localSpriteRenderer.flipX = false;
+            }
+            else
+            {
+                direction = RIGHT;
+                localSpriteRenderer.flipX = true;
+            }
             dodging = false;
             dodgeTimer = 0;
             velX = 0;
@@ -173,5 +199,11 @@ public class enemyDHandler : enemyHandler
             busy = false;
             dodgeCooldown = true; ;
         }
+    }
+
+    public override void Die(int dmg)
+    {
+        rendererTemp.enabled = false;
+        base.Die(dmg);
     }
 }
