@@ -27,6 +27,7 @@ public class playerHandler : MonoBehaviour
 
     public GameObject damageNumberEnemy;
     public GameObject damageNumberPlayer;
+    public GameObject scoreBonusText;
 
     public List<GameObject> birds;
 
@@ -120,12 +121,19 @@ public class playerHandler : MonoBehaviour
     float currentSP;
     public float maxSP = 20;
     bool chargingSP;
+    public int currentScore;
+    float currentMultiplier;
+    public int currentRank;
+    List<Vector2> previousAttacks;
 
     public SpriteRenderer rendererHPFill;
     public SpriteMask maskHPFill;
     public SpriteRenderer[] renderersSpecialCharges;
     public Text textStreak;
     public Text textCurrency;
+    public Text textScore;
+    public Text textMultiplier;
+    public Text textRank;
     public SpriteMask maskSPFill;
     public SpriteRenderer rendererSPFill;
     public Sprite spriteSPBar1;
@@ -163,6 +171,7 @@ public class playerHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundFail;
     FMOD.Studio.EventInstance soundBlock;
     FMOD.Studio.EventInstance soundEnemyBlock;
+    FMOD.Studio.EventInstance soundSPBarFull;
 
     FMOD.Studio.EventInstance soundPickupCurrency;
 
@@ -180,6 +189,7 @@ public class playerHandler : MonoBehaviour
         soundPickupCurrency = FMODUnity.RuntimeManager.CreateInstance("event:/Object/Pickup_gold_random");
         soundBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Block");
         soundEnemyBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/HitArmor");
+        soundSPBarFull = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/BarFull");
 
         mainCamera = GameObject.Find("Main Camera");
         beatIndicator = GameObject.Find("BeatIndicatorB");
@@ -206,12 +216,16 @@ public class playerHandler : MonoBehaviour
         direction = 1;
         blockTime = (60f / mainHandler.currentBpm) * 1.5f;
         blockBeat = -10;
+        currentMultiplier = 1;
         currentSP = maxSP;
         punchSuccessTime = (60f / mainHandler.currentBpm) * 0.75f;
         quickPunchSuccessTime = (60f / mainHandler.currentBpm) * 0.6f;
         specialPunchSuccessTime = (60f / mainHandler.currentBpm) * 1f;
         rapidPunchSuccessTime = (60f / mainHandler.currentBpm) * 0.5f;
         localBPM = mainHandler.currentBpm;
+
+        textRank.text = "E";
+        textMultiplier.enabled = false;
 
         localRenderer = GetComponent<SpriteRenderer>();
 
@@ -254,7 +268,7 @@ public class playerHandler : MonoBehaviour
             textStreak.transform.localScale = new Vector3((0.5f + streakLevel * 0.15f) - (streakTimer / streakDisappearDelay) * 0.5f, (0.5f + streakLevel * 0.15f) - (streakTimer / streakDisappearDelay) * 0.5f, 1);
         }
 
-        if (mainHandler.staticLevel > 0) textCurrency.text = "Munny: " + currentCurrency;
+        if (mainHandler.staticLevel > 0) textCurrency.text = "$" + currentCurrency;
 
         // return if dead
         if (dead)
@@ -280,6 +294,7 @@ public class playerHandler : MonoBehaviour
         if (currentSP < maxSP) currentSP += 1.7f * Time.deltaTime;
         if (currentSP > maxSP)
         {
+            soundSPBarFull.start();
             currentSP = maxSP;
             chargingSP = false;
             rendererSPFill.sprite = spriteSPBar1;
@@ -322,8 +337,49 @@ public class playerHandler : MonoBehaviour
             streakLevel = 0;
             currentStreak = 0;
             textStreak.enabled = false;
+            textMultiplier.enabled = false;
         }
 
+        // update score
+        textScore.text = currentScore.ToString();
+
+        // update multiplier
+        textMultiplier.text = "x " + currentMultiplier;
+
+        // update rank
+        if (currentRank < 5)
+        {
+            if (currentScore > mainHandler.currentRankLimits[currentRank])
+            {
+                currentRank++;
+                if (currentRank == 1)
+                {
+                    textRank.text = "D";
+                    textRank.color = new Color(0.57f, 0.6f, 0.91f);
+                }
+                if (currentRank == 2)
+                {
+                    textRank.text = "C";
+                    textRank.color = new Color(0.94f, 0.69f, 0.3f);
+                }
+                if (currentRank == 3)
+                {
+                    textRank.text = "B";
+                    textRank.color = new Color(0.2f, 0.76f, 1f);
+                }
+                if (currentRank == 4)
+                {
+                    textRank.text = "A";
+                    textRank.color = new Color(1f, 0.05f, 0.95f);
+                }
+                if (currentRank == 5)
+                {
+                    textRank.text = "S";
+                    textRank.color = new Color(1f, 0.9f, 0f);
+                }
+            }
+        }
+        
         // update bpm
         if (localBPM != mainHandler.currentBpm)
         {
@@ -1301,6 +1357,7 @@ public class playerHandler : MonoBehaviour
             currentStreak = 0;
             streakLevel = 0;
             textStreak.enabled = false;
+            textMultiplier.enabled = false;
 
             hitstunDirection = hitDirection;
 
@@ -1362,6 +1419,12 @@ public class playerHandler : MonoBehaviour
         streakTimer = 0;
         streakLevel = 0;
         currentStreak = 0;
+        currentScore = 0;
+        currentRank = 0;
+        currentMultiplier = 1;
+        textRank.text = "E";
+        textRank.color = new Color(0.65f, 0.65f, 0.65f);
+        textMultiplier.enabled = false;
         textStreak.enabled = false;
         transform.position = new Vector3(0, transform.position.y, transform.position.z);
     }
@@ -1380,6 +1443,7 @@ public class playerHandler : MonoBehaviour
         // pick up
         if (other.tag == "currency" && hitboxPickup.IsTouching(other))
         {
+            currentScore += (int)(5 * currentMultiplier);
             soundPickupCurrency.start();
             currentCurrency++;
             Instantiate(pCurrencyPick, other.transform.position, new Quaternion(0, 0, 0, 0));
@@ -1457,33 +1521,47 @@ public class playerHandler : MonoBehaviour
 
                     if (currentStreak >= 100 && streakLevel != 6)
                     {
+                        currentMultiplier = 2;
                         streakLevel = 6;
                         textStreak.color = new Color(0.3f, 1f, 0.9f);
+                        textMultiplier.color = new Color(0.3f, 1f, 0.9f);
                     }
                     if (currentStreak >= 75 && currentStreak < 100 && streakLevel != 5)
                     {
+                        currentMultiplier = 1.7f;
                         streakLevel = 5;
                         textStreak.color = new Color(0.74f, 0.31f, 1f);
+                        textMultiplier.color = new Color(0.74f, 0.31f, 1f);
                     }
                     if (currentStreak >= 50 && currentStreak < 75 && streakLevel != 4)
                     {
+                        currentMultiplier = 1.5f;
                         streakLevel = 4;
                         textStreak.color = new Color(0.1f, 1f, 0.1f);
+                        textMultiplier.color = new Color(0.1f, 1f, 0.1f);
                     }
                     else if (currentStreak >= 30 && currentStreak < 50 && streakLevel != 3)
                     {
+                        currentMultiplier = 1.3f;
                         streakLevel = 3;
                         textStreak.color = new Color(0.93f, 0.26f, 0.37f);
+                        textMultiplier.color = new Color(0.93f, 0.26f, 0.37f);
                     }
                     else if (currentStreak >= 10 && currentStreak < 30 && streakLevel != 2)
                     {
+                        currentMultiplier = 1.1f;
                         streakLevel = 2;
                         textStreak.color = new Color(0.85f, 0.85f, 0.4f);
+                        textMultiplier.color = new Color(0.85f, 0.85f, 0.4f);
+                        textMultiplier.enabled = true;
                     }
                     else if (currentStreak >= 0 && currentStreak < 10 && streakLevel != 1)
                     {
+                        currentMultiplier = 1;
                         streakLevel = 1;
                         textStreak.color = new Color(0.4f, 0.49f, 0.41f);
+                        textMultiplier.color = new Color(0.4f, 0.49f, 0.41f);
+                        textMultiplier.enabled = false;
                     }
                 }
 
@@ -1492,10 +1570,20 @@ public class playerHandler : MonoBehaviour
 
                 if (comboState == currentCombos[0].Length - 1 && tDmg > 0)
                 {
+                    if (mainHandler.staticLevel > 0)
+                    {
+                        GameObject tScoreBonus = Instantiate(scoreBonusText, new Vector3(0, 0f), new Quaternion(0, 0, 0, 0));
+                        tScoreBonus.GetComponent<scoreTextHandler>().Init("Combo Finisher", 30);
+                        currentScore += (int)(70 * currentMultiplier);
+                    }
                     mainCamera.GetComponent<ScreenShake>().TriggerShake(0.07f + 0.027f * tDmg, 0.2f + 0.08f * tDmg, 1.2f);
                     Instantiate(effectHitRed, tBox, new Quaternion(0, 0, 0, 0));
                 }
-                else if (tDmg < 8 && tDmg > 0 && !birdHitstun) Instantiate(effectHitBlue, tBox, new Quaternion(0, 0, 0, 0));
+                else if (tDmg < 8 && tDmg > 0 && !birdHitstun)
+                {
+                    if (mainHandler.staticLevel > 0) currentScore += (int)(50 * currentMultiplier);
+                    Instantiate(effectHitBlue, tBox, new Quaternion(0, 0, 0, 0));
+                }
 
                 //Instantiate(pAttackHit, tBox, new Quaternion(0, 0, 0, 0));
                 print("num");

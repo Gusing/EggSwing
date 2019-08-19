@@ -483,6 +483,8 @@ MonoBehaviour:
     type: 3}
   damageNumberPlayer: {fileID: 1188790007723088, guid: c7a6b36ed9e1d6747909971dea30d693,
     type: 3}
+  scoreBonusText: {fileID: 1188790007723088, guid: 55d1e258e310c5b418f84d12560d5597,
+    type: 3}
   birds: []
   hitboxAttack1A: {fileID: 61741449176305972}
   hitboxAttack1B: {fileID: 61559435943942068}
@@ -498,10 +500,15 @@ MonoBehaviour:
   hitboxAttack6B: {fileID: 4614797078207926141}
   hitboxAttackBird: {fileID: 7024313204007356432}
   hitboxPickup: {fileID: 2233312929610599042}
+  punchingSuccess: 0
+  punchingActive: 0
+  attackType: 0
   currentStreak: 0
   streakLevel: 0
   currentCurrency: 0
   maxSP: 20
+  currentScore: 0
+  currentRank: 0
   rendererHPFill: {fileID: 0}
   maskHPFill: {fileID: 0}
   renderersSpecialCharges:
@@ -510,6 +517,9 @@ MonoBehaviour:
   - {fileID: 0}
   textStreak: {fileID: 0}
   textCurrency: {fileID: 0}
+  textScore: {fileID: 0}
+  textMultiplier: {fileID: 0}
+  textRank: {fileID: 0}
   maskSPFill: {fileID: 6076490977180517456}
   rendererSPFill: {fileID: 2361852901421952468}
   spriteSPBar1: {fileID: 21300000, guid: 0dc46d9e55ddfef44837330137fd2594, type: 3}

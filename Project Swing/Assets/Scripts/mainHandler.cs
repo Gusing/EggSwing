@@ -81,6 +81,8 @@ public class mainHandler : MonoBehaviour {
     EnemySpawn[] testSpawn;
     EnemySpawn[] currentLevelSpawn;
     float[] endWaitTimer;
+    public static int[] currentRankLimits;
+    List<int[]> levelRankLimits;
 
     public int endlessRecord;
     public bool clearedLevel1;
@@ -91,7 +93,10 @@ public class mainHandler : MonoBehaviour {
     public int streakLevel1Record;
     public int streakLevel2Record;
     public int streakLevel3Record;
+    public int streakLevel4Record;
     public int streakLevelEndlessRecord;
+    public int scoreLevel2Record;
+    public int rankLevel2Record;
     int currentMaxStreak;
     public int currency;
 
@@ -147,7 +152,10 @@ public class mainHandler : MonoBehaviour {
         streakLevel1Record = data.streakLevel1Record;
         streakLevel2Record = data.streakLevel2Record;
         streakLevel3Record = data.streakLevel3Record;
+        streakLevel4Record = data.streakLevel4Record;
         streakLevelEndlessRecord = data.streakLevelEndlessRecord;
+        scoreLevel2Record = data.scoreLevel2Record;
+        rankLevel2Record = data.rankLevel2Record;
         currency = data.currency;
 
         player.GetComponent<playerHandler>().Init(currency);
@@ -161,6 +169,7 @@ public class mainHandler : MonoBehaviour {
 
         levelTrainingSpawn = new EnemySpawn[] { };
 
+        // spawn data
         levelEndlessSpawn = new EnemySpawn[] {
             new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }, new bool[] { false }),
             new EnemySpawn(4, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }, new bool[] { false }),
@@ -177,7 +186,7 @@ public class mainHandler : MonoBehaviour {
         };
 
         level1Spawn = new EnemySpawn[] {
-            new EnemySpawn(6, new GameObject[] { enemyD }, new float[] { 10 }, new bool[] { false }, 0 ),
+            new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 }, new bool[] { false }, 0 ),
             new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false }),
             new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 }, new bool[] { false }),
             new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 0 }, new bool[] { true }, 1),
@@ -246,6 +255,7 @@ public class mainHandler : MonoBehaviour {
 
         endWaitTimer = new float[] { 6.3f, 5f, 7.4f, 5f, 0, 0, 0, 5, 5, 5 };
 
+        // load spawn
         if (level <= 0) currentLevelSpawn = levelTrainingSpawn;
         if (level == 1) currentLevelSpawn = level1Spawn;
         if (level == 2) currentLevelSpawn = level2Spawn;
@@ -270,11 +280,25 @@ public class mainHandler : MonoBehaviour {
 
         print("total enemies: " + totalEnemies);
 
+        // rank data
+        levelRankLimits = new List<int[]>() {
+            new int[] { 10, 20, 30, 40, 50 },
+            new int[] { 1500, 2000, 3000, 5000, 6000 },
+            new int[] { 5000, 7500, 9000, 11000, 13000 },
+            new int[] { 6500, 8000, 10000, 12000, 15000 },
+            new int[] { 7000, 9000, 12500, 14000, 16500 },
+        };
+
+        // load rank data
+        currentRankLimits = levelRankLimits[level];
+
+        // play ambience
         if (level == 2) soundAmbCafe.start();
         if (level == 3) soundAmbSea.start();
 
         staticLevel = level;
 
+        // send analytics
         AnalyticsEvent.LevelStart("Level_" + level, level);
     }
 
@@ -332,6 +356,7 @@ public class mainHandler : MonoBehaviour {
         {
             if (gameOverTimer == 0)
             {
+                songStarted = false;
                 soundMusic.setParameterValue("Die", 1);
                 if (level != 100) AnalyticsEvent.LevelFail("Level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
             }
@@ -469,6 +494,8 @@ public class mainHandler : MonoBehaviour {
 
     public void QuitLevel()
     {
+        songStarted = false;
+        // send analytics
         if (victoryTimer == 0) AnalyticsEvent.LevelQuit("level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
         enemiesDead = 0;
         if (level == 2) soundAmbCafe.setParameterValue("End", 1);
@@ -505,6 +532,7 @@ public class mainHandler : MonoBehaviour {
                     soundMusic.setParameterValue("Win", 1);
                 }
 
+                // save data
                 if (victoryTimer > 0 && levelTimer > (victoryTimer + endWaitTimer[level - 1]))
                 {
                     if (level == 1)
@@ -517,11 +545,17 @@ public class mainHandler : MonoBehaviour {
                     {
                         if (currentMaxStreak > streakLevel2Record) streakLevel2Record = currentMaxStreak;
                         clearedLevel2 = true;
+                        if (player.GetComponent<playerHandler>().currentScore > scoreLevel2Record) scoreLevel2Record = player.GetComponent<playerHandler>().currentScore;
+                        if (player.GetComponent<playerHandler>().currentRank > rankLevel2Record) rankLevel2Record = player.GetComponent<playerHandler>().currentRank;
                     }
                     if (level == 3)
                     {
                         if (currentMaxStreak > streakLevel3Record) streakLevel3Record = currentMaxStreak;
                         clearedLevel3 = true;
+                    }
+                    if (level == 4)
+                    {
+                        if (currentMaxStreak > streakLevel4Record) streakLevel4Record = currentMaxStreak;
                     }
                     if (clearedLevel2 && clearedLevel3) unlockedLevelsB = true;
                     currency = player.GetComponent<playerHandler>().currentCurrency;

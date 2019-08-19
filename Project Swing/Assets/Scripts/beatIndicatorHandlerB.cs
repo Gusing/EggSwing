@@ -115,7 +115,9 @@ public class beatIndicatorHandlerB : MonoBehaviour
                 ringChanged = false;
             }
         }
-        
+
+        if (!mainHandler.songStarted && songStarted) songStarted = false;
+
         if (mainHandler.songStarted && !songStarted)
         {
             songStarted = true;

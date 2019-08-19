@@ -127,7 +127,7 @@ public class Attack6A : Attack
         push = 0.2f;
         damage = 2;
         hitbox = inHitbox;
-        soundAttackHit = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Combo_donkey_kick");
+        soundAttackHit = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_rapid_2");
     }
 }
 
@@ -140,6 +140,6 @@ public class Attack6B : Attack
         push = 0.3f;
         damage = 3;
         hitbox = inHitbox;
-        soundAttackHit = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Combo_donkey_kick");
+        soundAttackHit = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_rapid_3");
     }
 }

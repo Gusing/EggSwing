@@ -25,6 +25,8 @@ public class menuHandler : MonoBehaviour {
     public Text txtStreakLvl3;
     public Text txtStreakLvlEndless;
     public Text txtEndlessRecord;
+    public Text txtScoreLvl2;
+    public Text txtRankLvl2;
     bool clickedLevel;
 
     FMOD.Studio.EventInstance soundMenuMusic;
@@ -73,7 +75,37 @@ public class menuHandler : MonoBehaviour {
             txtClearLvl2.enabled = false;
             txtStreakLvl2.enabled = false;
         }
-        else txtStreakLvl2.text = "Best Streak: " + data.streakLevel2Record;
+        else
+        {
+            txtStreakLvl2.text = "Best Streak: " + data.streakLevel2Record;
+            txtScoreLvl2.text = "High Score: " + data.scoreLevel2Record;
+            if (data.rankLevel2Record == 1)
+            {
+                txtRankLvl2.text = "D";
+                txtRankLvl2.color = new Color(0.57f, 0.6f, 0.91f);
+            }
+            if (data.rankLevel2Record == 2)
+            {
+                txtRankLvl2.text = "C";
+                txtRankLvl2.color = new Color(0.94f, 0.69f, 0.3f);
+            }
+            if (data.rankLevel2Record == 3)
+            {
+                txtRankLvl2.text = "B";
+                txtRankLvl2.color = new Color(0.2f, 0.76f, 1f);
+            }
+            if (data.rankLevel2Record == 4)
+            {
+                txtRankLvl2.text = "A";
+                txtRankLvl2.color = new Color(1f, 0.05f, 0.95f);
+            }
+            if (data.rankLevel2Record == 5)
+            {
+                txtRankLvl2.text = "S";
+                txtRankLvl2.color = new Color(1f, 0.9f, 0f);
+            }
+
+        }
         if (!data.clearedLevel3)
         {
             txtClearLvl3.enabled = false;

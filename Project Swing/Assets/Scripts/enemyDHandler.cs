@@ -25,6 +25,8 @@ public class enemyDHandler : enemyHandler
     float dodgeCooldownTime;
     bool dodgeCooldown;
 
+    protected FMOD.Studio.EventInstance soundSlide;
+
     public override void Start()
     {
         base.Start();
@@ -52,6 +54,7 @@ public class enemyDHandler : enemyHandler
         soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_death");
         soundFall = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_warning");
         soundImpact = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_impact");
+        soundSlide = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_swoosh");
     }
 
     public override void Init(bool fromAbove)
@@ -106,7 +109,7 @@ public class enemyDHandler : enemyHandler
         }
         else if (player.GetComponent<playerHandler>().punchingSuccess && player.GetComponent<playerHandler>().attackType == 2 && !player.GetComponent<playerHandler>().punchingActive && !dodging && Vector2.Distance(transform.position, player.transform.position) < 2f)
         {
-            print("start dodge");
+            soundSlide.start();
             attackRecovery = 0;
             hitboxBody.offset = new Vector2(Mathf.Abs(hitboxBody.offset.x) * direction, hitboxBody.offset.y);
             if (player.transform.position.x < transform.position.x)

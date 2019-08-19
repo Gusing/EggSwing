@@ -14,7 +14,10 @@ public class PlayerData
     public int streakLevel1Record;
     public int streakLevel2Record;
     public int streakLevel3Record;
+    public int streakLevel4Record;
     public int streakLevelEndlessRecord;
+    public int scoreLevel2Record;
+    public int rankLevel2Record;
     public int currency;
 
     public PlayerData()
@@ -36,7 +39,12 @@ public class PlayerData
         streakLevel1Record = handler.streakLevel1Record;
         streakLevel2Record = handler.streakLevel2Record;
         streakLevel3Record = handler.streakLevel3Record;
+        streakLevel4Record = handler.streakLevel4Record;
         streakLevelEndlessRecord = handler.streakLevelEndlessRecord;
+
+        scoreLevel2Record = handler.scoreLevel2Record;
+
+        rankLevel2Record = handler.rankLevel2Record;
 
         currency = handler.currency;
     }
