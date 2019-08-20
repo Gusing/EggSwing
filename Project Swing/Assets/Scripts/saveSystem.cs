@@ -33,6 +33,7 @@ public class SaveSystem : MonoBehaviour
         }
         else
         {
+            print("sav file didn't exist");
             return new PlayerData();
         }
     }

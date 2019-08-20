@@ -1,50 +1,58 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class PlayerData
 {
-    public bool clearedLevel1;
-    public bool clearedLevel2;
-    public bool clearedLevel3;
-    public bool unlockedLevelsA;
-    public bool unlockedLevelsB;
+    public bool[] clearedLevel;
+    public bool[] unlockedLevel;
     public int endlessRecord;
-    public int streakLevel1Record;
-    public int streakLevel2Record;
-    public int streakLevel3Record;
-    public int streakLevel4Record;
+    public int[] streakRecord;
     public int streakLevelEndlessRecord;
-    public int scoreLevel2Record;
-    public int rankLevel2Record;
+    public int[] scoreRecord;
+    public int[] rankRecord;
     public int currency;
 
     public PlayerData()
     {
+        
+    }
 
+    public void Init()
+    {
+        if (unlockedLevel == null)
+        {
+            clearedLevel = new bool[5];
+            unlockedLevel = new bool[5];
+            streakRecord = new int[5];
+            scoreRecord = new int[5];
+            rankRecord = new int[5];
+
+            for (int i = 0; i < rankRecord.Length; i++)
+            {
+                rankRecord[i] = -1;
+            }
+
+            unlockedLevel[1] = true;
+        }
     }
 
     public PlayerData(mainHandler handler)
     {
-        clearedLevel1 = handler.clearedLevel1;
-        clearedLevel2 = handler.clearedLevel2;
-        clearedLevel3 = handler.clearedLevel3;
+        clearedLevel = handler.clearedLevel;
 
-        unlockedLevelsA = handler.unlockedLevelsA;
-        unlockedLevelsB = handler.unlockedLevelsB;
+        unlockedLevel = handler.unlockedLevel;
 
         endlessRecord = handler.endlessRecord;
 
-        streakLevel1Record = handler.streakLevel1Record;
-        streakLevel2Record = handler.streakLevel2Record;
-        streakLevel3Record = handler.streakLevel3Record;
-        streakLevel4Record = handler.streakLevel4Record;
+        streakRecord = handler.streakRecord;
         streakLevelEndlessRecord = handler.streakLevelEndlessRecord;
 
-        scoreLevel2Record = handler.scoreLevel2Record;
+        scoreRecord = handler.scoreRecord;
 
-        rankLevel2Record = handler.rankLevel2Record;
+        rankRecord = handler.rankRecord;
 
         currency = handler.currency;
     }

@@ -4,19 +4,30 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Analytics;
+using UnityEngine.EventSystems;
 
 public class menuHandler : MonoBehaviour {
 
+    /*
     public Button btnLvl2;
     public Button btnLvl3;
     public Button btnPractiseLvl2;
     public Button btnPractiseLvl3;
     public Button btnEndless;
 
+    
     public SpriteRenderer spriteLockLvl2;
     public SpriteRenderer spriteLockLvl3;
     public SpriteRenderer spriteLockEndless;
+    */
+    public GameObject levelListContent;
 
+    public List<GameObject> levelContainers;
+    public GameObject levelContainerMoon;
+    public GameObject levelContainerSwing;
+    public GameObject levelContainerPirate;
+    public GameObject levelContainerHell;
+    /*
     public Text txtClearLvl1;
     public Text txtClearLvl2;
     public Text txtClearLvl3;
@@ -27,11 +38,15 @@ public class menuHandler : MonoBehaviour {
     public Text txtEndlessRecord;
     public Text txtScoreLvl2;
     public Text txtRankLvl2;
+    */
     bool clickedLevel;
 
     FMOD.Studio.EventInstance soundMenuMusic;
     FMOD.Studio.EventInstance soundUIClick;
     FMOD.Studio.EventInstance soundUIStart;
+
+    public EventSystem eventSystem;
+    public ScrollRect scrollLevelList;
 
     PlayerData data;
 
@@ -41,95 +56,60 @@ public class menuHandler : MonoBehaviour {
     }
     
     // Use this for initialization
-    void Start () {
-
+    void Start()
+    {
         soundMenuMusic = FMODUnity.RuntimeManager.CreateInstance("event:/MenuMusic");
         soundMenuMusic.start();
 
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
         soundUIStart = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_Start");
 
-        
-        if (!data.unlockedLevelsA)
-        {
-            btnLvl2.interactable = false;
-            btnPractiseLvl2.interactable = false;
-            spriteLockLvl2.enabled = true;
-            btnLvl3.interactable = false;
-            btnPractiseLvl3.interactable = false;
-            spriteLockLvl3.enabled = true;
-        }
-        if (!data.unlockedLevelsB)
-        {
-            btnEndless.interactable = false;
-            spriteLockEndless.enabled = true;
-        }
-        if (!data.clearedLevel1)
-        {
-            txtClearLvl1.enabled = false;
-            txtStreakLvl1.enabled = false;
-        }
-        else txtStreakLvl1.text = "Best Streak: " + data.streakLevel1Record;
-        if (!data.clearedLevel2)
-        {
-            txtClearLvl2.enabled = false;
-            txtStreakLvl2.enabled = false;
-        }
-        else
-        {
-            txtStreakLvl2.text = "Best Streak: " + data.streakLevel2Record;
-            txtScoreLvl2.text = "High Score: " + data.scoreLevel2Record;
-            if (data.rankLevel2Record == 1)
-            {
-                txtRankLvl2.text = "D";
-                txtRankLvl2.color = new Color(0.57f, 0.6f, 0.91f);
-            }
-            if (data.rankLevel2Record == 2)
-            {
-                txtRankLvl2.text = "C";
-                txtRankLvl2.color = new Color(0.94f, 0.69f, 0.3f);
-            }
-            if (data.rankLevel2Record == 3)
-            {
-                txtRankLvl2.text = "B";
-                txtRankLvl2.color = new Color(0.2f, 0.76f, 1f);
-            }
-            if (data.rankLevel2Record == 4)
-            {
-                txtRankLvl2.text = "A";
-                txtRankLvl2.color = new Color(1f, 0.05f, 0.95f);
-            }
-            if (data.rankLevel2Record == 5)
-            {
-                txtRankLvl2.text = "S";
-                txtRankLvl2.color = new Color(1f, 0.9f, 0f);
-            }
+        levelContainers = new List<GameObject>();
 
-        }
-        if (!data.clearedLevel3)
+        levelContainers.Add(levelContainerMoon);
+        levelContainers.Add(levelContainerSwing);
+        levelContainers.Add(levelContainerPirate);
+        levelContainers.Add(levelContainerHell);
+
+        data.Init();
+        print(data.unlockedLevel.Length);
+
+        for (int i = 1; i < data.unlockedLevel.Length; i++)
         {
-            txtClearLvl3.enabled = false;
-            txtStreakLvl3.enabled = false;
+            GameObject levelListItem = Instantiate(levelContainers[i-1]) as GameObject;
+            levelListItem.SetActive(true);
+
+            levelListItem.transform.SetParent(levelListContent.transform, false);
+
+            string tRank = "";
+            if (data.rankRecord[i] == 0) tRank = "E";
+            if (data.rankRecord[i] == 1) tRank = "D";
+            if (data.rankRecord[i] == 2) tRank = "C";
+            if (data.rankRecord[i] == 3) tRank = "B";
+            if (data.rankRecord[i] == 4) tRank = "A";
+            if (data.rankRecord[i] == 5) tRank = "S";
+            if (!data.clearedLevel[i]) tRank = "F";
+
+            if (data.unlockedLevel[i]) levelListItem.GetComponent<levelContainerHandler>().Init(tRank, data.scoreRecord[i], data.streakRecord[i], true);
+            else levelListItem.GetComponent<levelContainerHandler>().Init(" ", 0, 0, false);
         }
-        else txtStreakLvl3.text = "Best Streak: " + data.streakLevel3Record;
-        if (data.endlessRecord > 0)
-        {
-            txtEndlessRecord.enabled = true;
-            txtEndlessRecord.text = "RECORD: " + data.endlessRecord;
-            txtStreakLvlEndless.enabled = true;
-            txtStreakLvlEndless.text = "Best Streak: " + data.streakLevelEndlessRecord;
-        }
-        else
-        {
-            txtEndlessRecord.enabled = false;
-            txtStreakLvlEndless.enabled = false;
-        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Cancel"))
+        // scroll with input
+        if (Input.GetButton("Dodge"))
+        {
+            scrollLevelList.verticalNormalizedPosition -= 2.5f * Time.deltaTime;
+        }
+        if(Input.GetButton("Block"))
+        {
+            scrollLevelList.verticalNormalizedPosition += 2.5f * Time.deltaTime;
+        }
+
+        if (Input.GetButtonDown("Cancel") || Input.GetButtonDown("Super"))
         {
             Back();
         }
@@ -153,13 +133,11 @@ public class menuHandler : MonoBehaviour {
         if (num == -2) SceneManager.LoadScene("Practice128");
         if (num == -1) SceneManager.LoadScene("Practice100");
 
-        if (num == 1) SceneManager.LoadScene("Level1Scene");
-        if (num == 2) SceneManager.LoadScene("Level2Scene");
-        if (num == 3) SceneManager.LoadScene("Level3Scene");
-
+        if (num > 0 && num < 100) SceneManager.LoadScene("Level" + num + "Scene");
+        
         if (num == 100) SceneManager.LoadScene("LevelEndless");
     }
-
+    
     public void Back()
     {
         soundMenuMusic.setParameterValue("End", 1);

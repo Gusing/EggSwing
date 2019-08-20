@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using System.Runtime.InteropServices;
 using System.Text;
 using UnityEngine.Analytics;
+using UnityEngine.EventSystems;
 
 
 public class mainHandler : MonoBehaviour {
@@ -85,18 +86,12 @@ public class mainHandler : MonoBehaviour {
     List<int[]> levelRankLimits;
 
     public int endlessRecord;
-    public bool clearedLevel1;
-    public bool clearedLevel2;
-    public bool clearedLevel3;
-    public bool unlockedLevelsA;
-    public bool unlockedLevelsB;
-    public int streakLevel1Record;
-    public int streakLevel2Record;
-    public int streakLevel3Record;
-    public int streakLevel4Record;
+    public bool[] clearedLevel;
+    public bool[] unlockedLevel;
+    public int[] streakRecord;
     public int streakLevelEndlessRecord;
-    public int scoreLevel2Record;
-    public int rankLevel2Record;
+    public int[] scoreRecord;
+    public int[] rankRecord;
     int currentMaxStreak;
     public int currency;
 
@@ -119,6 +114,7 @@ public class mainHandler : MonoBehaviour {
     {
         currentBpm = bpm;
         currentLeniency = leniency;
+        staticLevel = level;
     }
     
     void Start()
@@ -143,19 +139,14 @@ public class mainHandler : MonoBehaviour {
 
         // load data
         PlayerData data = SaveSystem.LoadPlayer();
+        data.Init();
         endlessRecord = data.endlessRecord;
-        clearedLevel1 = data.clearedLevel1;
-        clearedLevel2 = data.clearedLevel2;
-        clearedLevel3 = data.clearedLevel3;
-        unlockedLevelsA = data.unlockedLevelsA;
-        unlockedLevelsB = data.unlockedLevelsB;
-        streakLevel1Record = data.streakLevel1Record;
-        streakLevel2Record = data.streakLevel2Record;
-        streakLevel3Record = data.streakLevel3Record;
-        streakLevel4Record = data.streakLevel4Record;
+        clearedLevel = data.clearedLevel;
+        unlockedLevel = data.unlockedLevel;
+        streakRecord = data.streakRecord;
         streakLevelEndlessRecord = data.streakLevelEndlessRecord;
-        scoreLevel2Record = data.scoreLevel2Record;
-        rankLevel2Record = data.rankLevel2Record;
+        scoreRecord = data.scoreRecord;
+        rankRecord = data.rankRecord;
         currency = data.currency;
 
         player.GetComponent<playerHandler>().Init(currency);
@@ -290,13 +281,11 @@ public class mainHandler : MonoBehaviour {
         };
 
         // load rank data
-        currentRankLimits = levelRankLimits[level];
+        if (level < 100 && level > 0) currentRankLimits = levelRankLimits[level];
 
         // play ambience
         if (level == 2) soundAmbCafe.start();
         if (level == 3) soundAmbSea.start();
-
-        staticLevel = level;
 
         // send analytics
         AnalyticsEvent.LevelStart("Level_" + level, level);
@@ -393,6 +382,7 @@ public class mainHandler : MonoBehaviour {
             print("buttons");
             btnRetry.gameObject.SetActive(true);
             btnGameOver.gameObject.SetActive(true);
+            btnRetry.Select();
         }
 
         // update progress bar
@@ -535,36 +525,20 @@ public class mainHandler : MonoBehaviour {
                 // save data
                 if (victoryTimer > 0 && levelTimer > (victoryTimer + endWaitTimer[level - 1]))
                 {
-                    if (level == 1)
-                    {
-                        if (currentMaxStreak > streakLevel1Record) streakLevel1Record = currentMaxStreak;
-                        clearedLevel1 = true;
-                        unlockedLevelsA = true;
-                    }
-                    if (level == 2)
-                    {
-                        if (currentMaxStreak > streakLevel2Record) streakLevel2Record = currentMaxStreak;
-                        clearedLevel2 = true;
-                        if (player.GetComponent<playerHandler>().currentScore > scoreLevel2Record) scoreLevel2Record = player.GetComponent<playerHandler>().currentScore;
-                        if (player.GetComponent<playerHandler>().currentRank > rankLevel2Record) rankLevel2Record = player.GetComponent<playerHandler>().currentRank;
-                    }
-                    if (level == 3)
-                    {
-                        if (currentMaxStreak > streakLevel3Record) streakLevel3Record = currentMaxStreak;
-                        clearedLevel3 = true;
-                    }
-                    if (level == 4)
-                    {
-                        if (currentMaxStreak > streakLevel4Record) streakLevel4Record = currentMaxStreak;
-                    }
-                    if (clearedLevel2 && clearedLevel3) unlockedLevelsB = true;
+                    if (currentMaxStreak > streakRecord[level]) streakRecord[level] = currentMaxStreak;
+                    clearedLevel[level] = true;
+                    if (player.GetComponent<playerHandler>().currentScore > scoreRecord[level]) scoreRecord[level] = player.GetComponent<playerHandler>().currentScore;
+                    if (player.GetComponent<playerHandler>().currentRank > rankRecord[level]) rankRecord[level] = player.GetComponent<playerHandler>().currentRank;
+
+                    if (clearedLevel[1]) { unlockedLevel[2] = true; unlockedLevel[3] = true; }
+                    if (clearedLevel[2] && clearedLevel[3]) unlockedLevel[4] = true;
                     currency = player.GetComponent<playerHandler>().currentCurrency;
                     SaveSystem.SavePlayer(this);
 
                     // send analytics
                     AnalyticsEvent.LevelComplete("Level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } } );
 
-                    print("save, clear: " + clearedLevel1 + ", " + clearedLevel2 + ", " + clearedLevel3 + ", unlocked: " + unlockedLevelsA + ", " + unlockedLevelsB + ", record: " + endlessRecord + ", streak records: " + streakLevel1Record + " " + streakLevel2Record + " " + streakLevel3Record);
+                    print("save, level 1 clear: " + clearedLevel[1] + ", unlocked hell: " + unlockedLevel[4] + ", streak record: " + streakRecord[1]);
                     QuitLevel();
                 }
             }

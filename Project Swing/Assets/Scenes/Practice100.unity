@@ -195,6 +195,21 @@ PrefabInstance:
       propertyPath: textStreak
       value: 
       objectReference: {fileID: 740286600}
+    - target: {fileID: 114204184379518000, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b,
+        type: 3}
+      propertyPath: textRank
+      value: 
+      objectReference: {fileID: 409972040}
+    - target: {fileID: 114204184379518000, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b,
+        type: 3}
+      propertyPath: textScore
+      value: 
+      objectReference: {fileID: 940538140}
+    - target: {fileID: 114204184379518000, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b,
+        type: 3}
+      propertyPath: textMultiplier
+      value: 
+      objectReference: {fileID: 977029106}
     - target: {fileID: 114748089267114276, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b,
         type: 3}
       propertyPath: beatWindow
@@ -289,6 +304,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &409972040 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4710155760904629894, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
+    type: 3}
+  m_PrefabInstance: {fileID: 8935748466681093648}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!331 &479428072 stripped
 SpriteMask:
   m_CorrespondingSourceObject: {fileID: 2141540807827501769, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
@@ -382,10 +409,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalAxis: Block
-  m_VerticalAxis: Block
-  m_SubmitButton: Block
-  m_CancelButton: Block
+  m_HorizontalAxis: Move Axis
+  m_VerticalAxis: Vertical Axis
+  m_SubmitButton: Light Attack
+  m_CancelButton: Super
   m_InputActionsPerSecond: 10
   m_RepeatDelay: 0.5
   m_ForceModuleActive: 0
@@ -402,7 +429,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 0
+  m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &546541244
 Transform:
@@ -480,6 +507,8 @@ MonoBehaviour:
   leniency: 0.12
   enemyA: {fileID: 1386477621940742, guid: 79bd281be1189e84aba46e67b9aa7e68, type: 3}
   enemyB: {fileID: 1386477621940742, guid: c28fe41f88cbcca4b8341c862ce5d154, type: 3}
+  enemyC: {fileID: 0}
+  enemyD: {fileID: 0}
   enemyBird: {fileID: 8370553139761448980, guid: cfee2d09f6fddee4dab3c0b33913eab2,
     type: 3}
   player: {fileID: 330489805}
@@ -497,15 +526,12 @@ MonoBehaviour:
   txtRecordDisplay: {fileID: 0}
   txtRecordAnnouncement: {fileID: 0}
   endlessRecord: 0
-  clearedLevel1: 0
-  clearedLevel2: 0
-  clearedLevel3: 0
-  unlockedLevelsA: 0
-  unlockedLevelsB: 0
-  streakLevel1Record: 0
-  streakLevel2Record: 0
-  streakLevel3Record: 0
+  clearedLevel: 
+  unlockedLevel: 
+  streakRecord: 
   streakLevelEndlessRecord: 0
+  scoreRecord: 
+  rankRecord: 
   currency: 0
   musicPath: event:/SpaceBagle_loop
 --- !u!20 &602683335
@@ -748,6 +774,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &940538140 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2279955013569733688, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
+    type: 3}
+  m_PrefabInstance: {fileID: 8935748466681093648}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &977029106 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 864212406665738695, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
+    type: 3}
+  m_PrefabInstance: {fileID: 8935748466681093648}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &985819097
 GameObject:
   m_ObjectHideFlags: 0

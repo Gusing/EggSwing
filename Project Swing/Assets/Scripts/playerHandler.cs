@@ -172,6 +172,7 @@ public class playerHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundBlock;
     FMOD.Studio.EventInstance soundEnemyBlock;
     FMOD.Studio.EventInstance soundSPBarFull;
+    FMOD.Studio.EventInstance soundRankAnnouncer;
 
     FMOD.Studio.EventInstance soundPickupCurrency;
 
@@ -190,6 +191,7 @@ public class playerHandler : MonoBehaviour
         soundBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Block");
         soundEnemyBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/HitArmor");
         soundSPBarFull = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/BarFull");
+        soundRankAnnouncer = FMODUnity.RuntimeManager.CreateInstance("event:/Announcer/Voice");
 
         mainCamera = GameObject.Find("Main Camera");
         beatIndicator = GameObject.Find("BeatIndicatorB");
@@ -226,6 +228,8 @@ public class playerHandler : MonoBehaviour
 
         textRank.text = "E";
         textMultiplier.enabled = false;
+        if (mainHandler.staticLevel < 1 || mainHandler.staticLevel > 99) textRank.enabled = false;
+        if (mainHandler.staticLevel < 1) textScore.enabled = false;
 
         localRenderer = GetComponent<SpriteRenderer>();
 
@@ -347,33 +351,43 @@ public class playerHandler : MonoBehaviour
         textMultiplier.text = "x " + currentMultiplier;
 
         // update rank
-        if (currentRank < 5)
+        if (currentRank < 5 && mainHandler.staticLevel < 100 && mainHandler.staticLevel > 0)
         {
             if (currentScore > mainHandler.currentRankLimits[currentRank])
             {
                 currentRank++;
                 if (currentRank == 1)
                 {
+                    soundRankAnnouncer.setParameterValue("Announcer", 1);
+                    soundRankAnnouncer.start();
                     textRank.text = "D";
                     textRank.color = new Color(0.57f, 0.6f, 0.91f);
                 }
                 if (currentRank == 2)
                 {
+                    soundRankAnnouncer.setParameterValue("Announcer", 2);
+                    soundRankAnnouncer.start();
                     textRank.text = "C";
                     textRank.color = new Color(0.94f, 0.69f, 0.3f);
                 }
                 if (currentRank == 3)
                 {
+                    soundRankAnnouncer.setParameterValue("Announcer", 3);
+                    soundRankAnnouncer.start();
                     textRank.text = "B";
                     textRank.color = new Color(0.2f, 0.76f, 1f);
                 }
                 if (currentRank == 4)
                 {
+                    soundRankAnnouncer.setParameterValue("Announcer", 4);
+                    soundRankAnnouncer.start();
                     textRank.text = "A";
                     textRank.color = new Color(1f, 0.05f, 0.95f);
                 }
                 if (currentRank == 5)
                 {
+                    soundRankAnnouncer.setParameterValue("Announcer", 5);
+                    soundRankAnnouncer.start();
                     textRank.text = "S";
                     textRank.color = new Color(1f, 0.9f, 0f);
                 }
