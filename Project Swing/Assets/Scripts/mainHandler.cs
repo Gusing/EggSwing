@@ -20,6 +20,10 @@ public class mainHandler : MonoBehaviour {
     public static float currentLeniency;
     float offBeatTime;
     float preBeatTime;
+    public int gameMode;
+    public static int currentGameMode;
+
+    readonly int NORMAL = 0, BIRD = 1, HARD = 2;
     
     public GameObject enemyA;
     public GameObject enemyB;
@@ -35,6 +39,7 @@ public class mainHandler : MonoBehaviour {
     public Text txtGameOver;
     float gameOverTimer;
     public bool gameOver;
+    public static bool birdLevelFinished;
 
     bool gotCool;
 
@@ -87,11 +92,16 @@ public class mainHandler : MonoBehaviour {
 
     public int endlessRecord;
     public bool[] clearedLevel;
+    public bool[] clearedBirdLevel;
     public bool[] unlockedLevel;
+    public bool[] unlockedBirdLevel;
     public int[] streakRecord;
+    public int[] comboRecord;
     public int streakLevelEndlessRecord;
     public int[] scoreRecord;
+    public int[] scoreBirdRecord;
     public int[] rankRecord;
+    public int[] rankBirdRecord;
     int currentMaxStreak;
     public int currency;
 
@@ -115,6 +125,7 @@ public class mainHandler : MonoBehaviour {
         currentBpm = bpm;
         currentLeniency = leniency;
         staticLevel = level;
+        currentGameMode = gameMode;
     }
     
     void Start()
@@ -142,11 +153,16 @@ public class mainHandler : MonoBehaviour {
         data.Init();
         endlessRecord = data.endlessRecord;
         clearedLevel = data.clearedLevel;
+        clearedBirdLevel = data.clearedBirdLevel;
         unlockedLevel = data.unlockedLevel;
+        unlockedBirdLevel = data.unlockedBirdLevel;
         streakRecord = data.streakRecord;
+        comboRecord = data.comboRecord;
         streakLevelEndlessRecord = data.streakLevelEndlessRecord;
         scoreRecord = data.scoreRecord;
+        scoreBirdRecord = data.scoreBirdRecord;
         rankRecord = data.rankRecord;
+        rankBirdRecord = data.rankBirdRecord;
         currency = data.currency;
 
         player.GetComponent<playerHandler>().Init(currency);
@@ -247,7 +263,6 @@ public class mainHandler : MonoBehaviour {
         endWaitTimer = new float[] { 6.3f, 5f, 7.4f, 5f, 0, 0, 0, 5, 5, 5 };
 
         // load spawn
-        if (level <= 0) currentLevelSpawn = levelTrainingSpawn;
         if (level == 1) currentLevelSpawn = level1Spawn;
         if (level == 2) currentLevelSpawn = level2Spawn;
         if (level == 3) currentLevelSpawn = level3Spawn;
@@ -260,6 +275,7 @@ public class mainHandler : MonoBehaviour {
             txtRecordDisplay.enabled = true;
             txtRecordDisplay.text = "RECORD: " + endlessRecord;
         }
+        if (level <= 0 || gameMode == BIRD) currentLevelSpawn = levelTrainingSpawn;
 
         for (int i = 0; i < currentLevelSpawn.Length; i++)
         {
@@ -305,6 +321,10 @@ public class mainHandler : MonoBehaviour {
             if (name == "Stop")
             {
                 songStarted = false;
+            }
+            if (name == "End" && gameMode == BIRD)
+            {
+                birdLevelFinished = true;
             }
             if (name.Contains("12") || name.Contains("11") || name.Contains("10") || name.Contains("13") || name.Contains("14") || name.Contains("21"))
             {
@@ -386,10 +406,14 @@ public class mainHandler : MonoBehaviour {
         }
 
         // update progress bar
-        if (level > 0 && level < 100)
+        if (level > 0 && level < 100 && currentGameMode != BIRD)
         {
             maskProgressFill.transform.localPosition = new Vector3(-4.66f * (1 - ((float)enemiesDead / (float)totalEnemies)), 0);
             rendererProgressMarker.transform.localPosition = new Vector3(-2.22f + 4.44f * ((float)enemiesDead / (float)totalEnemies), 0);
+        }
+        else if (currentGameMode == BIRD)
+        {
+            // baren ska gå till slutet när låten är klar
         }
 
         // update streak parameter
@@ -504,7 +528,8 @@ public class mainHandler : MonoBehaviour {
     {
         if (!player.GetComponent<playerHandler>().dead) levelTimer += Time.deltaTime;
 
-        if (level > 0 && level < 100)
+        // normal mode
+        if (level > 0 && level < 100 && gameMode == NORMAL)
         {
             // reached end of level
             if (currentLevelSpawn.Length == currentSpawn)
@@ -565,6 +590,36 @@ public class mainHandler : MonoBehaviour {
                     currentSpawn++;
                     waitingForDeath = false;
                 }
+            }
+        }
+
+        // bird mode
+        if (level > 0 && gameMode == BIRD)
+        {
+            if (birdLevelFinished)
+            {
+                victoryTimer += Time.deltaTime;
+                txtVictory.enabled = true;
+                txtVictory.text = "Level Cleared";
+            }
+
+            if (victoryTimer > 2 )
+            {
+                if (currentMaxStreak > comboRecord[level]) comboRecord[level] = currentMaxStreak;
+                clearedBirdLevel[level] = true;
+                if (player.GetComponent<playerHandler>().currentScore > scoreBirdRecord[level]) scoreBirdRecord[level] = player.GetComponent<playerHandler>().currentScore;
+                if (player.GetComponent<playerHandler>().currentRank > rankBirdRecord[level]) rankBirdRecord[level] = player.GetComponent<playerHandler>().currentRank;
+
+                if (clearedBirdLevel[1]) { unlockedBirdLevel[2] = true; unlockedBirdLevel[3] = true; }
+                if (clearedBirdLevel[2] && clearedBirdLevel[3]) unlockedBirdLevel[4] = true;
+                currency = player.GetComponent<playerHandler>().currentCurrency;
+                SaveSystem.SavePlayer(this);
+
+                // send analytics
+                AnalyticsEvent.LevelComplete("Level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
+
+                print("save, level 1 clear: " + clearedLevel[1] + ", unlocked hell: " + unlockedLevel[4] + ", streak record: " + streakRecord[1]);
+                QuitLevel();
             }
         }
 

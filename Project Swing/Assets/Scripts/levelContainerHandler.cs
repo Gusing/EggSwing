@@ -19,7 +19,7 @@ public class levelContainerHandler : MonoBehaviour
         mainHandler = GameObject.Find("Main Camera");
     }
 
-    public void Init(string rank, int score, int streak, bool unlocked = true)
+    public void Init(string rank, int score, int streak, bool unlocked = true, int gameMode = 0)
     {
         if (!unlocked)
         {
@@ -34,10 +34,15 @@ public class levelContainerHandler : MonoBehaviour
         if (rank == "C") txtLevelRank.color = new Color(0.94f, 0.69f, 0.3f);
         if (rank == "B") txtLevelRank.color = new Color(0.2f, 0.76f, 1f);
         if (rank == "A") txtLevelRank.color = new Color(1f, 0.05f, 0.95f);
-        if (rank == "S") txtLevelRank.color = new Color(1f, 0.9f, 0f);
+        if (rank == "S" || rank == "P") txtLevelRank.color = new Color(1f, 0.9f, 0f);
         if (score > 0) txtLevelScore.text = score.ToString();
         else txtLevelScore.text = "";
-        if (streak > 0) txtLevelStreak.text = "Highest Streak: " + streak.ToString();
+        if (streak > 0)
+        {
+            if (gameMode == 0) txtLevelStreak.text = "Highest Streak: " + streak.ToString();
+            if (gameMode == 1) txtLevelStreak.text = "Longest Combo: " + streak.ToString();
+
+        }
         else txtLevelStreak.text = "";
     }
 

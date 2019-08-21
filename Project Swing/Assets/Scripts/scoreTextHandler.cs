@@ -12,11 +12,11 @@ public class scoreTextHandler : MonoBehaviour
     {
         
     }
-    
-    public void Init(string scoreSource, int score)
+
+    public void Init(string scoreSource, int score, int offset = 0)
     {
         scoreText.text = scoreSource + " +" + score.ToString();
-        transform.position = new Vector3(-2.42f, 3.73f);
+        transform.position = new Vector3(-2.42f, 3.73f - 0.5f * offset);
     }
     
     void Update()

@@ -21,7 +21,11 @@ public class menuHandler : MonoBehaviour {
     public SpriteRenderer spriteLockEndless;
     */
     public GameObject levelListContent;
+    public GameObject BirdListContent;
+    public GameObject LevelScrollList;
+    public GameObject BirdScrollList;
 
+    public List<GameObject> birdContainers;
     public List<GameObject> levelContainers;
     public GameObject levelContainerMoon;
     public GameObject levelContainerSwing;
@@ -47,18 +51,21 @@ public class menuHandler : MonoBehaviour {
 
     public EventSystem eventSystem;
     public ScrollRect scrollLevelList;
+    public SpriteRenderer rendererMarker;
 
     PlayerData data;
+
+    int selectedGameMode;
+    readonly int NORMAL = 0, BIRD = 1;
 
     void Awake()
     {
         data = SaveSystem.LoadPlayer();
     }
     
-    // Use this for initialization
     void Start()
     {
-        soundMenuMusic = FMODUnity.RuntimeManager.CreateInstance("event:/MenuMusic");
+        soundMenuMusic = FMODUnity.RuntimeManager.CreateInstance("event:/Music/MenuMusic");
         soundMenuMusic.start();
 
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
@@ -72,7 +79,6 @@ public class menuHandler : MonoBehaviour {
         levelContainers.Add(levelContainerHell);
 
         data.Init();
-        print(data.unlockedLevel.Length);
 
         for (int i = 1; i < data.unlockedLevel.Length; i++)
         {
@@ -90,13 +96,38 @@ public class menuHandler : MonoBehaviour {
             if (data.rankRecord[i] == 5) tRank = "S";
             if (!data.clearedLevel[i]) tRank = "F";
 
-            if (data.unlockedLevel[i]) levelListItem.GetComponent<levelContainerHandler>().Init(tRank, data.scoreRecord[i], data.streakRecord[i], true);
-            else levelListItem.GetComponent<levelContainerHandler>().Init(" ", 0, 0, false);
+            if (data.unlockedLevel[i]) levelListItem.GetComponent<levelContainerHandler>().Init(tRank, data.scoreRecord[i], data.streakRecord[i], true, 0);
+            else levelListItem.GetComponent<levelContainerHandler>().Init(" ", 0, 0, false, 0);
         }
-        
-    }
 
-    // Update is called once per frame
+        birdContainers = new List<GameObject>();
+
+        birdContainers.Add(levelContainerMoon);
+        birdContainers.Add(levelContainerSwing);
+        birdContainers.Add(levelContainerPirate);
+        birdContainers.Add(levelContainerHell);
+
+        for (int i = 1; i < data.unlockedBirdLevel.Length; i++)
+        {
+            GameObject levelListItem = Instantiate(levelContainers[i - 1]) as GameObject;
+            levelListItem.SetActive(true);
+
+            levelListItem.transform.SetParent(BirdListContent.transform, false);
+
+            string tRank = "";
+            if (data.rankBirdRecord[i] == 0) tRank = "E";
+            if (data.rankBirdRecord[i] == 1) tRank = "D";
+            if (data.rankBirdRecord[i] == 2) tRank = "C";
+            if (data.rankBirdRecord[i] == 3) tRank = "B";
+            if (data.rankBirdRecord[i] == 4) tRank = "A";
+            if (data.rankBirdRecord[i] == 5) tRank = "P";
+            if (!data.clearedBirdLevel[i]) tRank = "F";
+
+            if (data.unlockedBirdLevel[i]) levelListItem.GetComponent<levelContainerHandler>().Init(tRank, data.scoreBirdRecord[i], data.comboRecord[i], true, 1);
+            else levelListItem.GetComponent<levelContainerHandler>().Init(" ", 0, 0, false, 1);
+        }
+    }
+    
     void Update()
     {
         // scroll with input
@@ -109,17 +140,14 @@ public class menuHandler : MonoBehaviour {
             scrollLevelList.verticalNormalizedPosition += 2.5f * Time.deltaTime;
         }
 
+        // back to main menu
         if (Input.GetButtonDown("Cancel") || Input.GetButtonDown("Super"))
         {
             Back();
         }
 
-        if (Input.GetButtonDown("Heavy Attack"))
-        {
-            soundUIStart.start();
-            soundMenuMusic.setParameterValue("End", 1);
-            SceneManager.LoadScene("Level4Scene");
-        }
+        // update marker
+        rendererMarker.transform.position = new Vector3(rendererMarker.transform.position.x, 4.18f - 0.95f * selectedGameMode);
     }
 
     public void PlayLevel(int num)
@@ -133,9 +161,34 @@ public class menuHandler : MonoBehaviour {
         if (num == -2) SceneManager.LoadScene("Practice128");
         if (num == -1) SceneManager.LoadScene("Practice100");
 
-        if (num > 0 && num < 100) SceneManager.LoadScene("Level" + num + "Scene");
-        
+        if (selectedGameMode == NORMAL) if (num > 0 && num < 100) SceneManager.LoadScene("Level" + num + "Scene");
+        if (selectedGameMode == BIRD) if (num > 0 && num < 100) SceneManager.LoadScene("Level" + num + "BirdScene");
+
+
         if (num == 100) SceneManager.LoadScene("LevelEndless");
+    }
+
+    public void ChangeMode(int num)
+    {
+        if (num == 0)
+        {
+            selectedGameMode = NORMAL;
+            LevelScrollList.SetActive(true);
+            BirdScrollList.SetActive(false);
+        }
+
+        if (num == 1)
+        {
+            selectedGameMode = BIRD;
+            LevelScrollList.SetActive(false);
+            BirdScrollList.SetActive(true);
+        }
+    }
+
+    public void EnterShop()
+    {
+        soundUIClick.start();
+        SceneManager.LoadScene("ShopScene");
     }
     
     public void Back()

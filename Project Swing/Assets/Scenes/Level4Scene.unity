@@ -300,6 +300,11 @@ PrefabInstance:
       propertyPath: textRank
       value: 
       objectReference: {fileID: 719814405}
+    - target: {fileID: 114204184379518000, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b,
+        type: 3}
+      propertyPath: textCombo
+      value: 
+      objectReference: {fileID: 719814407}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b, type: 3}
 --- !u!1 &369400237 stripped
@@ -732,6 +737,18 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &719814407 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4397801778040485907, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
+    type: 3}
+  m_PrefabInstance: {fileID: 719814397}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
@@ -1202,6 +1219,7 @@ MonoBehaviour:
   bpm: 108
   offset: 0
   leniency: 0.1
+  gameMode: 0
   enemyA: {fileID: 1386477621940742, guid: 79bd281be1189e84aba46e67b9aa7e68, type: 3}
   enemyB: {fileID: 1386477621940742, guid: c28fe41f88cbcca4b8341c862ce5d154, type: 3}
   enemyC: {fileID: 1386477621940742, guid: 78419bdd45202f24bb79234551ef90f9, type: 3}
@@ -1224,13 +1242,18 @@ MonoBehaviour:
   txtRecordAnnouncement: {fileID: 0}
   endlessRecord: 0
   clearedLevel: 
+  clearedBirdLevel: 
   unlockedLevel: 
+  unlockedBirdLevel: 
   streakRecord: 
+  comboRecord: 
   streakLevelEndlessRecord: 0
   scoreRecord: 
+  scoreBirdRecord: 
   rankRecord: 
+  rankBirdRecord: 
   currency: 0
-  musicPath: event:/DoomMusic
+  musicPath: event:/Music/DoomMusic
 --- !u!20 &1503807543
 Camera:
   m_ObjectHideFlags: 0
