@@ -39,6 +39,7 @@ public class mainHandler : MonoBehaviour {
     public Text txtGameOver;
     float gameOverTimer;
     public bool gameOver;
+    public static bool normalLevelFinished;
     public static bool birdLevelFinished;
 
     bool gotCool;
@@ -104,6 +105,8 @@ public class mainHandler : MonoBehaviour {
     public int[] rankBirdRecord;
     int currentMaxStreak;
     public int currency;
+    public bool[] itemBought;
+    public bool[] itemActive;
 
     FMOD.Studio.EventInstance soundAmbCafe;
     FMOD.Studio.EventInstance soundAmbSea;
@@ -164,6 +167,8 @@ public class mainHandler : MonoBehaviour {
         rankRecord = data.rankRecord;
         rankBirdRecord = data.rankBirdRecord;
         currency = data.currency;
+        itemBought = data.itemBought;
+        itemActive = data.itemActive;
 
         player.GetComponent<playerHandler>().Init(currency);
 
@@ -206,6 +211,7 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(0, new GameObject[] { enemyB, enemyB }, new float[] { -10, 10 }, new bool[] { false, false })
         };
 
+        /*
         level2Spawn = new EnemySpawn[] {
             new EnemySpawn(7, new GameObject[] { enemyA, enemyB }, new float[] { -8, 12 }, new bool[] { true, false }),
             new EnemySpawn(8, new GameObject[] { enemyB, enemyA }, new float[] { -12, 7 }, new bool[] { false, true }, 0),
@@ -223,7 +229,27 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(0, new GameObject[] { enemyB, enemyA, enemyB, enemyA }, new float[] { -6, -10,  11, 7}, new bool[] { true, false, false, true }, 2),
             new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { -11, 11}, new bool[] { false, false }),
         };
+        */
 
+        level2Spawn = new EnemySpawn[] {
+            new EnemySpawn(7, new GameObject[] { enemyA, enemyB }, new float[] { -8, 12 }, new bool[] { true, false }),
+            new EnemySpawn(8, new GameObject[] { enemyB, enemyA }, new float[] { -12, 7 }, new bool[] { false, true }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { 0 }, new bool[] { true }),
+            new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { -2 }, new bool[] { true }),
+            new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 2 }, new bool[] { true }),
+            new EnemySpawn(2, new GameObject[] { enemyA, enemyA }, new float[] { 10, 11 }, new bool[] { false, false }),
+            new EnemySpawn(2, new GameObject[] { enemyA, enemyA }, new float[] { -4, -11 }, new bool[] { true, false }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyC }, new float[] { 0 }, new bool[] { true }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false }),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false }),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { 7 }, new bool[] { true }),
+            new EnemySpawn(4, new GameObject[] { enemyC }, new float[] { 12 }, new bool[] { false }),
+            new EnemySpawn(3, new GameObject[] { enemyB }, new float[] { -10 }, new bool[] { false }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyB, enemyA, enemyC, enemyA }, new float[] { -6, -10,  11, 7}, new bool[] { true, false, false, true }, 2),
+            new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { -11, 11}, new bool[] { false, false }),
+        };
+
+        /*
         level3Spawn = new EnemySpawn[] {
             new EnemySpawn(10, new GameObject[] { enemyB, enemyB }, new float[] { -11, 11 }, new bool[] { false, false }),
             new EnemySpawn(12, new GameObject[] { enemyA, enemyA }, new float[] { -2, 2 }, new bool[] { true, true }),
@@ -234,6 +260,21 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { 9, -9 }, new bool[] { true, true }),
             new EnemySpawn(3, new GameObject[] { enemyB, enemyB }, new float[] { -4, -7 }, new bool[] { true, true }),
             new EnemySpawn(8, new GameObject[] { enemyB, enemyB }, new float[] { 4, 7 }, new bool[] { true, true }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA }, new float[] { 10, 11, 12, 13, 14, 15, -10, -11, -12, -13, -14, -15, 0 }, new bool[] { false, false,false,false,false,false,false,false,false,false,false,false,true })
+        };
+        */
+
+        level3Spawn = new EnemySpawn[] {
+            new EnemySpawn(10, new GameObject[] { enemyC, enemyC }, new float[] { -11, 11 }, new bool[] { false, false }),
+            new EnemySpawn(10, new GameObject[] { enemyA, enemyA }, new float[] { -2, 2 }, new bool[] { true, true }),
+            new EnemySpawn(4, new GameObject[] { enemyA, enemyB }, new float[] { -6, 12 }, new bool[] { true, false }, 1),
+            new EnemySpawn(0, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { -10, -12, -14 }, new bool[] { false, false, false }),
+            new EnemySpawn(3, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { 10, 12, 14 }, new bool[] { false, false, false }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyD, enemyD }, new float[] { 10, -10 }, new bool[] { false, false }, 0),
+            new EnemySpawn(0, new GameObject[] { enemyB, enemyA, enemyB, enemyA, enemyA }, new float[] { -10, -11, -12, 8, 5 }, new bool[] { false, false, false, true, true }, 1),
+            new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { 9, -9 }, new bool[] { true, true }),
+            new EnemySpawn(3, new GameObject[] { enemyC, enemyB }, new float[] { -4, -7 }, new bool[] { true, true }),
+            new EnemySpawn(8, new GameObject[] { enemyD, enemyB }, new float[] { 4, 7 }, new bool[] { true, true }, 0),
             new EnemySpawn(0, new GameObject[] { enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA }, new float[] { 10, 11, 12, 13, 14, 15, -10, -11, -12, -13, -14, -15, 0 }, new bool[] { false, false,false,false,false,false,false,false,false,false,false,false,true })
         };
 
@@ -542,6 +583,7 @@ public class mainHandler : MonoBehaviour {
 
                 if (tAllDead && victoryTimer == 0)
                 {
+                    normalLevelFinished = true;
                     victoryTimer = levelTimer;
                     txtVictory.enabled = true;
                     soundMusic.setParameterValue("Win", 1);

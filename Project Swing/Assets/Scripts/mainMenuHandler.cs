@@ -9,18 +9,17 @@ public class mainMenuHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundMenuMusic;
     FMOD.Studio.EventInstance soundUIClick;
     FMOD.Studio.EventInstance soundUIStart;
-
-    // Start is called before the first frame update
+    
     void Start()
     {
         soundMenuMusic = FMODUnity.RuntimeManager.CreateInstance("event:/Music/MenuMusic");
-        soundMenuMusic.start();
+
+        menuMusicPlayerHandler.Instance.checkStarted();
 
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
         soundUIStart = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_Start");
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         

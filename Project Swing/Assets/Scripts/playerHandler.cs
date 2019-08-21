@@ -89,6 +89,7 @@ public class playerHandler : MonoBehaviour
     bool birdHitstun;
     int birdInSequence;
     bool birdLevelFinished;
+    bool normalLevelFinished;
 
     int attackID;
     int attackIDStart;
@@ -126,6 +127,7 @@ public class playerHandler : MonoBehaviour
     float currentMultiplier;
     public int currentRank;
     List<Vector2> previousAttacks;
+    public bool enemyKilled;
 
     public SpriteRenderer rendererHPFill;
     public SpriteMask maskHPFill;
@@ -258,7 +260,7 @@ public class playerHandler : MonoBehaviour
     {
         //txtComboState.text = "Current combo state: " + comboState;
         //txtNumberCombos.text = "Number of available combos: " + currentCombos.Count;
-
+        
         // update animations
         UpdateAnimations();
 
@@ -290,7 +292,11 @@ public class playerHandler : MonoBehaviour
         }
 
         // update SP and SP bar
-        if (currentSP <= 0) chargingSP = true;
+        if (currentSP <= 0 && !chargingSP)
+        {
+            chargingSP = true;
+            AddBonusScore("SP Usage", 150);
+        }
         if (chargingSP)
         {
             currentSP += 1.3f * Time.deltaTime;
@@ -440,9 +446,16 @@ public class playerHandler : MonoBehaviour
             }
         }
         
+        if (mainHandler.normalLevelFinished && !normalLevelFinished)
+        {
+            normalLevelFinished = true;
+            if (currentHP == maxHP) AddBonusScore("Full HP", 2000);
+            else AddBonusScore("HP Bonus", currentHP * 50);
+            AddBonusScore("Supers Left", specialCharges * 150);
+        }
+
         if (mainHandler.birdLevelFinished && !birdLevelFinished)
         {
-            print("fininsjh");
             birdLevelFinished = true;
             GameObject tScoreBonus = Instantiate(scoreBonusText, new Vector3(0, 0f), new Quaternion(0, 0, 0, 0));
             tScoreBonus.GetComponent<scoreTextHandler>().Init("Health Bonus", currentHP * 100);
@@ -1004,6 +1017,7 @@ public class playerHandler : MonoBehaviour
             usingSuper = true;
             hitboxAttack3A.enabled = true;
             RestockCombos();
+            AddBonusScore("Super Usage", 30);
             SuccessfulSpecialPunch();
         }
         else if (beatState == FAIL)
@@ -1012,6 +1026,24 @@ public class playerHandler : MonoBehaviour
             punchingFail = true;
             busy = true;
             FailedPunch();
+        }
+    }
+
+    void SuccessfulSpecialPunch()
+    {
+        actionTimer += Time.deltaTime;
+
+        if (actionTimer >= specialPunchSuccessTime)
+        {
+            usingSuper = false;
+            specialChargeTimer = 0;
+            hitboxAttack3A.enabled = false;
+            actionTimer = 0;
+            punchingSuccess = false;
+            busy = false;
+            beatPassed = false;
+            punchingActive = false;
+
         }
     }
 
@@ -1150,24 +1182,6 @@ public class playerHandler : MonoBehaviour
             
         }
 
-    }
-
-    void SuccessfulSpecialPunch()
-    {
-        actionTimer += Time.deltaTime;
-
-        if (actionTimer >= specialPunchSuccessTime)
-        {
-            usingSuper = false;
-            specialChargeTimer = 0;
-            hitboxAttack3A.enabled = false;
-            actionTimer = 0;
-            punchingSuccess = false;
-            busy = false;
-            beatPassed = false;
-            punchingActive = false;
-
-        }
     }
 
     void CounterPunch()
@@ -1568,6 +1582,19 @@ public class playerHandler : MonoBehaviour
         }
     }
 
+    void AddBonusScore(string text, int amount, bool notBonus = false)
+    {
+        if (mainHandler.staticLevel > 0)
+        {
+            if (!notBonus)
+            {
+                GameObject tScoreBonus = Instantiate(scoreBonusText, new Vector3(0, 0f), new Quaternion(0, 0, 0, 0));
+                tScoreBonus.GetComponent<scoreTextHandler>().Init(text, (int)(amount * currentMultiplier));
+            }
+            currentScore += (int)(amount * currentMultiplier);
+        }
+    }
+
     void OnTriggerStay2D(Collider2D other)
     {
         // pick up
@@ -1648,19 +1675,21 @@ public class playerHandler : MonoBehaviour
 
                 if (comboState == currentCombos[0].Length - 1 && tDmg > 0)
                 {
-                    if (mainHandler.staticLevel > 0)
-                    {
-                        GameObject tScoreBonus = Instantiate(scoreBonusText, new Vector3(0, 0f), new Quaternion(0, 0, 0, 0));
-                        tScoreBonus.GetComponent<scoreTextHandler>().Init("Combo Finisher", 30);
-                        currentScore += (int)(70 * currentMultiplier);
-                    }
                     mainCamera.GetComponent<ScreenShake>().TriggerShake(0.07f + 0.027f * tDmg, 0.2f + 0.08f * tDmg, 1.2f);
                     Instantiate(effectHitRed, tBox, new Quaternion(0, 0, 0, 0));
                 }
                 else if (tDmg < 8 && tDmg > 0 && !birdHitstun)
                 {
-                    if (mainHandler.staticLevel > 0) currentScore += (int)(50 * currentMultiplier);
                     Instantiate(effectHitBlue, tBox, new Quaternion(0, 0, 0, 0));
+                }
+
+                AddBonusScore("", tDmg * 10, true);
+
+                if (enemyKilled)
+                {
+                    enemyKilled = false;
+                    if (comboState == currentCombos[0].Length - 1 && currentCombos.Count == 1) AddBonusScore("Finisher Kill", 100);
+                    else AddBonusScore("Kill", 50);
                 }
 
                 //Instantiate(pAttackHit, tBox, new Quaternion(0, 0, 0, 0));

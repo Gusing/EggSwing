@@ -19,6 +19,8 @@ public class PlayerData
     public int[] rankRecord;
     public int[] rankBirdRecord;
     public int currency;
+    public bool[] itemBought;
+    public bool[] itemActive;
 
     public PlayerData()
     {
@@ -39,6 +41,8 @@ public class PlayerData
             scoreBirdRecord = new int[5];
             rankRecord = new int[5];
             rankBirdRecord = new int[5];
+            itemBought = new bool[10];
+            itemActive = new bool[10];
 
             for (int i = 0; i < rankRecord.Length; i++)
             {
@@ -75,6 +79,8 @@ public class PlayerData
         rankBirdRecord = handler.rankBirdRecord;
 
         currency = handler.currency;
+        itemBought = handler.itemBought;
+        itemActive = handler.itemActive;
     }
 
 }
