@@ -214,7 +214,7 @@ public class playerHandler : MonoBehaviour
         currentCombos = new List<Attack[]>();
         RestockCombos();
 
-        maxHP = 15;
+        maxHP = 150;
         currentHP = maxHP;
         maxSpecialCharges = 3;
         specialCharges = maxSpecialCharges;
@@ -456,17 +456,21 @@ public class playerHandler : MonoBehaviour
 
         if (mainHandler.birdLevelFinished && !birdLevelFinished)
         {
+            GameObject tScoreBonus;
             birdLevelFinished = true;
-            GameObject tScoreBonus = Instantiate(scoreBonusText, new Vector3(0, 0f), new Quaternion(0, 0, 0, 0));
-            tScoreBonus.GetComponent<scoreTextHandler>().Init("Health Bonus", currentHP * 100);
-            currentScore += 100 * currentHP;
-
             if (currentHP == maxHP)
             {
                 tScoreBonus = Instantiate(scoreBonusText, new Vector3(0, 0f), new Quaternion(0, 0, 0, 0));
                 tScoreBonus.GetComponent<scoreTextHandler>().Init("PERFECT", 3000, 1);
                 currentScore += 3000;
             }
+            else
+            {
+                tScoreBonus = Instantiate(scoreBonusText, new Vector3(0, 0f), new Quaternion(0, 0, 0, 0));
+                tScoreBonus.GetComponent<scoreTextHandler>().Init("Health Bonus", currentHP * 100);
+                currentScore += 100 * currentHP;
+            }
+            
         }
 
         // update beat and combo state

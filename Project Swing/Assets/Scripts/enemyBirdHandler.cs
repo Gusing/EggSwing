@@ -91,7 +91,7 @@ public class enemyBirdHandler : MonoBehaviour
 
         bpmInSeconds = (float)60 / (float)localBpm;
 
-        print("spawn with offset: " + mainHandler.currentBeatTimer);
+        //print("spawn with offset: " + mainHandler.currentBeatTimer);
 
         timeUntilCrash = mainHandler.currentBeatTimer;
 

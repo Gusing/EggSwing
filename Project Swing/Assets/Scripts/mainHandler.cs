@@ -108,6 +108,9 @@ public class mainHandler : MonoBehaviour {
     public bool[] itemBought;
     public bool[] itemActive;
 
+    int[] numBirds;
+    public List<int[]> birdRankLimits; 
+
     FMOD.Studio.EventInstance soundAmbCafe;
     FMOD.Studio.EventInstance soundAmbSea;
 
@@ -337,9 +340,23 @@ public class mainHandler : MonoBehaviour {
             new int[] { 7000, 9000, 12500, 14000, 16500 },
         };
 
-        // load rank data
-        if (level < 100 && level > 0) currentRankLimits = levelRankLimits[level];
+        birdRankLimits = new List<int[]>() {
+            new int[] { 10, 20, 30, 40, 50 },
+            CalculateRankLimits(103),
+            new int[] { 5000, 7500, 9000, 11000, 13000 },
+            new int[] { 6500, 8000, 10000, 12000, 15000 },
+            new int[] { 7000, 9000, 12500, 14000, 16500 },
+        };
 
+        // load rank data
+        if (gameMode == NORMAL)
+        {
+            if (level < 100 && level > 0) currentRankLimits = levelRankLimits[level];
+        }
+        if (gameMode == BIRD)
+        {
+            if (level < 100 && level > 0) currentRankLimits = birdRankLimits[level];
+        }
         // play ambience
         if (level == 2) soundAmbCafe.start();
         if (level == 3) soundAmbSea.start();
@@ -550,6 +567,8 @@ public class mainHandler : MonoBehaviour {
     public void QuitLevel()
     {
         songStarted = false;
+        normalLevelFinished = false;
+        birdLevelFinished = false;
         // send analytics
         if (victoryTimer == 0) AnalyticsEvent.LevelQuit("level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
         enemiesDead = 0;
@@ -790,5 +809,23 @@ public class mainHandler : MonoBehaviour {
         bool eB = Random.Range((int)0, (int)2) == 0;
         if (eB) return enemyA;
         else return enemyB;
+    }
+
+    int[] CalculateRankLimits(int nBirds)
+    {
+        int tPScore = 0;
+        tPScore += 100 * 1 * 9;
+        tPScore += (int)(100 * 1.1f) * 20;
+        tPScore += (int)(100 * 1.3f) * 20;
+        tPScore += (int)(100 * 1.5f) * 25;
+        tPScore += (int)(100 * 1.7f) * 25;
+        int tBirds = nBirds;
+        tBirds -= 99;
+        tPScore += 100 * 2 * tBirds;
+        tPScore += 3000;
+
+        print("for P: " + tPScore);
+
+        return new int[] { (int)(tPScore * 0.25f), (int)(tPScore * 0.5f), (int)(tPScore * 0.7f), (int)(tPScore * 0.8f), tPScore };
     }
 }
