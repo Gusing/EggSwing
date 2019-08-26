@@ -82,6 +82,7 @@ public class playerHandler : MonoBehaviour
     int lastHitBeat;
     bool heldButton;
     bool secondRapid;
+    float bonusDisplayTimer;
 
     bool birdHitReady;
     bool birdHitting;
@@ -128,6 +129,7 @@ public class playerHandler : MonoBehaviour
     public int currentRank;
     List<Vector2> previousAttacks;
     public bool enemyKilled;
+    int lastDmg;
 
     public SpriteRenderer rendererHPFill;
     public SpriteMask maskHPFill;
@@ -159,6 +161,7 @@ public class playerHandler : MonoBehaviour
 
     List<Attack[]> allCombos;
     List<Attack[]> currentCombos;
+    List<int> lastCombo;
 
     GameObject mainCamera;
     GameObject beatIndicator;
@@ -208,13 +211,17 @@ public class playerHandler : MonoBehaviour
         allCombos.Add(new Attack[] { new Attack2A(hitboxAttack2A), new Attack2B(hitboxAttack2B), new Attack2C(hitboxAttack2C) });
         allCombos.Add(new Attack[] { new Attack2A(hitboxAttack2A), new Attack2B(hitboxAttack2B), new Attack2C(hitboxAttack2C), new Attack6A(hitboxAttack6A), new Attack6B(hitboxAttack6B) });
         allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack1B(hitboxAttack1B) });
-        allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack2D(hitboxAttack2D), new Attack1C(hitboxAttack1C), new Attack5A(hitboxAttack5A), new Attack2D(hitboxAttack2C), new Attack6B(hitboxAttack6B), new Attack6B(hitboxAttack6B) });
+        allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack2D(hitboxAttack2D), new Attack1C(hitboxAttack1C) });
         allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack5A(hitboxAttack5A) });
 
         currentCombos = new List<Attack[]>();
         RestockCombos();
 
-        maxHP = 150;
+        lastCombo = new List<int>();
+        lastCombo.Add(-1);
+        lastCombo.Add(-1);
+
+        maxHP = 15;
         currentHP = maxHP;
         maxSpecialCharges = 3;
         specialCharges = maxSpecialCharges;
@@ -225,11 +232,14 @@ public class playerHandler : MonoBehaviour
         blockBeat = -10;
         currentMultiplier = 1;
         currentSP = maxSP;
+        lastDmg = 0;
         punchSuccessTime = (60f / mainHandler.currentBpm) * 0.75f;
         quickPunchSuccessTime = (60f / mainHandler.currentBpm) * 0.6f;
         specialPunchSuccessTime = (60f / mainHandler.currentBpm) * 1f;
         rapidPunchSuccessTime = (60f / mainHandler.currentBpm) * 0.5f;
         localBPM = mainHandler.currentBpm;
+        normalLevelFinished = false;
+        birdLevelFinished = false;
 
         textRank.text = "E";
         textMultiplier.enabled = false;
@@ -320,6 +330,12 @@ public class playerHandler : MonoBehaviour
         }
         maskSPFill.transform.localPosition = new Vector3(-2.5f + (currentSP / maxSP) * 2.5f, 0);
 
+        // update bonus score display
+        if (bonusDisplayTimer > 0)
+        {
+            bonusDisplayTimer -= Time.deltaTime;
+        }
+
         // update moves
         if (punchingSuccess)
         {
@@ -371,7 +387,7 @@ public class playerHandler : MonoBehaviour
         // update rank
         if (currentRank < 5 && mainHandler.staticLevel < 100 && mainHandler.staticLevel > 0)
         {
-            if (currentScore > mainHandler.currentRankLimits[currentRank])
+            if (currentScore >= mainHandler.currentRankLimits[currentRank])
             {
                 currentRank++;
                 if (currentRank == 1)
@@ -449,9 +465,10 @@ public class playerHandler : MonoBehaviour
         if (mainHandler.normalLevelFinished && !normalLevelFinished)
         {
             normalLevelFinished = true;
-            if (currentHP == maxHP) AddBonusScore("Full HP", 2000);
-            else AddBonusScore("HP Bonus", currentHP * 50);
-            AddBonusScore("Supers Left", specialCharges * 150);
+            if (currentHP == maxHP) AddBonusScore("Full HP", 2000, false, true);
+            else AddBonusScore("HP Bonus", currentHP * 50, false, true);
+            if (specialCharges > 0) AddBonusScore("Supers Left", specialCharges * 150, false, true);
+            if (mainHandler.levelTimer <= 180) AddBonusScore("Time Bonus", 1000 - (int)((mainHandler.levelTimer / 180f) * 1000f), false, true);
         }
 
         if (mainHandler.birdLevelFinished && !birdLevelFinished)
@@ -461,14 +478,14 @@ public class playerHandler : MonoBehaviour
             if (currentHP == maxHP)
             {
                 tScoreBonus = Instantiate(scoreBonusText, new Vector3(0, 0f), new Quaternion(0, 0, 0, 0));
-                tScoreBonus.GetComponent<scoreTextHandler>().Init("PERFECT", 3000, 1);
-                currentScore += 3000;
+                tScoreBonus.GetComponent<scoreTextHandler>().Init("PERFECT", 1000, 1);
+                currentScore += 1000;
             }
             else
             {
                 tScoreBonus = Instantiate(scoreBonusText, new Vector3(0, 0f), new Quaternion(0, 0, 0, 0));
-                tScoreBonus.GetComponent<scoreTextHandler>().Init("Health Bonus", currentHP * 100);
-                currentScore += 100 * currentHP;
+                tScoreBonus.GetComponent<scoreTextHandler>().Init("Health Bonus", currentHP * 50);
+                currentScore += 50 * currentHP;
             }
             
         }
@@ -698,12 +715,7 @@ public class playerHandler : MonoBehaviour
             if (actionTimer >= punchSuccessTime)
             {
                 DisableHurtboxes();
-                bool restock = true;
-                for (int i = 0; i < currentCombos.Count; i++)
-                {
-                    if (!(currentCombos[i].Length - 1 == comboState)) restock = false;
-                }
-                if (restock) RestockCombos();
+                CheckCombosEndOfCombo();
                 
                 actionTimer = 0;
                 punchingSuccess = false;
@@ -874,7 +886,7 @@ public class playerHandler : MonoBehaviour
         if (actionTimer >= quickPunchSuccessTime)
         {
             DisableHurtboxes();
-            if (currentCombos[0].Length - 1 == comboState) RestockCombos();
+            CheckCombosEndOfCombo();
             
             actionTimer = 0;
             punchingSuccess = false;
@@ -980,12 +992,7 @@ public class playerHandler : MonoBehaviour
         if ((actionTimer >= quickPunchSuccessTime && !secondRapid) || (actionTimer >= rapidPunchSuccessTime && secondRapid))
         {
             DisableHurtboxes();
-            bool restock = true;
-            for (int i = 0; i < currentCombos.Count; i++)
-            {
-                if (!(currentCombos[i].Length - 1 == comboState)) restock = false;
-            }
-            if (restock) RestockCombos();
+            CheckCombosEndOfCombo();
 
             actionTimer = 0;
             punchingSuccess = false;
@@ -1129,7 +1136,7 @@ public class playerHandler : MonoBehaviour
             if (actionTimer >= punchSuccessTime)
             {
                 DisableHurtboxes();
-                if (currentCombos[0].Length - 1 == comboState) RestockCombos();
+                CheckCombosEndOfCombo();
 
                 actionTimer = 0;
                 punchingSuccess = false;
@@ -1245,7 +1252,8 @@ public class playerHandler : MonoBehaviour
         hitboxBody.enabled = true;
         hitboxAttackBird.enabled = true;
         Instantiate(pBirdHit, transform);
-        currentScore += (int)(100 * currentMultiplier);
+        currentScore += (int)Mathf.Round(100 * currentMultiplier);
+        print("100 * " + currentMultiplier + " = " + (int)Mathf.Round(100 * currentMultiplier));
         UpdateStreak(1);
 
         actionTimer = 0;
@@ -1318,6 +1326,31 @@ public class playerHandler : MonoBehaviour
     {
         currentCombos = new List<Attack[]>(allCombos);
         comboState = -1;
+    }
+
+    void CheckCombosEndOfCombo()
+    {
+        bool restock = true;
+        for (int i = 0; i < currentCombos.Count; i++)
+        {
+            if (!(currentCombos[i].Length - 1 == comboState)) restock = false;
+        }
+        if (restock)
+        {
+            for (int i = 0; i < allCombos.Count; i++)
+            {
+                if (allCombos[i] == currentCombos[0])
+                {
+                    lastCombo.Add(i);
+                    print("combo used: " + i);
+                }
+            }
+            if (lastCombo[lastCombo.Count-1] != lastCombo[lastCombo.Count-2] && lastCombo[lastCombo.Count-1] != lastCombo[lastCombo.Count-3] && lastCombo[lastCombo.Count - 3] != -1 && lastDmg > 0)
+            {
+                AddBonusScore("combo variety", 100);
+            }
+            RestockCombos();
+        }
     }
 
     void Hitstun()
@@ -1434,7 +1467,7 @@ public class playerHandler : MonoBehaviour
             streakLevel = 0;
             textStreak.enabled = false;
             textMultiplier.enabled = false;
-
+            
             hitstunDirection = hitDirection;
 
             currentHP -= dmg;
@@ -1483,6 +1516,8 @@ public class playerHandler : MonoBehaviour
 
     public void Reset()
     {
+        normalLevelFinished = false;
+        birdLevelFinished = false;
         currentHP = maxHP;
         dead = false;
         specialCharges = maxSpecialCharges;
@@ -1586,16 +1621,20 @@ public class playerHandler : MonoBehaviour
         }
     }
 
-    void AddBonusScore(string text, int amount, bool notBonus = false)
+    void AddBonusScore(string text, int amount, bool notBonus = false, bool noMultiplier = false)
     {
         if (mainHandler.staticLevel > 0)
         {
             if (!notBonus)
             {
                 GameObject tScoreBonus = Instantiate(scoreBonusText, new Vector3(0, 0f), new Quaternion(0, 0, 0, 0));
-                tScoreBonus.GetComponent<scoreTextHandler>().Init(text, (int)(amount * currentMultiplier));
+                if (!noMultiplier) tScoreBonus.GetComponent<scoreTextHandler>().Init(text, (int)(amount * currentMultiplier), bonusDisplayTimer);
+                else tScoreBonus.GetComponent<scoreTextHandler>().Init(text, amount, bonusDisplayTimer);
+                bonusDisplayTimer += 0.5f;
             }
-            currentScore += (int)(amount * currentMultiplier);
+            if (!noMultiplier) currentScore += (int)(amount * currentMultiplier);
+            else currentScore += amount;
+
         }
     }
 
@@ -1659,12 +1698,13 @@ public class playerHandler : MonoBehaviour
                 tDmg = 1;
                 tBox = (Vector2)hitboxAttackBird.transform.position + hitboxAttackBird.offset;
             }
-
+            
             if (tDmg > 0)
             {
                 if (other.tag == "enemy")
                 {
                     tDmg = other.GetComponent<enemyHandler>().TakeDamage(tDmg, attackID, birdHitstun, attackType);
+                    lastDmg = tDmg;
                     if (comboState >= 0)
                     {
                         if (tDmg > 0) currentCombos[0][comboState].soundAttackHit.start();

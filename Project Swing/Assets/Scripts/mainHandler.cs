@@ -59,12 +59,13 @@ public class mainHandler : MonoBehaviour {
     public int level;
     public static int staticLevel;
 
-    float levelTimer;
+    public static float levelTimer;
     int currentSpawn;
     float prevTime;
     bool waitingForDeath;
     public static int enemiesDead;
     public int totalEnemies;
+    public int totalBirds;
 
     float nextSpawn;
 
@@ -268,8 +269,8 @@ public class mainHandler : MonoBehaviour {
         */
 
         level3Spawn = new EnemySpawn[] {
-            new EnemySpawn(10, new GameObject[] { enemyC, enemyC }, new float[] { -11, 11 }, new bool[] { false, false }),
-            new EnemySpawn(10, new GameObject[] { enemyA, enemyA }, new float[] { -2, 2 }, new bool[] { true, true }),
+            new EnemySpawn(10, new GameObject[] { enemyC, enemyC }, new float[] { -11, 11 }, new bool[] { false, false }, 1),
+            new EnemySpawn(2, new GameObject[] { enemyA, enemyA }, new float[] { -2, 2 }, new bool[] { true, true }),
             new EnemySpawn(4, new GameObject[] { enemyA, enemyB }, new float[] { -6, 12 }, new bool[] { true, false }, 1),
             new EnemySpawn(0, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { -10, -12, -14 }, new bool[] { false, false, false }),
             new EnemySpawn(3, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { 10, 12, 14 }, new bool[] { false, false, false }, 0),
@@ -291,7 +292,7 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(1, new GameObject[] { enemyD, enemyD }, new float[] { -2, 2 }, new bool[] { true, true }),
             new EnemySpawn(3, new GameObject[] { enemyB, enemyB }, new float[] { -11, 11 }, new bool[] { false, false }),
             new EnemySpawn(6, new GameObject[] { enemyC, enemyC }, new float[] { 13, 15 }, new bool[] { true, false }, 1),
-            new EnemySpawn(2, new GameObject[] { enemyD }, new float[] { -6 }, new bool[] { true }),
+            new EnemySpawn(1, new GameObject[] { enemyD }, new float[] { -6 }, new bool[] { true }),
             new EnemySpawn(2, new GameObject[] { enemyD }, new float[] { 5 }, new bool[] { true }),
             new EnemySpawn(2, new GameObject[] { enemyC }, new float[] { -2 }, new bool[] { true }),
             new EnemySpawn(2, new GameObject[] { enemyC }, new float[] { 3 }, new bool[] { true }),
@@ -334,18 +335,18 @@ public class mainHandler : MonoBehaviour {
         // rank data
         levelRankLimits = new List<int[]>() {
             new int[] { 10, 20, 30, 40, 50 },
-            new int[] { 1500, 2000, 3000, 5000, 6000 },
-            new int[] { 5000, 7500, 9000, 11000, 13000 },
-            new int[] { 6500, 8000, 10000, 12000, 15000 },
-            new int[] { 7000, 9000, 12500, 14000, 16500 },
+            new int[] { 4500, 5500, 6500, 8000, 10000 },
+            new int[] { 6000, 7500, 9000, 12000, 14000 },
+            new int[] { 1000, 13000, 16000, 18000, 22000 },
+            new int[] { 9000, 11000, 13000, 15000, 18000 },
         };
 
         birdRankLimits = new List<int[]>() {
             new int[] { 10, 20, 30, 40, 50 },
-            CalculateRankLimits(103),
-            new int[] { 5000, 7500, 9000, 11000, 13000 },
-            new int[] { 6500, 8000, 10000, 12000, 15000 },
-            new int[] { 7000, 9000, 12500, 14000, 16500 },
+            CalculateRankLimits(100),
+            CalculateRankLimits(147),
+            CalculateRankLimits(178),
+            CalculateRankLimits(127),
         };
 
         // load rank data
@@ -394,6 +395,7 @@ public class mainHandler : MonoBehaviour {
             }
             if (name.Contains("B") && name.Length == 2 && level >= 0)
             {
+                totalBirds++;
                 player.GetComponent<playerHandler>().birds.Add(Instantiate(enemyBird, new Vector3(0f, 0f), Quaternion.identity));
                 if (name == "B1") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(1);
                 if (name == "B2") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(2);
@@ -662,6 +664,7 @@ public class mainHandler : MonoBehaviour {
                 victoryTimer += Time.deltaTime;
                 txtVictory.enabled = true;
                 txtVictory.text = "Level Cleared";
+                print("Number of birds: " + totalBirds);
             }
 
             if (victoryTimer > 2 )
@@ -814,17 +817,19 @@ public class mainHandler : MonoBehaviour {
     int[] CalculateRankLimits(int nBirds)
     {
         int tPScore = 0;
-        tPScore += 100 * 1 * 9;
-        tPScore += (int)(100 * 1.1f) * 20;
-        tPScore += (int)(100 * 1.3f) * 20;
-        tPScore += (int)(100 * 1.5f) * 25;
-        tPScore += (int)(100 * 1.7f) * 25;
+        tPScore += 100 * 1 * 10;
+        tPScore += (int)Mathf.Round(100 * 1.1f) * 20;
+        tPScore += (int)Mathf.Round(100 * 1.3f) * 20;
+        tPScore += (int)Mathf.Round(100 * 1.5f) * 25;
+        tPScore += (int)Mathf.Round(100 * 1.7f) * 25;
         int tBirds = nBirds;
-        tBirds -= 99;
+        tBirds -= 100;
+        
         tPScore += 100 * 2 * tBirds;
-        tPScore += 3000;
+        tPScore += 1000;
 
-        print("for P: " + tPScore);
+        print("score for P: " + tPScore);
+        //fick 242000, borde vara det
 
         return new int[] { (int)(tPScore * 0.25f), (int)(tPScore * 0.5f), (int)(tPScore * 0.7f), (int)(tPScore * 0.8f), tPScore };
     }

@@ -1,0 +1,78 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class ShopItemContainerHandler : MonoBehaviour
+{
+    public Image imgBg;
+    public Text txtName;
+    public Image imgCombo;
+    public Text txtButton;
+    bool bought;
+    bool active;
+    int id;
+    GameObject mainHandler;
+    public Sprite spriteBgGreen;
+
+    void Start()
+    {
+        mainHandler = GameObject.Find("Main Camera");
+    }
+
+    public void Init(bool isBought, bool isActive, string name, Sprite comboImage, int ID)
+    {
+        bought = isBought;
+        active = isActive;
+        if (bought)
+        {
+            if (!active)
+            {
+                active = false;
+                txtButton.text = "Inactive";
+                txtButton.color = new Color(0.3f, 0.1f, 0.1f);
+            }
+            else
+            {
+                active = true;
+                txtButton.text = "Active";
+                txtButton.color = new Color(0.1f, 0.3f, 0.13f);
+            }
+        }
+        txtName.text = name;
+        imgCombo.sprite = comboImage;
+        id = ID;
+    }
+    
+    void Update()
+    {
+        
+    }
+
+    public void ClickBuy()
+    {
+        if (mainHandler.GetComponent<shopHandler>().ClickBuy(id))
+        {
+            if (!bought)
+            {
+                bought = true;
+                active = true;
+                txtButton.text = "Active";
+                imgBg.sprite = spriteBgGreen;
+            }
+            else if (active)
+            {
+                active = false;
+                txtButton.text = "Inactive";
+                txtButton.color = new Color(0.3f, 0.1f, 0.1f);
+            }
+            else
+            {
+                active = true;
+                txtButton.text = "Active";
+                txtButton.color = new Color(0.1f, 0.3f, 0.13f);
+            }
+        }
+
+    }
+}
