@@ -479,6 +479,8 @@ MonoBehaviour:
     type: 3}
   effectHitSuper: {fileID: 1811336824147919723, guid: 8b2bfff9ca467534cbb29f6e1d189558,
     type: 3}
+  effectHitBird: {fileID: 1811336824147919723, guid: 81cff496e5ea67e4daa9a092d13d793a,
+    type: 3}
   damageNumberEnemy: {fileID: 1188790007723088, guid: be7b358b633dad04b97c1664f125b762,
     type: 3}
   damageNumberPlayer: {fileID: 1188790007723088, guid: c7a6b36ed9e1d6747909971dea30d693,
@@ -509,6 +511,7 @@ MonoBehaviour:
   maxSP: 20
   currentScore: 0
   currentRank: 0
+  enemyKilled: 0
   rendererHPFill: {fileID: 0}
   maskHPFill: {fileID: 0}
   renderersSpecialCharges:
@@ -516,6 +519,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   textStreak: {fileID: 0}
+  textCombo: {fileID: 0}
   textCurrency: {fileID: 0}
   textScore: {fileID: 0}
   textMultiplier: {fileID: 0}

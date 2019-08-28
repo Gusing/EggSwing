@@ -71,27 +71,31 @@ public class beatIndicatorHandlerB : MonoBehaviour
 
             for (int i = lines.Count - 8; i < lines.Count; i++)
             {
-                lines[i].GetComponent<beatLineHandler>().Kill();
+                if (i >= 0 && lines[i] != null) lines[i].GetComponent<beatLineHandler>().Kill();
+
             }
             lines.Clear();
-            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
-            lines[lines.Count - 1].transform.parent = gameObject.transform;
-            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(true, bpmInSeconds, 1);
-            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
-            lines[lines.Count - 1].transform.parent = gameObject.transform;
-            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(true, bpmInSeconds, 2);
-            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
-            lines[lines.Count - 1].transform.parent = gameObject.transform;
-            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(true, bpmInSeconds, 3);
-            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
-            lines[lines.Count - 1].transform.parent = gameObject.transform;
-            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false, bpmInSeconds, 1);
-            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
-            lines[lines.Count - 1].transform.parent = gameObject.transform;
-            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false, bpmInSeconds, 2);
-            lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
-            lines[lines.Count - 1].transform.parent = gameObject.transform;
-            lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false, bpmInSeconds, 3);
+            if (mainHandler.songStarted)
+            {
+                lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+                lines[lines.Count - 1].transform.parent = gameObject.transform;
+                lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(true, bpmInSeconds, 1);
+                lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+                lines[lines.Count - 1].transform.parent = gameObject.transform;
+                lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(true, bpmInSeconds, 2);
+                lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+                lines[lines.Count - 1].transform.parent = gameObject.transform;
+                lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(true, bpmInSeconds, 3);
+                lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+                lines[lines.Count - 1].transform.parent = gameObject.transform;
+                lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false, bpmInSeconds, 1);
+                lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+                lines[lines.Count - 1].transform.parent = gameObject.transform;
+                lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false, bpmInSeconds, 2);
+                lines.Add(Instantiate(indicatorLine, new Vector3(0, 0), new Quaternion(0, 0, 0, 0)));
+                lines[lines.Count - 1].transform.parent = gameObject.transform;
+                lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false, bpmInSeconds, 3);
+            }
 
             //timeToSpawn = ((bpmInSeconds - timeBeforeCollision) + bpmInSeconds) % bpmInSeconds;
 

@@ -440,6 +440,7 @@ GameObject:
   - component: {fileID: 810882537}
   - component: {fileID: 810882536}
   - component: {fileID: 810882535}
+  - component: {fileID: 810882538}
   m_Layer: 5
   m_Name: btnQuit
   m_TagString: Untagged
@@ -480,11 +481,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
-    m_SelectOnUp: {fileID: 0}
+    m_Mode: 4
+    m_SelectOnUp: {fileID: 1231969140}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnRight: {fileID: 2090317834}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -561,6 +562,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 810882533}
   m_CullTransparentMesh: 0
+--- !u!114 &810882538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 810882533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 915b24db12d49a948bc94d6fc9c204ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &862316738
 GameObject:
   m_ObjectHideFlags: 0
@@ -573,6 +586,7 @@ GameObject:
   - component: {fileID: 862316742}
   - component: {fileID: 862316741}
   - component: {fileID: 862316740}
+  - component: {fileID: 862316743}
   m_Layer: 5
   m_Name: btnDiscord
   m_TagString: Untagged
@@ -623,7 +637,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.7264151, g: 0.6354431, b: 0.51054645, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.7264151, g: 0.6354431, b: 0.51054645, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0
@@ -694,6 +708,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 862316738}
   m_CullTransparentMesh: 0
+--- !u!114 &862316743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862316738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 915b24db12d49a948bc94d6fc9c204ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1063798264
 GameObject:
   m_ObjectHideFlags: 0
@@ -852,6 +878,7 @@ GameObject:
   - component: {fileID: 1231969142}
   - component: {fileID: 1231969141}
   - component: {fileID: 1231969140}
+  - component: {fileID: 1231969143}
   m_Layer: 5
   m_Name: btnPlay
   m_TagString: Untagged
@@ -973,6 +1000,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1231969138}
   m_CullTransparentMesh: 0
+--- !u!114 &1231969143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231969138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 915b24db12d49a948bc94d6fc9c204ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1318739066
 GameObject:
   m_ObjectHideFlags: 0
@@ -1369,6 +1408,8 @@ GameObject:
   - component: {fileID: 1716441244}
   - component: {fileID: 1716441243}
   - component: {fileID: 1716441246}
+  - component: {fileID: 1716441247}
+  - component: {fileID: 1716441248}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1451,6 +1492,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1323afb2937e3554f97ff88fd9059241, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1716441247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716441242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd18a17b443d5224b956ed905719f833, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1716441248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716441242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc4bfbb33a087724c9df77bced37447a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1789179219
@@ -1627,6 +1692,7 @@ GameObject:
   - component: {fileID: 2090317836}
   - component: {fileID: 2090317835}
   - component: {fileID: 2090317834}
+  - component: {fileID: 2090317837}
   m_Layer: 5
   m_Name: btnSunscale
   m_TagString: Untagged
@@ -1677,7 +1743,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.7264151, g: 0.6354431, b: 0.51054645, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.7264151, g: 0.6354431, b: 0.51054645, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0
@@ -1748,3 +1814,15 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2090317832}
   m_CullTransparentMesh: 0
+--- !u!114 &2090317837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2090317832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 915b24db12d49a948bc94d6fc9c204ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

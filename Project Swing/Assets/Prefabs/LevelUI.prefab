@@ -377,6 +377,7 @@ GameObject:
   - component: {fileID: 303937643309945724}
   - component: {fileID: 303937643309945725}
   - component: {fileID: 303937643309945714}
+  - component: {fileID: 8703287761275628538}
   m_Layer: 5
   m_Name: btnRetry
   m_TagString: Untagged
@@ -468,7 +469,7 @@ MonoBehaviour:
     m_SelectedColor: {r: 0.7264151, g: 0.6354431, b: 0.51054645, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
+    m_FadeDuration: 0
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
@@ -498,6 +499,18 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &8703287761275628538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 303937643309945712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 915b24db12d49a948bc94d6fc9c204ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &303937643396106905
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,6 +523,8 @@ GameObject:
   - component: {fileID: 303937643396106906}
   - component: {fileID: 303937643396106907}
   - component: {fileID: 303937643396106904}
+  - component: {fileID: 6296588953774458169}
+  - component: {fileID: 7550866763886719732}
   m_Layer: 5
   m_Name: LevelUI
   m_TagString: Untagged
@@ -606,6 +621,30 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &6296588953774458169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 303937643396106905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd18a17b443d5224b956ed905719f833, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7550866763886719732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 303937643396106905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc4bfbb33a087724c9df77bced37447a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &303937643422846758
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,6 +736,7 @@ GameObject:
   - component: {fileID: 303937644554827040}
   - component: {fileID: 303937644554827041}
   - component: {fileID: 303937644554827046}
+  - component: {fileID: 2829006678787732165}
   m_Layer: 5
   m_Name: btnBack
   m_TagString: Untagged
@@ -788,7 +828,7 @@ MonoBehaviour:
     m_SelectedColor: {r: 0.7264151, g: 0.6354431, b: 0.51054645, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
+    m_FadeDuration: 0
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
@@ -818,6 +858,18 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &2829006678787732165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 303937644554827044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 915b24db12d49a948bc94d6fc9c204ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &303937644723144824
 GameObject:
   m_ObjectHideFlags: 0

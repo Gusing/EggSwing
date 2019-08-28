@@ -346,6 +346,7 @@ GameObject:
   - component: {fileID: 6515733322884478941}
   - component: {fileID: 5074282919147366907}
   - component: {fileID: 1984317598989361252}
+  - component: {fileID: 5575815476391679275}
   m_Layer: 5
   m_Name: btnStartLevel
   m_TagString: Untagged
@@ -467,6 +468,18 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &5575815476391679275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3437624038091442040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 915b24db12d49a948bc94d6fc9c204ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5953253539757130316
 GameObject:
   m_ObjectHideFlags: 0

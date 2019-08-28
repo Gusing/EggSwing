@@ -7,6 +7,7 @@ public class ShopItemContainerHandler : MonoBehaviour
 {
     public Image imgBg;
     public Text txtName;
+    public Text txtPrice;
     public Image imgCombo;
     public Text txtButton;
     bool bought;
@@ -20,12 +21,15 @@ public class ShopItemContainerHandler : MonoBehaviour
         mainHandler = GameObject.Find("Main Camera");
     }
 
-    public void Init(bool isBought, bool isActive, string name, Sprite comboImage, int ID)
+    public void Init(bool isBought, bool isActive, string name, Sprite comboImage, int price, int ID)
     {
         bought = isBought;
         active = isActive;
+        txtPrice.text = price.ToString();
         if (bought)
         {
+            txtPrice.enabled = false;
+            imgBg.sprite = spriteBgGreen;
             if (!active)
             {
                 active = false;
@@ -55,6 +59,7 @@ public class ShopItemContainerHandler : MonoBehaviour
         {
             if (!bought)
             {
+                txtPrice.enabled = false;
                 bought = true;
                 active = true;
                 txtButton.text = "Active";

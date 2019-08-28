@@ -51,8 +51,12 @@ MonoBehaviour:
   spriteBirdB: {fileID: 21300000, guid: d2318363a907fc842b17696789ff74dd, type: 3}
   spriteBirdB2: {fileID: 21300000, guid: fca78e7ca32b1e64d8f68d8c661930a4, type: 3}
   spriteBirdB3: {fileID: 21300000, guid: e8e9138dbf25ead49b810afd8993ae2b, type: 3}
+  effectFeather: {fileID: 1811336824147919723, guid: 948adcaa1fd71544dbe69dbedd5c14d3,
+    type: 3}
+  startedCharge: 0
   dead: 0
   readyToBeDestroyed: 0
+  animationTimeLeft: 0
   readyToBeHit: 0
 --- !u!212 &130548916023914406
 SpriteRenderer:

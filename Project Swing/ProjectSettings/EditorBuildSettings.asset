@@ -12,20 +12,20 @@ EditorBuildSettings:
     path: Assets/Scenes/MenuScene.unity
     guid: 6dbf9d22c187c8c44bea519c2c89f467
   - enabled: 1
-    path: Assets/Scenes/Practice100.unity
+    path: Assets/Scenes/PracticeScene.unity
     guid: 32f820d60cf8d2141acd64b6690797ca
   - enabled: 1
     path: Assets/Scenes/Level1Scene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
-    path: Assets/Scenes/Practice128.unity
-    guid: b53848443bcc17c40a121f65b72857bb
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/Level2Scene.unity
     guid: fc397f3303b0dc24cab810dcdb2a35ee
-  - enabled: 1
-    path: Assets/Scenes/Practice148.unity
-    guid: ba9c0d2f434808b44b3051a44f9d449d
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/Level3Scene.unity
     guid: 97b5447d9baf50c47a66695f31d3dad9
@@ -50,4 +50,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ShopScene.unity
     guid: afb1a7552b2254946857250f320fd9b9
+  - enabled: 1
+    path: Assets/Scenes/ControlsScene.unity
+    guid: 96746b75f95a60f499cc1da4ac975477
   m_configObjects: {}

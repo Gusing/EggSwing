@@ -197,6 +197,7 @@ MonoBehaviour:
   rendererProgressMarker: {fileID: 833614326}
   level: 2
   totalEnemies: 0
+  totalBirds: 0
   SecondCounter: {fileID: 0}
   SecondDisplay: {fileID: 0}
   txtRecordDisplay: {fileID: 0}
@@ -217,6 +218,12 @@ MonoBehaviour:
   itemBought: 
   itemActive: 
   musicPath: event:/Music/Elextroswing
+  txtSongName: {fileID: 0}
+  txtSongBPM: {fileID: 0}
+  spriteCombos: []
+  comboHolder: {fileID: 0}
+  comboBasicHeavy: {fileID: 0}
+  comboBasicLight: {fileID: 0}
 --- !u!20 &25819224
 Camera:
   m_ObjectHideFlags: 0

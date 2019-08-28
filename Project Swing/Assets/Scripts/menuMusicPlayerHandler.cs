@@ -45,4 +45,10 @@ public class menuMusicPlayerHandler : MonoBehaviour
         started = false;
         soundMenuMusic.setParameterValue("End", 1);
     }
+
+    public void swapShop(bool shopMusic)
+    {
+        if (shopMusic) soundMenuMusic.setParameterValue("Shop", 1);
+        else soundMenuMusic.setParameterValue("Shop", 0);
+    }
 }

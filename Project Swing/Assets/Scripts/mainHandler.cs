@@ -66,6 +66,7 @@ public class mainHandler : MonoBehaviour {
     public static int enemiesDead;
     public int totalEnemies;
     public int totalBirds;
+    float[] songLengths;
 
     float nextSpawn;
 
@@ -108,6 +109,7 @@ public class mainHandler : MonoBehaviour {
     public int currency;
     public bool[] itemBought;
     public bool[] itemActive;
+    public int lastMode;
 
     int[] numBirds;
     public List<int[]> birdRankLimits; 
@@ -127,6 +129,26 @@ public class mainHandler : MonoBehaviour {
     float beatTimer2;
     public static float currentBeatTimer;
 
+    // PRACTICE ROOM
+    public Text txtSongName;
+    public Text txtSongBPM;
+
+    List<FMOD.Studio.EventInstance> soundPracticeSongs;
+    List<FMOD.Studio.EventInstance> soundAvailableracticeSongs;
+    List<string> practiceSongNames;
+    List<string> availablePracticeSongNames;
+    List<int> practiceSongBPM;
+    List<int> availablePracticeSongBPM;
+    int currentSong;
+
+    public Sprite[] spriteCombos;
+    public Sprite comboHolder;
+    public Sprite comboBasicHeavy;
+    public Sprite comboBasicLight;
+
+    bool holdingRT;
+    bool holdingLT;
+
     void Awake()
     {
         currentBpm = bpm;
@@ -144,7 +166,7 @@ public class mainHandler : MonoBehaviour {
         
         callBack = new FMOD.Studio.EVENT_CALLBACK(StudioEventCallback);
         soundMusic.setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
-        soundMusic.start();
+        if (level != -1) soundMusic.start();
 
         soundAmbCafe = FMODUnity.RuntimeManager.CreateInstance("event:/Amb/Amb_cafe");
         soundAmbSea = FMODUnity.RuntimeManager.CreateInstance("event:/Amb/Amb_sea");
@@ -152,7 +174,7 @@ public class mainHandler : MonoBehaviour {
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
 
         soundSinus = FMODUnity.RuntimeManager.CreateInstance("event:/Sinus_test");
-
+        
         enemies = new List<GameObject>();
 
         // load data
@@ -173,15 +195,115 @@ public class mainHandler : MonoBehaviour {
         currency = data.currency;
         itemBought = data.itemBought;
         itemActive = data.itemActive;
+        lastMode = data.lastMode;
 
         player.GetComponent<playerHandler>().Init(currency);
-
+        
         currentSpawn = 0;
         levelTimer = 0;
         enemiesDead = 0;
         victoryTimer = 0;
         totalEnemies = 0;
         songStarted = false;
+
+        // load practice
+        if (level == -1)
+        {
+            soundPracticeSongs = new List<FMOD.Studio.EventInstance>();
+            soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/SpaceBagle"));
+            soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/Elextroswing"));
+            soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/PirateBoy"));
+            soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/DoomMusic"));
+
+            for (int i = 0; i < soundPracticeSongs.Count; i++)
+            {
+                soundPracticeSongs[i].setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
+            }
+
+            soundAvailableracticeSongs = new List<FMOD.Studio.EventInstance>();
+
+            practiceSongNames = new List<string> { "Moon", "Swing", "Pirate", "Hell" };
+
+            availablePracticeSongNames = new List<string>();
+
+            practiceSongBPM = new List<int> { 100, 128, 140, 108 };
+
+            availablePracticeSongBPM = new List<int>();
+
+            for (int i = 1; i < data.unlockedLevel.Length; i++)
+            {
+                if (data.unlockedLevel[i] || data.unlockedBirdLevel[i])
+                {
+                    soundAvailableracticeSongs.Add(soundPracticeSongs[i - 1]);
+                    availablePracticeSongNames.Add(practiceSongNames[i - 1]);
+                    availablePracticeSongBPM.Add(practiceSongBPM[i - 1]);
+                }
+            }
+
+            currentSong = 0;
+            soundAvailableracticeSongs[currentSong].start();
+            txtSongName.text = availablePracticeSongNames[currentSong];
+            bpm = availablePracticeSongBPM[currentSong];
+            txtSongBPM.text = "BPM: " + bpm;
+            currentBpm = bpm;
+            offBeatTime = 60 / ((float)bpm * 2);
+            preBeatTime = 60 / (float)bpm - leniency;
+
+
+            GameObject tSprite;
+            GameObject tSprite2;
+            tSprite = new GameObject("ComboSprite" + -1);
+            SpriteRenderer tRenderer = tSprite.AddComponent<SpriteRenderer>();
+            tRenderer.sprite = comboBasicHeavy;
+            tSprite.transform.localScale = new Vector3(0.5f, 0.5f, 1);
+            tSprite.transform.position = new Vector3(-6.4f, 3.1f - 0.7f * 0);
+            tRenderer.sortingLayerName = "HUD";
+            tRenderer.sortingOrder = 1;
+            tSprite2 = new GameObject("ComboSprite" + -1 + "bg");
+            tRenderer = tSprite2.AddComponent<SpriteRenderer>();
+            tRenderer.sprite = comboHolder;
+            tRenderer.sortingLayerName = "HUD";
+            tSprite2.transform.parent = tSprite.transform;
+            tSprite2.transform.localPosition = new Vector3(0, 0);
+            tSprite2.transform.localScale = new Vector3(1, 1, 1);
+            tSprite = new GameObject("ComboSprite" + -2);
+            tRenderer = tSprite.AddComponent<SpriteRenderer>();
+            tRenderer.sprite = comboBasicLight;
+            tSprite.transform.localScale = new Vector3(0.5f, 0.5f, 1);
+            tSprite.transform.position = new Vector3(-6.4f, 3.1f - 0.7f * 1);
+            tRenderer.sortingLayerName = "HUD";
+            tRenderer.sortingOrder = 1;
+            tSprite2 = new GameObject("ComboSprite" + -2 + "bg");
+            tRenderer = tSprite2.AddComponent<SpriteRenderer>();
+            tRenderer.sprite = comboHolder;
+            tRenderer.sortingLayerName = "HUD";
+            tSprite2.transform.parent = tSprite.transform;
+            tSprite2.transform.localPosition = new Vector3(0, 0);
+            tSprite2.transform.localScale = new Vector3(1, 1, 1);
+
+            int j = 2;
+            for (int i = 0; i < data.itemBought.Length; i++)
+            {
+                if (data.itemActive[i] && data.itemBought[i])
+                {
+                    tSprite = new GameObject("ComboSprite" + i);
+                    tRenderer = tSprite.AddComponent<SpriteRenderer>();
+                    tRenderer.sprite = spriteCombos[i];
+                    tSprite.transform.localScale = new Vector3(0.5f, 0.5f, 1);
+                    tSprite.transform.position = new Vector3(-6.4f, 3.1f - 0.7f * (j));
+                    tRenderer.sortingLayerName = "HUD";
+                    tRenderer.sortingOrder = 1;
+                    tSprite2 = new GameObject("ComboSprite" + i + "bg");
+                    tRenderer = tSprite2.AddComponent<SpriteRenderer>();
+                    tRenderer.sprite = comboHolder;
+                    tRenderer.sortingLayerName = "HUD";
+                    tSprite2.transform.parent = tSprite.transform;
+                    tSprite2.transform.localPosition = new Vector3(0, 0);
+                    tSprite2.transform.localScale = new Vector3(1, 1, 1);
+                    j++;
+                }
+            }
+        }
 
         levelTrainingSpawn = new EnemySpawn[] { };
 
@@ -332,6 +454,15 @@ public class mainHandler : MonoBehaviour {
 
         print("total enemies: " + totalEnemies);
 
+        // song lengths
+        songLengths = new float[] {
+            1f,
+            129.6f,
+            127.3f,
+            129.2f,
+            64.4f
+        };
+
         // rank data
         levelRankLimits = new List<int[]>() {
             new int[] { 10, 20, 30, 40, 50 },
@@ -381,7 +512,7 @@ public class mainHandler : MonoBehaviour {
             {
                 songStarted = false;
             }
-            if (name == "End" && gameMode == BIRD)
+            if (name == "End" && gameMode == BIRD && !player.GetComponent<playerHandler>().dead)
             {
                 birdLevelFinished = true;
             }
@@ -404,6 +535,7 @@ public class mainHandler : MonoBehaviour {
         }
         if (type == FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT)
         {
+            print("beat");
             //FMOD.Studio.TIMELINE_BEAT_PROPERTIES beat = (FMOD.Studio.TIMELINE_BEAT_PROPERTIES)Marshal.PtrToStructure(parameters, typeof(FMOD.Studio.TIMELINE_BEAT_PROPERTIES));
             beatTimer2 = 0;
             //soundSinus.start();
@@ -473,7 +605,8 @@ public class mainHandler : MonoBehaviour {
         }
         else if (currentGameMode == BIRD)
         {
-            // baren ska gå till slutet när låten är klar
+            maskProgressFill.transform.localPosition = new Vector3(-4.66f * (1 - Mathf.Clamp((levelTimer / songLengths[level]), 0, 1)), 0);
+            rendererProgressMarker.transform.localPosition = new Vector3(-2.22f + 4.44f * Mathf.Clamp((levelTimer / songLengths[level]), 0, 1), 0);
         }
 
         // update streak parameter
@@ -539,6 +672,30 @@ public class mainHandler : MonoBehaviour {
             SecondCounter.text = "TIME: " + Mathf.Round(levelTimer).ToString();
         }
 
+        // check practice input
+        if (level == -1)
+        {
+            if (Input.GetAxis("NavigateRight") > 0.5f && !holdingRT)
+            {
+                holdingRT = true;
+                ChangeSong(true);
+            }
+            else if (Input.GetAxis("NavigateRight") < 0.2f && holdingRT)
+            {
+                holdingRT = false;
+            }
+            if (Input.GetAxis("NavigateLeft") > 0.5f && !holdingLT)
+            {
+                holdingLT = true;
+                ChangeSong(false);
+            }
+            else if (Input.GetAxis("NavigateLeft") < 0.2f && holdingLT)
+            {
+                holdingLT = false;
+            }
+        }
+        
+
 	}
 
     void SetReady()
@@ -571,6 +728,8 @@ public class mainHandler : MonoBehaviour {
         songStarted = false;
         normalLevelFinished = false;
         birdLevelFinished = false;
+        lastMode = currentGameMode;
+        SaveSystem.SavePlayer(this);
         // send analytics
         if (victoryTimer == 0) AnalyticsEvent.LevelQuit("level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
         enemiesDead = 0;
@@ -578,6 +737,7 @@ public class mainHandler : MonoBehaviour {
         if (level == 3) soundAmbSea.setParameterValue("End", 1);
         soundMusic.setCallback(null, 0);
         soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        if (level == -1) soundAvailableracticeSongs[currentSong].stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         SceneManager.LoadScene("MenuScene");
     }
 
@@ -800,6 +960,28 @@ public class mainHandler : MonoBehaviour {
         soundMusic.setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
         if (level == 3) soundMusic.setParameterValue("Loop", 1);
         soundMusic.start();
+    }
+
+    public void ChangeSong(bool next)
+    {
+        soundAvailableracticeSongs[currentSong].stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        if (next)
+        {
+            currentSong = (currentSong + 1) % availablePracticeSongNames.Count;
+        }
+        else
+        {
+            currentSong -= 1;
+            if (currentSong == -1) currentSong = availablePracticeSongNames.Count - 1;
+        }
+        soundAvailableracticeSongs[currentSong].start();
+        txtSongName.text = availablePracticeSongNames[currentSong];
+        bpm = availablePracticeSongBPM[currentSong];
+        currentBpm = bpm;
+        txtSongBPM.text = "BPM: " + bpm;
+        songStarted = false;
+        offBeatTime = 60 / ((float)bpm * 2);
+        preBeatTime = 60 / (float)bpm - leniency;
     }
 
     int RandDirection()

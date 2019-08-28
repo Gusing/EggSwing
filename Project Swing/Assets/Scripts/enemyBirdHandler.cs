@@ -15,6 +15,8 @@ public class enemyBirdHandler : MonoBehaviour
 
     SpriteRenderer localRenderer;
 
+    public GameObject effectFeather;
+
     int[] spawns;
     float localBpm;
     float bpmInSeconds;
@@ -24,8 +26,10 @@ public class enemyBirdHandler : MonoBehaviour
     public bool startedCharge;
     int type;
     public bool dead;
+    bool waitingForAnimation;
     public bool readyToBeDestroyed;
     float lifeTimer;
+    public float animationTimeLeft;
 
     int beatPassed;
     int beatLimit;
@@ -111,8 +115,8 @@ public class enemyBirdHandler : MonoBehaviour
     public void setHit()
     {
         soundPlayerHit.start();
+        Attack();
         readyToBeHit = false;
-        readyToBeDestroyed = true;
     }
 
     // Update is called once per frame
@@ -156,11 +160,7 @@ public class enemyBirdHandler : MonoBehaviour
 
                 if (mainHandler.currentBeatTimer >= timeUntilCrash)
                 {
-                    soundAttack.start();
-                    dead = true;
-                    Vector3 tv = player.transform.position - transform.position;
-                    tv = Vector3.Normalize(tv);
-                    transform.position = player.transform.position - ((Vector3.Distance(player.transform.position, transform.position) / 2) * tv);
+                    Attack();
                 }
             }
 
@@ -201,6 +201,11 @@ public class enemyBirdHandler : MonoBehaviour
             if (!charging) transform.Translate(new Vector3(-3f * Time.deltaTime, 0));
 
         }
+        else if (!waitingForAnimation)
+        {
+            waitingForAnimation = true;
+            Destroy(gameObject, this.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        }
 
         if (beatPassed >= beatLimit && readyToBeHit)
         {
@@ -209,6 +214,7 @@ public class enemyBirdHandler : MonoBehaviour
                 GameObject.Find("Player").GetComponent<playerHandler>().TakeDamage(1, 0, true);
                 readyToBeHit = false;
                 readyToBeDestroyed = true;
+                dead = true;
             }
 
         }
@@ -224,12 +230,42 @@ public class enemyBirdHandler : MonoBehaviour
         }
         */
 
+        if (dead && !readyToBeDestroyed)
+        {
+            readyToBeDestroyed = true;
+        }
 
+    }
+
+    void Attack()
+    {
+        soundAttack.start();
+        if (!dead)
+        {
+            Vector3 tv = player.transform.position - transform.position;
+            tv = Vector3.Normalize(tv);
+            transform.position = player.transform.position - ((Vector3.Distance(player.transform.position, transform.position) / 2) * tv);
+            Vector3 vectorToTarget = player.transform.position - transform.position;
+            float angle = (Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg) - 270;
+            Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, q, 999);
+
+            GameObject tgo;
+            tgo = Instantiate(effectFeather, transform.position + Random.Range(-1.5f, -0.4f) * transform.up + Random.Range(-0.5f, 0.5f) * transform.right, new Quaternion(0, 0, 0, 0));
+            tgo.transform.Rotate(new Vector3(0, 180 * Random.Range((int)0, (int)2), Random.Range(0, 360)));
+            tgo = Instantiate(effectFeather, transform.position + Random.Range(-0.6f, 0.6f) * transform.up + Random.Range(-0.5f, 0.5f) * transform.right, new Quaternion(0, 0, 0, 0));
+            tgo.transform.Rotate(new Vector3(0, 180 * Random.Range((int)0, (int)2), Random.Range(0, 360)));
+            tgo = Instantiate(effectFeather, transform.position + Random.Range(0.4f, 1.5f) * transform.up + Random.Range(-0.5f, 0.5f) * transform.right, new Quaternion(0, 0, 0, 0));
+            tgo.transform.Rotate(new Vector3(0, 180 * Random.Range((int)0, (int)2), Random.Range(0, 360)));
+        }
+        dead = true;
+        updateAnimations();
     }
 
     void updateAnimations()
     {
         animator.SetInteger("Color", type);
         animator.SetBool("Ready", charging);
+        animator.SetBool("Attacking", dead);
     }
 }

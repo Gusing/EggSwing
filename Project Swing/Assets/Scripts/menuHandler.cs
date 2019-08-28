@@ -31,6 +31,10 @@ public class menuHandler : MonoBehaviour {
     public GameObject levelContainerSwing;
     public GameObject levelContainerPirate;
     public GameObject levelContainerHell;
+
+    public Button btnEndless;
+    public SpriteRenderer spriteLockEndless;
+    public Text txtEndlessRecord;
     /*
     public Text txtClearLvl1;
     public Text txtClearLvl2;
@@ -51,6 +55,7 @@ public class menuHandler : MonoBehaviour {
 
     public EventSystem eventSystem;
     public ScrollRect scrollLevelList;
+    public ScrollRect scrollBirdList;
     public SpriteRenderer rendererMarker;
 
     PlayerData data;
@@ -101,6 +106,17 @@ public class menuHandler : MonoBehaviour {
             else levelListItem.GetComponent<levelContainerHandler>().Init(" ", 0, 0, false, 0);
         }
 
+        if (!data.clearedLevel[2] || !data.clearedLevel[3])
+        {
+            spriteLockEndless.enabled = true;
+            btnEndless.interactable = false;
+            txtEndlessRecord.text = "";
+        }
+        else
+        {
+            txtEndlessRecord.text =  "Record: " + data.endlessRecord.ToString();
+        }
+
         birdContainers = new List<GameObject>();
 
         birdContainers.Add(levelContainerMoon);
@@ -127,21 +143,36 @@ public class menuHandler : MonoBehaviour {
             if (data.unlockedBirdLevel[i]) levelListItem.GetComponent<levelContainerHandler>().Init(tRank, data.scoreBirdRecord[i], data.comboRecord[i], true, 1);
             else levelListItem.GetComponent<levelContainerHandler>().Init(" ", 0, 0, false, 1);
         }
+
+        ChangeMode(data.lastMode);
     }
     
     void Update()
     {
         // scroll with input
-        if (Input.GetButton("Dodge"))
+        if (selectedGameMode == NORMAL)
         {
-            scrollLevelList.verticalNormalizedPosition -= 2.5f * Time.deltaTime;
+            if (Input.GetAxis("NavigateRight") > 0.5f)
+            {
+                scrollLevelList.verticalNormalizedPosition -= 2.5f * Time.deltaTime;
+            }
+            if (Input.GetAxis("NavigateLeft") > 0.5f)
+            {
+                scrollLevelList.verticalNormalizedPosition += 2.5f * Time.deltaTime;
+            }
         }
-        if(Input.GetButton("Block"))
+        if (selectedGameMode == BIRD)
         {
-            scrollLevelList.verticalNormalizedPosition += 2.5f * Time.deltaTime;
+            if (Input.GetAxis("NavigateRight") > 0.5f)
+            {
+                scrollBirdList.verticalNormalizedPosition -= 2.5f * Time.deltaTime;
+            }
+            if (Input.GetAxis("NavigateLeft") > 0.5f)
+            {
+                scrollBirdList.verticalNormalizedPosition += 2.5f * Time.deltaTime;
+            }
         }
-
-        // back to main menu
+            // back to main menu
         if (Input.GetButtonDown("Cancel") || Input.GetButtonDown("Super"))
         {
             Back();
@@ -157,10 +188,8 @@ public class menuHandler : MonoBehaviour {
         else soundUIClick.start();
 
         menuMusicPlayerHandler.Instance.stopMusic();
-
-        if (num == -3) SceneManager.LoadScene("Practice148");
-        if (num == -2) SceneManager.LoadScene("Practice128");
-        if (num == -1) SceneManager.LoadScene("Practice100");
+        
+        if (num == -1) SceneManager.LoadScene("PracticeScene");
 
         if (selectedGameMode == NORMAL) if (num > 0 && num < 100) SceneManager.LoadScene("Level" + num + "Scene");
         if (selectedGameMode == BIRD) if (num > 0 && num < 100) SceneManager.LoadScene("Level" + num + "BirdScene");
@@ -189,8 +218,14 @@ public class menuHandler : MonoBehaviour {
     public void EnterShop()
     {
         soundUIClick.start();
-        menuMusicPlayerHandler.Instance.stopMusic();
+        menuMusicPlayerHandler.Instance.swapShop(true);
         SceneManager.LoadScene("ShopScene");
+    }
+
+    public void EnterControls()
+    {
+        soundUIClick.start();
+        SceneManager.LoadScene("ControlsScene");
     }
     
     public void Back()
