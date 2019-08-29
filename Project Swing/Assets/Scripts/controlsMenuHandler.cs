@@ -7,9 +7,21 @@ public class controlsMenuHandler : MonoBehaviour
 {
     FMOD.Studio.EventInstance soundUIClick;
 
+    public SpriteRenderer rendererHideSuper;
+
+    PlayerData data;
+
+    void Awake()
+    {
+        data = SaveSystem.LoadPlayer();
+    }
+
     void Start()
     {
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
+
+        data.Init();
+        if (data.itemBought[3]) rendererHideSuper.enabled = false;
     }
 
     void Update()

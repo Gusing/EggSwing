@@ -306,6 +306,14 @@ public class enemyHandler : MonoBehaviour
         dead = true;
     }
 
+    public virtual void Stop()
+    {
+        soundFall.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        soundImpact.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        soundAttack.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        soundDeath.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+    }
+
     protected virtual void Invincible()
     {
         actionTimer += Time.deltaTime;

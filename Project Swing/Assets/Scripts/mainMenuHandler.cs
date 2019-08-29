@@ -9,7 +9,14 @@ public class mainMenuHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundMenuMusic;
     FMOD.Studio.EventInstance soundUIClick;
     FMOD.Studio.EventInstance soundUIStart;
-    
+
+    PlayerData data;
+
+    void Awake()
+    {
+        data = SaveSystem.LoadPlayer();
+    }
+
     void Start()
     {
         soundMenuMusic = FMODUnity.RuntimeManager.CreateInstance("event:/Music/MenuMusic");
@@ -27,14 +34,17 @@ public class mainMenuHandler : MonoBehaviour
 
     public void ClickOptions()
     {
-
+        soundUIClick.start();
+        SceneManager.LoadScene("OptionsScene");
     }
 
     public void ClickPlay()
     {
         soundMenuMusic.setParameterValue("End", 1);
         soundUIClick.start();
-        SceneManager.LoadScene("MenuScene");
+        if (data.seenControls) SceneManager.LoadScene("MenuScene");
+        else SceneManager.LoadScene("ControlsScene");
+
     }
 
     public void VisitDiscord()

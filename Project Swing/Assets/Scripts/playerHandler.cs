@@ -228,7 +228,8 @@ public class playerHandler : MonoBehaviour
         // populate available combos
         allCombos.Add(new Attack[] { new Attack2A(hitboxAttack2A), new Attack2B(hitboxAttack2B), new Attack2C(hitboxAttack2C) });
         allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack1B(hitboxAttack1B) });
-
+        
+        data.Init();
         if (data.itemBought[COMBOFLATTEN] && data.itemActive[COMBOFLATTEN]) allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack2D(hitboxAttack2D), new Attack1C(hitboxAttack1C) });
         if (data.itemBought[COMBOCHARGEPUNCH] && data.itemActive[COMBOCHARGEPUNCH]) allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack5A(hitboxAttack5A) });
         if (data.itemBought[COMBORAPIDKICKS] && data.itemActive[COMBORAPIDKICKS]) allCombos.Add(new Attack[] { new Attack2A(hitboxAttack2A), new Attack2B(hitboxAttack2B), new Attack2C(hitboxAttack2C), new Attack6A(hitboxAttack6A), new Attack6B(hitboxAttack6B) });
@@ -593,14 +594,14 @@ public class playerHandler : MonoBehaviour
         }
         if (birdHitReady)
         {
-            if ((Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Heavy Attack") || Input.GetButtonDown("Alternate Bird") || dpadV2 || dpadH2 || Input.GetButtonDown("Super") || Input.GetButtonDown("Other Action"))/* && (!busy || birdHitting)*/)
+            if ((Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Heavy Attack") || Input.GetButtonDown("Alternate Bird") || dpadV2 || dpadH2 || Input.GetButtonDown("Super") || Input.GetButtonDown("Other Action")))
             {
                 attackID++;
                 attackIDStart = attackID;
                 BirdPunch();
             }
         }
-        else if (mainHandler.currentGameMode == 1)
+        else if (mainHandler.currentGameMode == 1 && !birdLevelFinished)
         {
             if ((Input.GetButtonDown("Heavy Attack") || Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Alternate Bird") || dpadV2 || dpadH2 || Input.GetButtonDown("Super") || Input.GetButtonDown("Other Action")) && !punchingFail && !resetted)
             {
@@ -615,7 +616,7 @@ public class playerHandler : MonoBehaviour
 
         
 
-        if (!busy && mainHandler.songStarted && mainHandler.currentGameMode != 1)
+        if (!busy && mainHandler.songStarted && mainHandler.currentGameMode != 1 && !normalLevelFinished)
         {
             if (Input.GetButtonDown("Heavy Attack"))
             {
@@ -649,13 +650,13 @@ public class playerHandler : MonoBehaviour
             }
         }
 
-        if (((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0 || Input.GetAxisRaw("Move Axis 2") > 0) && !busy) && mainHandler.currentGameMode != 1)
+        if (((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0 || Input.GetAxisRaw("Move Axis 2") > 0) && !busy) && mainHandler.currentGameMode != 1 && !normalLevelFinished)
         {
             accX = 26f;
             direction = 1;
             localRenderer.flipX = false;
         }
-        else if (((Input.GetButton("MoveLeft") || Input.GetAxisRaw("Move Axis") < 0 || Input.GetAxisRaw("Move Axis 2") < 0) && !busy) && mainHandler.currentGameMode != 1)
+        else if (((Input.GetButton("MoveLeft") || Input.GetAxisRaw("Move Axis") < 0 || Input.GetAxisRaw("Move Axis 2") < 0) && !busy) && mainHandler.currentGameMode != 1 && !normalLevelFinished)
         {
             accX = -26f;
             direction = -1;
@@ -689,11 +690,13 @@ public class playerHandler : MonoBehaviour
         animator.SetBool("dodging", dodgeSucces);
         animator.SetFloat("speed", Mathf.Abs(velX));
         animator.SetInteger("attackType", attackType);
+        print(currentCombos.Count);
         if (comboState >= 0) animator.SetInteger("attackID", currentCombos[0][comboState].ID);
         animator.SetBool("attacking", punchingSuccess);
         animator.SetBool("failedAttack", punchingFail);
         animator.SetBool("attackActive", punchingActive);
         animator.SetBool("offBeat", mainHandler.offBeat);
+        animator.SetBool("victory", normalLevelFinished || birdLevelFinished);
     }
 
     void Punch()
@@ -1594,6 +1597,9 @@ public class playerHandler : MonoBehaviour
         birdComboHeal = 0;
         currentScore = 0;
         currentRank = 0;
+        currentSP = maxSP;
+        chargingSP = false;
+        rendererSPFill.sprite = spriteSPBar1;
         currentMultiplier = 1;
         textRank.text = "E";
         textRank.color = new Color(0.65f, 0.65f, 0.65f);

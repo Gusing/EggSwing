@@ -11,13 +11,18 @@ public class currencyHandler : MonoBehaviour
     public int value;
     bool landed;
 
-    float lifeTimer;
+    float endTimer;
+    float landTimer;
+
+    GameObject player;
 
     // Start is called before the first frame update
     void Start()
     {
         accY = -15f;
         velY = Random.Range(3.5f, 6.3f);
+
+        player = GameObject.Find("Player");
 
         value = 0;
     }
@@ -41,32 +46,42 @@ public class currencyHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        velY += accY * Time.deltaTime;
-
-        if (transform.position.y > -3f)
+        if (!mainHandler.normalLevelFinished)
         {
-            if (transform.position.x > 9.3f)
+            if (!landed) velY += accY * Time.deltaTime;
+
+            if (transform.position.y > -3f)
             {
-                transform.position = new Vector3(9.3f, transform.position.y);
-                velX = Mathf.Abs(velX) * -1;
+                if (transform.position.x > 9.3f)
+                {
+                    transform.position = new Vector3(9.3f, transform.position.y);
+                    velX = Mathf.Abs(velX) * -1;
+                }
+                if (transform.position.x < -9.3f)
+                {
+                    transform.position = new Vector3(-9.3f, transform.position.y);
+                    velX = Mathf.Abs(velX);
+                }
+                transform.Translate(new Vector3(velX * Time.deltaTime, velY * Time.deltaTime), Space.World);
+                transform.Rotate(new Vector3(0, 0, spinRotation * Time.deltaTime));
             }
-            if (transform.position.x < -9.3f)
+            else if (!landed)
             {
-                transform.position = new Vector3(-9.3f, transform.position.y);
-                velX = Mathf.Abs(velX);
+                velY = 0;
+                GetComponent<BoxCollider2D>().enabled = true;
+                landed = true;
             }
-            transform.Translate(new Vector3(velX * Time.deltaTime, velY * Time.deltaTime), Space.World);
-            transform.Rotate(new Vector3(0, 0, spinRotation * Time.deltaTime));
         }
-        else if (!landed)
+        else
         {
             GetComponent<BoxCollider2D>().enabled = true;
-            landed = true;
+            endTimer += Time.deltaTime;
+            transform.position = (Vector2.MoveTowards(transform.position, player.transform.position, (0.5f + endTimer * 4) * Time.deltaTime));
         }
 
-        if (landed) lifeTimer += Time.deltaTime;
+        if (landed && !mainHandler.normalLevelFinished) landTimer += Time.deltaTime;
 
-        if (lifeTimer >= 6)
+        if (landTimer >= 6)
         {
             Destroy(gameObject);
         }

@@ -7,19 +7,7 @@ using UnityEngine.Analytics;
 using UnityEngine.EventSystems;
 
 public class menuHandler : MonoBehaviour {
-
-    /*
-    public Button btnLvl2;
-    public Button btnLvl3;
-    public Button btnPractiseLvl2;
-    public Button btnPractiseLvl3;
-    public Button btnEndless;
-
     
-    public SpriteRenderer spriteLockLvl2;
-    public SpriteRenderer spriteLockLvl3;
-    public SpriteRenderer spriteLockEndless;
-    */
     public GameObject levelListContent;
     public GameObject BirdListContent;
     public GameObject LevelScrollList;
@@ -35,18 +23,10 @@ public class menuHandler : MonoBehaviour {
     public Button btnEndless;
     public SpriteRenderer spriteLockEndless;
     public Text txtEndlessRecord;
-    /*
-    public Text txtClearLvl1;
-    public Text txtClearLvl2;
-    public Text txtClearLvl3;
-    public Text txtStreakLvl1;
-    public Text txtStreakLvl2;
-    public Text txtStreakLvl3;
-    public Text txtStreakLvlEndless;
-    public Text txtEndlessRecord;
-    public Text txtScoreLvl2;
-    public Text txtRankLvl2;
-    */
+
+    public SpriteRenderer rendererBirdTutorial;
+    bool birdTutorialVisible;
+
     bool clickedLevel;
 
     FMOD.Studio.EventInstance soundMenuMusic;
@@ -149,33 +129,45 @@ public class menuHandler : MonoBehaviour {
     
     void Update()
     {
-        // scroll with input
-        if (selectedGameMode == NORMAL)
+        if (birdTutorialVisible)
         {
-            if (Input.GetAxis("NavigateRight") > 0.5f)
+            if (Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Heavy Attack") || Input.GetButtonDown("Alternate Bird") || Input.GetButtonDown("Super") || Input.GetButtonDown("Other Action") || Input.GetButtonDown("Dodge") || Input.GetMouseButtonDown(0))
             {
-                scrollLevelList.verticalNormalizedPosition -= 2.5f * Time.deltaTime;
-            }
-            if (Input.GetAxis("NavigateLeft") > 0.5f)
-            {
-                scrollLevelList.verticalNormalizedPosition += 2.5f * Time.deltaTime;
+                birdTutorialVisible = false;
+                rendererBirdTutorial.enabled = false;
+                eventSystem.enabled = true;
             }
         }
-        if (selectedGameMode == BIRD)
+        else
         {
-            if (Input.GetAxis("NavigateRight") > 0.5f)
+            // scroll with input
+            if (selectedGameMode == NORMAL)
             {
-                scrollBirdList.verticalNormalizedPosition -= 2.5f * Time.deltaTime;
+                if (Input.GetAxis("NavigateRight") > 0.5f)
+                {
+                    scrollLevelList.verticalNormalizedPosition -= 2.5f * Time.deltaTime;
+                }
+                if (Input.GetAxis("NavigateLeft") > 0.5f)
+                {
+                    scrollLevelList.verticalNormalizedPosition += 2.5f * Time.deltaTime;
+                }
             }
-            if (Input.GetAxis("NavigateLeft") > 0.5f)
+            if (selectedGameMode == BIRD)
             {
-                scrollBirdList.verticalNormalizedPosition += 2.5f * Time.deltaTime;
+                if (Input.GetAxis("NavigateRight") > 0.5f)
+                {
+                    scrollBirdList.verticalNormalizedPosition -= 2.5f * Time.deltaTime;
+                }
+                if (Input.GetAxis("NavigateLeft") > 0.5f)
+                {
+                    scrollBirdList.verticalNormalizedPosition += 2.5f * Time.deltaTime;
+                }
             }
-        }
             // back to main menu
-        if (Input.GetButtonDown("Cancel") || Input.GetButtonDown("Super"))
-        {
-            Back();
+            if (Input.GetButtonDown("Cancel") || Input.GetButtonDown("Super"))
+            {
+                Back();
+            }
         }
 
         // update marker
@@ -209,6 +201,12 @@ public class menuHandler : MonoBehaviour {
 
         if (num == 1)
         {
+            if (!data.seenBirdTutorial)
+            {
+                eventSystem.enabled = false;
+                rendererBirdTutorial.enabled = true;
+                birdTutorialVisible = true;
+            }
             selectedGameMode = BIRD;
             LevelScrollList.SetActive(false);
             BirdScrollList.SetActive(true);

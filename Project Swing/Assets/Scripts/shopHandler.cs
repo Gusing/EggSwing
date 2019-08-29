@@ -37,6 +37,8 @@ public class shopHandler : MonoBehaviour
     public bool[] itemBought;
     public bool[] itemActive;
     public int lastMode;
+    public bool seenControls;
+    public bool seenBirdTutorial;
 
     FMOD.Studio.EventInstance soundUIClick;
     FMOD.Studio.EventInstance soundUIStart;
@@ -82,6 +84,8 @@ public class shopHandler : MonoBehaviour
         itemBought = data.itemBought;
         itemActive = data.itemActive;
         lastMode = data.lastMode;
+        seenControls = data.seenControls;
+        seenBirdTutorial = data.seenBirdTutorial;
 
         prices = new int[] {
             100,
@@ -167,6 +171,7 @@ public class shopHandler : MonoBehaviour
 
     public void BackToPlayMenu()
     {
+        seenControls = true;
         SaveSystem.SavePlayerShop(this);
 
         soundUIClick.start();

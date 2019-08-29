@@ -25,8 +25,8 @@ public class enemyCHandler : enemyHandler
         maxHP = 12;
         currentHP = maxHP;
 
-        walkAcc = -18;
-        walkSpeed = 3.8f;
+        walkAcc = -12;
+        walkSpeed = 2.4f;
 
         hitstunLimit = 1;
         knockbackLimit = 3;
@@ -51,7 +51,7 @@ public class enemyCHandler : enemyHandler
     {
         base.Init(fromAbove);
 
-        groundY = -2.12f;
+        groundY = -1.91f;
 
         transform.position = new Vector3(transform.position.x, groundY, Random.Range(0f, 0.1f));
 

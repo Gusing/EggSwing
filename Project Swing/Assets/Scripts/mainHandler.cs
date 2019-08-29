@@ -110,6 +110,8 @@ public class mainHandler : MonoBehaviour {
     public bool[] itemBought;
     public bool[] itemActive;
     public int lastMode;
+    public bool seenControls;
+    public bool seenBirdTutorial;
 
     int[] numBirds;
     public List<int[]> birdRankLimits; 
@@ -146,6 +148,8 @@ public class mainHandler : MonoBehaviour {
     public Sprite comboBasicHeavy;
     public Sprite comboBasicLight;
 
+    PlayerData data;
+
     bool holdingRT;
     bool holdingLT;
 
@@ -155,6 +159,7 @@ public class mainHandler : MonoBehaviour {
         currentLeniency = leniency;
         staticLevel = level;
         currentGameMode = gameMode;
+        data = SaveSystem.LoadPlayer();
     }
     
     void Start()
@@ -178,7 +183,6 @@ public class mainHandler : MonoBehaviour {
         enemies = new List<GameObject>();
 
         // load data
-        PlayerData data = SaveSystem.LoadPlayer();
         data.Init();
         endlessRecord = data.endlessRecord;
         clearedLevel = data.clearedLevel;
@@ -196,6 +200,8 @@ public class mainHandler : MonoBehaviour {
         itemBought = data.itemBought;
         itemActive = data.itemActive;
         lastMode = data.lastMode;
+        seenControls = data.seenControls;
+        seenBirdTutorial = data.seenBirdTutorial;
 
         player.GetComponent<playerHandler>().Init(currency);
         
@@ -322,7 +328,7 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(8, new GameObject[] { enemyA, enemyA, enemyB }, new float[] { 10 * RandDirection(), 10 * RandDirection(), 0 }, new bool[] { false, false, true }),
             new EnemySpawn(3, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }, new bool[] { false })
         };
-
+    
         level1Spawn = new EnemySpawn[] {
             new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 }, new bool[] { false }, 0 ),
             new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false }),
@@ -336,6 +342,7 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false }, 0),
             new EnemySpawn(0, new GameObject[] { enemyB, enemyB }, new float[] { -10, 10 }, new bool[] { false, false })
         };
+        
 
         /*
         level2Spawn = new EnemySpawn[] {
@@ -423,16 +430,16 @@ public class mainHandler : MonoBehaviour {
         };
 
         testSpawn = new EnemySpawn[] {
-            new EnemySpawn(5, new GameObject[] { enemyB }, new float[] { 2 }, new bool[] { true }),
+            new EnemySpawn(5, new GameObject[] { enemyC, enemyD, enemyA }, new float[] { 12, -12, 11 }, new bool[] { false, false, false }),
 
         };
 
         endWaitTimer = new float[] { 6.3f, 5f, 7.4f, 5f, 0, 0, 0, 5, 5, 5 };
 
         // load spawn
-        if (level == 1) currentLevelSpawn = level1Spawn;
-        if (level == 2) currentLevelSpawn = level2Spawn;
-        if (level == 3) currentLevelSpawn = level3Spawn;
+        if (level == 1) currentLevelSpawn = testSpawn;
+        if (level == 2) currentLevelSpawn = testSpawn;
+        if (level == 3) currentLevelSpawn = testSpawn;
         if (level == 4) currentLevelSpawn = level4Spawn;
         if (level == 10) currentLevelSpawn = testSpawn;
         if (level == 100)
@@ -466,10 +473,10 @@ public class mainHandler : MonoBehaviour {
         // rank data
         levelRankLimits = new List<int[]>() {
             new int[] { 10, 20, 30, 40, 50 },
-            new int[] { 4500, 5500, 6500, 8000, 10000 },
-            new int[] { 6000, 7500, 9000, 12000, 14000 },
-            new int[] { 1000, 13000, 16000, 18000, 22000 },
-            new int[] { 9000, 11000, 13000, 15000, 18000 },
+            new int[] { 3000, 4200, 5500, 7000, 10000 },
+            new int[] { 5000, 7000, 9000, 11500, 14000 },
+            new int[] { 8000, 11000, 14000, 17000, 22000 },
+            new int[] { 8000, 10000, 11000, 15000, 18000 },
         };
 
         birdRankLimits = new List<int[]>() {
@@ -535,7 +542,6 @@ public class mainHandler : MonoBehaviour {
         }
         if (type == FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT)
         {
-            print("beat");
             //FMOD.Studio.TIMELINE_BEAT_PROPERTIES beat = (FMOD.Studio.TIMELINE_BEAT_PROPERTIES)Marshal.PtrToStructure(parameters, typeof(FMOD.Studio.TIMELINE_BEAT_PROPERTIES));
             beatTimer2 = 0;
             //soundSinus.start();
@@ -729,7 +735,13 @@ public class mainHandler : MonoBehaviour {
         normalLevelFinished = false;
         birdLevelFinished = false;
         lastMode = currentGameMode;
+        if (gameMode == BIRD) seenBirdTutorial = true;
+        seenControls = true;
         SaveSystem.SavePlayer(this);
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            enemies[i].GetComponent<enemyHandler>().Stop();
+        }
         // send analytics
         if (victoryTimer == 0) AnalyticsEvent.LevelQuit("level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
         enemiesDead = 0;
@@ -1010,8 +1022,7 @@ public class mainHandler : MonoBehaviour {
         tPScore += 100 * 2 * tBirds;
         tPScore += 1000;
 
-        print("score for P: " + tPScore);
-        //fick 242000, borde vara det
+        //print("score for P: " + tPScore);
 
         return new int[] { (int)(tPScore * 0.25f), (int)(tPScore * 0.5f), (int)(tPScore * 0.7f), (int)(tPScore * 0.8f), tPScore };
     }

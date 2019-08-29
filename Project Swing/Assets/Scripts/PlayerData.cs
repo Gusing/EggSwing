@@ -10,18 +10,20 @@ public class PlayerData
     public bool[] unlockedLevel;
     public bool[] clearedBirdLevel;
     public bool[] unlockedBirdLevel;
-    public int endlessRecord;
     public int[] streakRecord;
     public int[] comboRecord;
-    public int streakLevelEndlessRecord;
     public int[] scoreRecord;
     public int[] scoreBirdRecord;
     public int[] rankRecord;
     public int[] rankBirdRecord;
+    public int endlessRecord;
+    public int streakLevelEndlessRecord;
     public int currency;
     public bool[] itemBought;
     public bool[] itemActive;
     public int lastMode;
+    public bool seenControls;
+    public bool seenBirdTutorial;
 
     public PlayerData()
     {
@@ -45,6 +47,8 @@ public class PlayerData
             itemBought = new bool[10];
             itemActive = new bool[10];
             lastMode = 0;
+            seenControls = false;
+            seenBirdTutorial = false;
 
             for (int i = 0; i < rankRecord.Length; i++)
             {
@@ -87,6 +91,9 @@ public class PlayerData
         itemActive = handler.itemActive;
 
         lastMode = handler.lastMode;
+
+        seenControls = handler.seenControls;
+        seenBirdTutorial = handler.seenBirdTutorial;
     }
 
     public PlayerData(shopHandler handler)
@@ -114,6 +121,9 @@ public class PlayerData
         itemActive = handler.itemActive;
 
         lastMode = handler.lastMode;
+
+        seenControls = handler.seenControls;
+        seenBirdTutorial = handler.seenBirdTutorial;
     }
 
 }

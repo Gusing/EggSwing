@@ -8,7 +8,10 @@ public class btnSelectWhenHighlighted : MonoBehaviour, IPointerEnterHandler
 {
     public void OnPointerEnter(PointerEventData eventData)
     {
-        print("mouseover");
-        EventSystem.current.SetSelectedGameObject(this.gameObject);
+        if (EventSystem.current != null)
+        {
+            print("mouseover");
+            EventSystem.current.SetSelectedGameObject(this.gameObject);
+        }
     }
 }
