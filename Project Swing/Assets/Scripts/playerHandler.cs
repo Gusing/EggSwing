@@ -614,7 +614,22 @@ public class playerHandler : MonoBehaviour
         }
         if (resetted) resetted = false;
 
-        
+        if ((punchingActive || (lastAttackSlow == true && punchingSuccess == true)) && (Input.GetButtonDown("Heavy Attack") || Input.GetButtonDown("Light Attack")))
+        {
+            DisableHurtboxes();
+            RestockCombos();
+
+            soundFail.start();
+            holdBeatPassed = false;
+            punchingFail = true;
+            busy = true;
+            actionTimer = 0;
+            punchingSuccess = false;
+            beatPassed = false;
+            punchingActive = false;
+            heldButton = false;
+            FailedPunch();
+        }
 
         if (!busy && mainHandler.songStarted && mainHandler.currentGameMode != 1 && !normalLevelFinished)
         {
@@ -690,7 +705,6 @@ public class playerHandler : MonoBehaviour
         animator.SetBool("dodging", dodgeSucces);
         animator.SetFloat("speed", Mathf.Abs(velX));
         animator.SetInteger("attackType", attackType);
-        print(currentCombos.Count);
         if (comboState >= 0) animator.SetInteger("attackID", currentCombos[0][comboState].ID);
         animator.SetBool("attacking", punchingSuccess);
         animator.SetBool("failedAttack", punchingFail);

@@ -28,6 +28,18 @@ public class SaveSystem : MonoBehaviour
         stream.Close();
     }
 
+    public static void SaveOptions(optionsHandler handler)
+    {
+        BinaryFormatter formatter = new BinaryFormatter();
+        string path = Application.persistentDataPath + "/ScrambledSettings.sav";
+        FileStream stream = new FileStream(path, FileMode.Create);
+
+        PlayerOptions data = new PlayerOptions(handler);
+
+        formatter.Serialize(stream, data);
+        stream.Close();
+    }
+
     public static PlayerData LoadPlayer()
     {
         string path = Application.persistentDataPath + "/ScrambledSaves.sav";
@@ -47,6 +59,28 @@ public class SaveSystem : MonoBehaviour
         {
             print("save file didn't exist");
             return new PlayerData();
+        }
+    }
+
+    public static PlayerOptions LoadOptions()
+    {
+        string path = Application.persistentDataPath + "/ScrambledSettings.sav";
+        if (File.Exists(path))
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Open);
+
+            print(path);
+
+            PlayerOptions data = formatter.Deserialize(stream) as PlayerOptions;
+            stream.Close();
+
+            return data;
+        }
+        else
+        {
+            print("options file didn't exist");
+            return new PlayerOptions();
         }
     }
 

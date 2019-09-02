@@ -16,8 +16,6 @@ public class enemyDHandler : enemyHandler
     public Sprite spriteAttackActive;
     public Sprite spriteHitstun;
 
-    public SpriteRenderer rendererTemp;
-
     float dodgeTimer;
     float dodgeTime;
     bool dodging;
@@ -206,7 +204,6 @@ public class enemyDHandler : enemyHandler
 
     public override void Die(int dmg)
     {
-        rendererTemp.enabled = false;
         base.Die(dmg);
     }
 }

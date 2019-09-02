@@ -127,3 +127,55 @@ public class PlayerData
     }
 
 }
+
+
+[System.Serializable]
+public class PlayerOptions
+{
+    public string resolution;
+    public bool fullScreen;
+    public bool vSync;
+    public int textureQuality;
+    public float volumeMaster;
+    public float volumeMusic;
+    public float volumeSFX;
+    public float volumeAmbience;
+
+    public PlayerOptions()
+    {
+
+    }
+
+    public void Init()
+    {
+        if (resolution == null)
+        {
+            Resolution[] resolutions = Screen.resolutions;
+            //resolution = resolutions[resolutions.Length - 1].ToString().Remove(resolutions[resolutions.Length - 1].ToString().IndexOf('@'));
+            resolution = Screen.currentResolution.ToString().Remove(Screen.currentResolution.ToString().IndexOf('@'));
+            fullScreen = Screen.fullScreen;
+            vSync = false;
+            textureQuality = 0;
+            volumeMaster = 1;
+            volumeMusic = 1;
+            volumeSFX = 1;
+            volumeAmbience = 1;
+        }
+
+        fullScreen = Screen.fullScreen;
+        resolution = Screen.currentResolution.ToString().Remove(Screen.currentResolution.ToString().IndexOf('@'));
+    }
+
+    public PlayerOptions(optionsHandler handler)
+    {
+        volumeSFX = handler.volumeSFX;
+        volumeMusic = handler.volumeMusic;
+        volumeAmbience = handler.volumeAmbience;
+        volumeMaster = handler.volumeMaster;
+        fullScreen = handler.fullScreen;
+        vSync = handler.vSync;
+        textureQuality = handler.textureQuality;
+        resolution = handler.resolution;
+    }
+    
+}

@@ -11,10 +11,12 @@ public class mainMenuHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundUIStart;
 
     PlayerData data;
+    PlayerOptions optionsData;
 
     void Awake()
     {
         data = SaveSystem.LoadPlayer();
+        optionsData = SaveSystem.LoadOptions();
     }
 
     void Start()
@@ -25,6 +27,13 @@ public class mainMenuHandler : MonoBehaviour
 
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
         soundUIStart = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_Start");
+
+        optionsData.Init();
+        if (optionsData.vSync) QualitySettings.vSyncCount = 1;
+        else QualitySettings.vSyncCount = 0;
+        FMODUnity.RuntimeManager.GetVCA("vca:/Music VCA").setVolume(optionsData.volumeMusic * optionsData.volumeMaster);
+        FMODUnity.RuntimeManager.GetVCA("vca:/SFX VCA").setVolume(optionsData.volumeSFX * optionsData.volumeMaster);
+        FMODUnity.RuntimeManager.GetVCA("vca:/Ambience VCA").setVolume(optionsData.volumeAmbience * optionsData.volumeMaster);
     }
     
     void Update()

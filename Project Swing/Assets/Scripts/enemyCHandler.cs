@@ -16,8 +16,6 @@ public class enemyCHandler : enemyHandler
     public Sprite spriteAttackActive;
     public Sprite spriteHitstun;
 
-    public SpriteRenderer rendererTemp;
-
     public override void Start()
     {
         base.Start();
@@ -138,7 +136,6 @@ public class enemyCHandler : enemyHandler
 
     public override void Die(int dmg)
     {
-        rendererTemp.enabled = false;
         base.Die(dmg);
     }
 }

@@ -437,9 +437,9 @@ public class mainHandler : MonoBehaviour {
         endWaitTimer = new float[] { 6.3f, 5f, 7.4f, 5f, 0, 0, 0, 5, 5, 5 };
 
         // load spawn
-        if (level == 1) currentLevelSpawn = testSpawn;
-        if (level == 2) currentLevelSpawn = testSpawn;
-        if (level == 3) currentLevelSpawn = testSpawn;
+        if (level == 1) currentLevelSpawn = level1Spawn;
+        if (level == 2) currentLevelSpawn = level2Spawn;
+        if (level == 3) currentLevelSpawn = level3Spawn;
         if (level == 4) currentLevelSpawn = level4Spawn;
         if (level == 10) currentLevelSpawn = testSpawn;
         if (level == 100)
