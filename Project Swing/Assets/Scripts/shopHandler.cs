@@ -95,6 +95,14 @@ public class shopHandler : MonoBehaviour
             140
         };
 
+        prices = new int[] {
+            0,
+            0,
+            0,
+            0,
+            0
+        };
+
         // load data
         GameObject ShopListItem = Instantiate(ShopItemContainer) as GameObject;
         ShopListItem.SetActive(true);

@@ -217,7 +217,7 @@ public class enemyHandler : MonoBehaviour
         int finalDmg = dmg;
 
         randomHitValue = Random.Range(0f, 1f);
-        finalDmg -= defense;
+        if (!specialHitstun) finalDmg -= defense;
         if (immuneToSlow && (attackType == 1 || attackType == 6)) finalDmg = 0;
         currentHP -= finalDmg;
         if (currentHP <= 0) Die(finalDmg);

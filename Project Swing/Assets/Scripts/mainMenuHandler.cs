@@ -29,6 +29,7 @@ public class mainMenuHandler : MonoBehaviour
         soundUIStart = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_Start");
 
         optionsData.Init();
+        optionsData.SetStartValues();
         if (optionsData.vSync) QualitySettings.vSyncCount = 1;
         else QualitySettings.vSyncCount = 0;
         FMODUnity.RuntimeManager.GetVCA("vca:/Music VCA").setVolume(optionsData.volumeMusic * optionsData.volumeMaster);

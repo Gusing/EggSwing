@@ -68,8 +68,14 @@ public class optionsHandler : MonoBehaviour
         for (int i = 0; i < ddResolution.options.Count; i++)
         {
             //print(ddResolution.options[i].text + " " + resolution);
-            if (ddResolution.options[i].text.Contains(resolution)) ddResolution.value = i;
+            if (ddResolution.options[i].text.Contains(resolution))
+            {
+                print("res found: " + ddResolution.options[i].text);
+                ddResolution.value = 1;
+                ddResolution.value = i;
+            }
         }
+
         toggleFullscreen.isOn = fullScreen;
         ddTextureQualiy.value = textureQuality;
         toggleVsync.isOn = vSync;
@@ -113,7 +119,7 @@ public class optionsHandler : MonoBehaviour
 
     public void ChangeResolution()
     {
-        print(resolutions[ddResolution.value]);
+        print("saved res: " + resolutions[ddResolution.value].ToString().Remove(resolutions[ddResolution.value].ToString().IndexOf('@')));
         Screen.SetResolution(resolutions[ddResolution.value].width, resolutions[ddResolution.value].height, Screen.fullScreen);
         resolution = resolutions[ddResolution.value].ToString().Remove(resolutions[ddResolution.value].ToString().IndexOf('@'));
     }

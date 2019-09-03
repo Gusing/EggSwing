@@ -41,7 +41,7 @@ public class menuHandler : MonoBehaviour {
     PlayerData data;
 
     int selectedGameMode;
-    readonly int NORMAL = 0, BIRD = 1;
+    readonly int NORMAL = 0, BIRD = 1, HARD = 2;
 
     void Awake()
     {
@@ -185,6 +185,7 @@ public class menuHandler : MonoBehaviour {
 
         if (selectedGameMode == NORMAL) if (num > 0 && num < 100) SceneManager.LoadScene("Level" + num + "Scene");
         if (selectedGameMode == BIRD) if (num > 0 && num < 100) SceneManager.LoadScene("Level" + num + "BirdScene");
+        if (selectedGameMode == HARD) if (num > 0 && num < 100) SceneManager.LoadScene("Level" + num + "HardScene");
 
 
         if (num == 100) SceneManager.LoadScene("LevelEndless");
@@ -210,6 +211,11 @@ public class menuHandler : MonoBehaviour {
             selectedGameMode = BIRD;
             LevelScrollList.SetActive(false);
             BirdScrollList.SetActive(true);
+        }
+
+        if (num == 2)
+        {
+            selectedGameMode = HARD;
         }
     }
 

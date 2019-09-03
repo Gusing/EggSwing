@@ -67,6 +67,8 @@ public class mainHandler : MonoBehaviour {
     public int totalEnemies;
     public int totalBirds;
     float[] songLengths;
+    float[] hardLevelTimeLimits;
+    float currentTimeLimit;
 
     float nextSpawn;
 
@@ -79,6 +81,7 @@ public class mainHandler : MonoBehaviour {
     public Text SecondDisplay;
     public Text txtRecordDisplay;
     public Text txtRecordAnnouncement;
+    public Text txtTimeLeft;
     float victoryTimer;
 
     EnemySpawn[] levelEndlessSpawn;
@@ -87,11 +90,13 @@ public class mainHandler : MonoBehaviour {
     EnemySpawn[] level2Spawn;
     EnemySpawn[] level3Spawn;
     EnemySpawn[] level4Spawn;
+    EnemySpawn[] level1HardSpawn;
     EnemySpawn[] testSpawn;
     EnemySpawn[] currentLevelSpawn;
     float[] endWaitTimer;
     public static int[] currentRankLimits;
     List<int[]> levelRankLimits;
+    List<int[]> hardRankLimits;
 
     public int endlessRecord;
     public bool[] clearedLevel;
@@ -429,6 +434,32 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(0, new GameObject[] { enemyB, enemyC, enemyD, enemyA, enemyA, enemyD, enemyC, enemyB }, new float[] { -8, -6, -4, -2, 2, 4, 6, 8 }, new bool[] { true, true, true, true, true, true, true, true }),
         };
 
+        level1HardSpawn = new EnemySpawn[] {
+            new EnemySpawn(5, new GameObject[] { enemyC, enemyC, enemyB }, new float[] { -7, 7, 0 }, new bool[] { true, true, true } ),
+            new EnemySpawn(3, new GameObject[] { enemyD, enemyD }, new float[] { -12, 12 }, new bool[] { false, false } ),
+            new EnemySpawn(3, new GameObject[] { enemyB }, new float[] { -4 }, new bool[] { true } ),
+            new EnemySpawn(2, new GameObject[] { enemyC }, new float[] { 2 }, new bool[] { true }, 2),
+            new EnemySpawn(1, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { -8, -5, -2 }, new bool[] { true, true, true } ),
+            new EnemySpawn(4, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { 8, 5, 2 }, new bool[] { true, true, true } ),
+            new EnemySpawn(5, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { -4, 0, 4 }, new bool[] { true, true, true } ),
+            new EnemySpawn(3, new GameObject[] { enemyD, enemyD }, new float[] { -11, 11 }, new bool[] { false, false }, 2),
+            new EnemySpawn(1, new GameObject[] { enemyB, enemyB }, new float[] { -8, -5 }, new bool[] { true, true } ),
+            new EnemySpawn(3, new GameObject[] { enemyA }, new float[] { 11 }, new bool[] { false } ),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { 12 }, new bool[] { false } ),
+            new EnemySpawn(1, new GameObject[] { enemyD }, new float[] { 13 }, new bool[] { false } ),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { 11 }, new bool[] { false } ),
+            new EnemySpawn(1, new GameObject[] { enemyD }, new float[] { 12 }, new bool[] { false } ),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { 11 }, new bool[] { false }, 2 ),
+            new EnemySpawn(0, new GameObject[] { enemyC, enemyC,  }, new float[] { -1, 1 }, new bool[] { true, true } ),
+        };
+
+        hardLevelTimeLimits = new float[] {
+            10,
+            80
+        };
+
+        currentTimeLimit = hardLevelTimeLimits[level];
+
         testSpawn = new EnemySpawn[] {
             new EnemySpawn(5, new GameObject[] { enemyC, enemyD, enemyA }, new float[] { 12, -12, 11 }, new bool[] { false, false, false }),
 
@@ -437,19 +468,27 @@ public class mainHandler : MonoBehaviour {
         endWaitTimer = new float[] { 6.3f, 5f, 7.4f, 5f, 0, 0, 0, 5, 5, 5 };
 
         // load spawn
-        if (level == 1) currentLevelSpawn = level1Spawn;
-        if (level == 2) currentLevelSpawn = level2Spawn;
-        if (level == 3) currentLevelSpawn = level3Spawn;
-        if (level == 4) currentLevelSpawn = level4Spawn;
-        if (level == 10) currentLevelSpawn = testSpawn;
-        if (level == 100)
+        if (gameMode == NORMAL)
         {
-            SecondCounter.enabled = true;
-            currentLevelSpawn = levelEndlessSpawn;
-            txtRecordDisplay.enabled = true;
-            txtRecordDisplay.text = "RECORD: " + endlessRecord;
+            if (level == 1) currentLevelSpawn = level1Spawn;
+            if (level == 2) currentLevelSpawn = level2Spawn;
+            if (level == 3) currentLevelSpawn = level3Spawn;
+            if (level == 4) currentLevelSpawn = level4Spawn;
+            if (level == 10) currentLevelSpawn = testSpawn;
+            if (level == 100)
+            {
+                SecondCounter.enabled = true;
+                currentLevelSpawn = levelEndlessSpawn;
+                txtRecordDisplay.enabled = true;
+                txtRecordDisplay.text = "RECORD: " + endlessRecord;
+            }
         }
         if (level <= 0 || gameMode == BIRD) currentLevelSpawn = levelTrainingSpawn;
+
+        if (gameMode == HARD)
+        {
+            if (level == 1) currentLevelSpawn = level1HardSpawn;
+        }
 
         for (int i = 0; i < currentLevelSpawn.Length; i++)
         {
@@ -479,6 +518,14 @@ public class mainHandler : MonoBehaviour {
             new int[] { 8000, 10000, 11000, 15000, 18000 },
         };
 
+        hardRankLimits = new List<int[]>() {
+            new int[] { 10, 20, 30, 40, 50 },
+            new int[] { 3000, 5000, 7000, 10000, 15000 },
+            new int[] { 5000, 7000, 9000, 11500, 14000 },
+            new int[] { 8000, 11000, 14000, 17000, 22000 },
+            new int[] { 8000, 10000, 11000, 15000, 18000 },
+        };
+
         birdRankLimits = new List<int[]>() {
             new int[] { 10, 20, 30, 40, 50 },
             CalculateRankLimits(100),
@@ -486,6 +533,11 @@ public class mainHandler : MonoBehaviour {
             CalculateRankLimits(178),
             CalculateRankLimits(127),
         };
+
+        if (gameMode == HARD)
+        {
+            txtTimeLeft.enabled = true;
+        }
 
         // load rank data
         if (gameMode == NORMAL)
@@ -495,6 +547,10 @@ public class mainHandler : MonoBehaviour {
         if (gameMode == BIRD)
         {
             if (level < 100 && level > 0) currentRankLimits = birdRankLimits[level];
+        }
+        if (gameMode == HARD)
+        {
+            if (level < 100 && level > 0) currentRankLimits = hardRankLimits[level];
         }
         // play ambience
         if (level == 2) soundAmbCafe.start();
@@ -531,7 +587,7 @@ public class mainHandler : MonoBehaviour {
                 offBeatTime = 60 / ((float)bpm * 2);
                 preBeatTime = 60 / (float)bpm - leniency;
             }
-            if (name.Contains("B") && name.Length == 2 && level >= 0)
+            if ((name.Contains("B") && name.Length == 2 && level >= 0) && gameMode != NORMAL)
             {
                 totalBirds++;
                 player.GetComponent<playerHandler>().birds.Add(Instantiate(enemyBird, new Vector3(0f, 0f), Quaternion.identity));
@@ -640,6 +696,20 @@ public class mainHandler : MonoBehaviour {
         if (Input.GetButtonDown("Cancel"))
         {
             QuitLevel();
+        }
+
+        // update time limit
+        if (gameMode == HARD && !normalLevelFinished && !player.GetComponent<playerHandler>().dead)
+        { 
+            currentTimeLimit -= Time.deltaTime;
+            if (currentTimeLimit.ToString().Length > 5) txtTimeLeft.text =  currentTimeLimit.ToString().Remove(5);
+
+            if (currentTimeLimit <= 0)
+            {
+                player.GetComponent<playerHandler>().TakeDamage(999, 0, true);
+                currentTimeLimit = 0;
+                txtTimeLeft.text = currentTimeLimit.ToString();
+            }
         }
         
         beatTimer2 += Time.deltaTime;
@@ -762,8 +832,8 @@ public class mainHandler : MonoBehaviour {
     {
         if (!player.GetComponent<playerHandler>().dead) levelTimer += Time.deltaTime;
 
-        // normal mode
-        if (level > 0 && level < 100 && gameMode == NORMAL)
+        // normal/hard mode
+        if (level > 0 && level < 100 && gameMode == NORMAL || gameMode == HARD)
         {
             // reached end of level
             if (currentLevelSpawn.Length == currentSpawn)
@@ -944,6 +1014,7 @@ public class mainHandler : MonoBehaviour {
         nextSpawn = 0;
         prevTime = 0;
         currentMaxStreak = 0;
+        currentTimeLimit = hardLevelTimeLimits[level];
         player.GetComponent<playerHandler>().Reset();
         txtGameOver.enabled = false;
         gameOver = false;

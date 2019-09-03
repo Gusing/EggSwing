@@ -150,9 +150,10 @@ public class PlayerOptions
     {
         if (resolution == null)
         {
+            MonoBehaviour.print("no settings data found, loading res: " + Screen.width + " x " + Screen.height);
             Resolution[] resolutions = Screen.resolutions;
             //resolution = resolutions[resolutions.Length - 1].ToString().Remove(resolutions[resolutions.Length - 1].ToString().IndexOf('@'));
-            resolution = Screen.currentResolution.ToString().Remove(Screen.currentResolution.ToString().IndexOf('@'));
+            resolution = Screen.width + " x " + Screen.height;
             fullScreen = Screen.fullScreen;
             vSync = false;
             textureQuality = 0;
@@ -162,8 +163,14 @@ public class PlayerOptions
             volumeAmbience = 1;
         }
 
+        
+    }
+
+    public void SetStartValues()
+    {
         fullScreen = Screen.fullScreen;
-        resolution = Screen.currentResolution.ToString().Remove(Screen.currentResolution.ToString().IndexOf('@'));
+        MonoBehaviour.print("setting start res: " + Screen.width + " x " + Screen.height);
+        resolution = Screen.width + " x " + Screen.height;
     }
 
     public PlayerOptions(optionsHandler handler)
