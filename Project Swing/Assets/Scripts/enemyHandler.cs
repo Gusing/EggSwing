@@ -74,6 +74,7 @@ public class enemyHandler : MonoBehaviour
     protected GameObject player;
 
     public List<Transform> warningPoints;
+    List<Vector3> warningPointPositions;
 
     protected SpriteRenderer localSpriteRenderer;
 
@@ -121,6 +122,12 @@ public class enemyHandler : MonoBehaviour
             hitboxAttacks[i].enabled = false;
         }
         hitboxAttackFall.enabled = false;
+
+        warningPointPositions = new List<Vector3>();
+        for (int i = 0; i < warningPoints.Count; i++)
+        {
+            warningPointPositions.Add(warningPoints[i].localPosition);
+        }
 
         animator = GetComponent<Animator>();
 
@@ -218,7 +225,7 @@ public class enemyHandler : MonoBehaviour
 
         randomHitValue = Random.Range(0f, 1f);
         if (!specialHitstun) finalDmg -= defense;
-        if (immuneToSlow && (attackType == 1 || attackType == 6)) finalDmg = 0;
+        if (immuneToSlow && (attackType == 1 || attackType == 6) && !specialHitstun) finalDmg = 0;
         currentHP -= finalDmg;
         if (currentHP <= 0) Die(finalDmg);
         else
@@ -248,6 +255,7 @@ public class enemyHandler : MonoBehaviour
                     localSpriteRenderer.flipX = true;
                 }
             }
+            fallFromAbove = false;
             rendererHPBar.enabled = true;
             rendererHPFill.enabled = true;
             if (player.transform.position.x < transform.position.x) hitstunDirection = LEFT;
@@ -337,7 +345,7 @@ public class enemyHandler : MonoBehaviour
     {
         for (int i = 0; i < warningPoints.Count; i++)
         {
-            warningPoints[i].localPosition = new Vector3(Mathf.Abs(warningPoints[i].localPosition.x) * -direction, warningPoints[i].localPosition.y);
+            warningPoints[i].localPosition = new Vector3(warningPointPositions[i].x * direction, warningPoints[i].localPosition.y);
         }
         for (int i = 0; i < hitboxAttacks.Count; i++)
         {
@@ -420,6 +428,7 @@ public class enemyHandler : MonoBehaviour
             }
             else if (attackState == 4)
             {
+                print("down from sky");
                 soundFall.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
                 attackActive = false;
                 attacking = false;

@@ -28,6 +28,7 @@ public class beatIndicatorHandlerB : MonoBehaviour
     int localBpm;
     int hitState;
     bool songStarted;
+    bool stopped;
     
     List<GameObject> lines;
 
@@ -61,7 +62,6 @@ public class beatIndicatorHandlerB : MonoBehaviour
     {
         if (mainHandler.currentBpm != localBpm)
         {
-           
             localBpm = mainHandler.currentBpm;
 
             bpmInSeconds = (float)60 / (float)localBpm;
@@ -111,10 +111,11 @@ public class beatIndicatorHandlerB : MonoBehaviour
         {
             hitTimer += Time.deltaTime;
 
-            if (hitState > 0) rendererIcon.transform.localScale = new Vector3(1.5f - 0.5f * (hitTimer / hitTime), 1.5f - 0.5f * (hitTimer / hitTime), 1);
+            if (hitState > 0) rendererIcon.transform.localScale = new Vector3(1f - 0.5f * (hitTimer / hitTime), 1f - 0.5f * (hitTimer / hitTime), 1);
 
             if (hitTimer >= hitTime)
             {
+                rendererIcon.transform.localScale = new Vector3(0.5f, 0.5f);
                 hitTimer = 0;
                 ringChanged = false;
             }
@@ -146,7 +147,7 @@ public class beatIndicatorHandlerB : MonoBehaviour
         }
         
 
-        if (mainHandler.currentState == 2 && !recordedBeat)
+        if (mainHandler.currentState == 2 && !recordedBeat && !stopped)
         {
             recordedBeat = true;
             //readyforNextRing = true;
@@ -176,7 +177,7 @@ public class beatIndicatorHandlerB : MonoBehaviour
         */
     }
 
-    public void PlayerInput()
+    public void PlayerInput(bool forceGood = false)
     {
         ringChanged = true;
 
@@ -192,22 +193,46 @@ public class beatIndicatorHandlerB : MonoBehaviour
             */
         }
 
-        if (mainHandler.currentBeatTimer <= greatLimit || bpmInSeconds - mainHandler.currentBeatTimer <= greatLimit)
+        if (forceGood)
         {
             rendererFeedback.gameObject.GetComponent<beatLightHandler>().Activate(2);
-            rendererIcon.transform.localScale = new Vector3(1.5f, 1.5f, 1);
+            rendererIcon.transform.localScale = new Vector3(1, 1, 1);
             hitState = 2;
-        }
-        else if (mainHandler.currentState == 1 || mainHandler.currentState == 2)
-        {
-            rendererFeedback.gameObject.GetComponent<beatLightHandler>().Activate(1);
-            rendererIcon.transform.localScale = new Vector3(1.5f, 1.5f, 1);
-            hitState = 1;
         }
         else
         {
-            rendererFeedback.gameObject.GetComponent<beatLightHandler>().Activate(0);
-            hitState = 0;
+            if (mainHandler.currentBeatTimer <= greatLimit || bpmInSeconds - mainHandler.currentBeatTimer <= greatLimit)
+            {
+                rendererFeedback.gameObject.GetComponent<beatLightHandler>().Activate(2);
+                rendererIcon.transform.localScale = new Vector3(1, 1, 1);
+                hitState = 2;
+            }
+            else if (mainHandler.currentState == 1 || mainHandler.currentState == 2)
+            {
+                rendererFeedback.gameObject.GetComponent<beatLightHandler>().Activate(1);
+                rendererIcon.transform.localScale = new Vector3(1, 1, 1);
+                hitState = 1;
+            }
+            else
+            {
+                rendererFeedback.gameObject.GetComponent<beatLightHandler>().Activate(0);
+                hitState = 0;
+            }
         }
+    }
+
+    public void Clear()
+    {
+        for (int i = lines.Count - 8; i < lines.Count; i++)
+        {
+            if (i >= 0 && lines[i] != null) lines[i].GetComponent<beatLineHandler>().Kill();
+        }
+        lines.Clear();
+        stopped = true;
+    }
+
+    public void Restart()
+    {
+        stopped = false;
     }
 }

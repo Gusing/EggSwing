@@ -192,6 +192,7 @@ public class playerHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundRankAnnouncer;
 
     FMOD.Studio.EventInstance soundPickupCurrency;
+    FMOD.Studio.EventInstance soundPickupHP;
 
     PlayerData data;
 
@@ -213,6 +214,7 @@ public class playerHandler : MonoBehaviour
         soundDie = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Die");
         soundFail = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Miss_Brad");
         soundPickupCurrency = FMODUnity.RuntimeManager.CreateInstance("event:/Object/Pickup_gold_random");
+        soundPickupHP = FMODUnity.RuntimeManager.CreateInstance("event:/Object/Pickup_hp");
         soundBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Block");
         soundEnemyBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/HitArmor");
         soundSPBarFull = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/BarFull");
@@ -315,7 +317,7 @@ public class playerHandler : MonoBehaviour
             textCombo.text = "Combo: " + currentStreak;
         }
 
-        if (mainHandler.staticLevel > 0) textCurrency.text = "$" + currentCurrency;
+        if (mainHandler.staticLevel > 0) textCurrency.text = currentCurrency.ToString();
 
         // return if dead
         if (dead)
@@ -494,6 +496,7 @@ public class playerHandler : MonoBehaviour
         
         if (mainHandler.normalLevelFinished && !normalLevelFinished)
         {
+            beatIndicator.GetComponent<beatIndicatorHandlerB>().Clear();
             normalLevelFinished = true;
             if (currentHP == maxHP) AddBonusScore("Full HP", 2000, false, true);
             else AddBonusScore("HP Bonus", currentHP * 50, false, true);
@@ -950,6 +953,7 @@ public class playerHandler : MonoBehaviour
                         DisableHurtboxes();
                         attackID++;
                         attackIDStart = attackID;
+                        beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput(true);
                         RapidPunch();
                         break;
                     }
@@ -1039,7 +1043,6 @@ public class playerHandler : MonoBehaviour
 
     void SuccessfulRapidPunch()
     {
-        //print(Input.GetButtonDown("Light Attack"));
         if (Input.GetButtonDown("Light Attack") && actionTimer > 0.01)
         {
             for (int i = 0; i < currentCombos.Count; i++)
@@ -1568,6 +1571,7 @@ public class playerHandler : MonoBehaviour
             birdHitting = false;
             secondRapid = false;
             holdBeatPassed = false;
+            dodgeSucces = false;
 
             DisableHurtboxes();
             RestockCombos();
@@ -1587,6 +1591,7 @@ public class playerHandler : MonoBehaviour
     {
         soundDie.start();
         currentHP = 0;
+        beatIndicator.GetComponent<beatIndicatorHandlerB>().Clear();
         hitboxBody.enabled = false;
         dead = true;
     }
@@ -1595,6 +1600,7 @@ public class playerHandler : MonoBehaviour
     {
         normalLevelFinished = false;
         birdLevelFinished = false;
+        beatIndicator.GetComponent<beatIndicatorHandlerB>().Restart();
         currentHP = maxHP;
         dead = false;
         if (data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER]) specialCharges = maxSpecialCharges;
@@ -1736,7 +1742,7 @@ public class playerHandler : MonoBehaviour
 
         if (other.tag == "HPPickup" && hitboxPickup.IsTouching(other))
         {
-            soundPickupCurrency.start();
+            soundPickupHP.start();
             currentHP += 5;
             if (currentHP > maxHP) currentHP = maxHP;
             Instantiate(pHPPickupPick, other.transform.position, new Quaternion(0, 0, 0, 0));

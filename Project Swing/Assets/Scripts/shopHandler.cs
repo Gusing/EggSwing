@@ -65,7 +65,7 @@ public class shopHandler : MonoBehaviour
         soundShopCannotAfford = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_super_fail");
         soundShopBuy = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Buy");
 
-        textCurrency.text = "Munny: " + data.currency;
+        textCurrency.text = data.currency.ToString();
 
         data.Init();
         endlessRecord = data.endlessRecord;

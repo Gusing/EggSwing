@@ -39,8 +39,8 @@ public class enemyBHandler : enemyHandler
         damage.Add(4);
         damage.Add(3);
         
-        soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_attack");
-        soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_death");
+        soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Enemy/Egg_big_attack");
+        soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Enemy/Egg_big_death");
         soundFall = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_warning");
         soundImpact = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_impact");
     }

@@ -133,7 +133,7 @@ public class enemyBirdHandler : MonoBehaviour
 
         if (!dead)
         {
-            if (beatPassed >= 4)
+            if (beatPassed >= 4 && !mainHandler.normalLevelFinished)
             {
                 if (mainHandler.currentBeatTimer >= timeUntilCrash && !charging)
                 {
@@ -164,40 +164,6 @@ public class enemyBirdHandler : MonoBehaviour
                 }
             }
 
-            /*
-            if (lifeTimer >= timeUntilCrash && !charging)
-            {
-                soundWarning.start();
-                charging = true;
-                if (type == 1)
-                {
-                    renderers[0].sprite = spriteBirdB3;
-                }
-                if (type == 2)
-                {
-                    renderers[0].sprite = spriteBirdB;
-                }
-                if (type == 4)
-                {
-                    renderers[0].sprite = spriteBirdB2;
-                }
-                
-            }
-
-            if (charging && !readyToBeHit && lifeTimer >= (timeUntilCrash + timeToCharge) - mainHandler.currentLeniency)
-            {
-                readyToBeHit = true;
-            }
-
-            if (charging && lifeTimer >= timeUntilCrash + timeToCharge)
-            {
-                soundAttack.start();
-                dead = true;
-                transform.Translate(new Vector3(0, -3f));
-               
-            }
-            */
-
             if (!charging) transform.Translate(new Vector3(-3f * Time.deltaTime, 0));
 
         }
@@ -220,16 +186,7 @@ public class enemyBirdHandler : MonoBehaviour
         }
 
         updateAnimations();
-
-        /*
-        if (dead && readyToBeHit && lifeTimer >= timeUntilCrash + timeToCharge + mainHandler.currentLeniency)
-        {
-            GameObject.Find("Player").GetComponent<playerHandler>().TakeDamage(1, 0, true);
-            readyToBeHit = false;
-            readyToBeDestroyed = true;
-        }
-        */
-
+        
         if (dead && !readyToBeDestroyed)
         {
             readyToBeDestroyed = true;

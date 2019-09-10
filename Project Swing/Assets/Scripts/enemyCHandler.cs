@@ -30,17 +30,17 @@ public class enemyCHandler : enemyHandler
         knockbackLimit = 3;
         bigKnockbackLimit = 8;
 
-        currencyValue = 6;
+        currencyValue = 5;
 
         stopDistance = 1.1f;
 
         defense = 1;
         immuneToSlow = true;
 
-        damage.Add(3);
+        damage.Add(4);
 
-        soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_attack");
-        soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_death");
+        soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Enemy/Knight_attack");
+        soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Enemy/Knight_death");
         soundFall = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_warning");
         soundImpact = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_impact");
     }
@@ -129,7 +129,7 @@ public class enemyCHandler : enemyHandler
                 attacking = false;
                 busy = false;
                 attackState = 0;
-                attackRecovery = Random.Range(2, 3);
+                attackRecovery = Random.Range(2.5f, 3);
             }
         }
     }

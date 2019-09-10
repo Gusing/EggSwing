@@ -275,7 +275,7 @@ public class mainHandler : MonoBehaviour {
             tRenderer.sprite = comboHolder;
             tRenderer.sortingLayerName = "HUD";
             tSprite2.transform.parent = tSprite.transform;
-            tSprite2.transform.localPosition = new Vector3(0, 0);
+            tSprite2.transform.localPosition = new Vector3(0, -0.08f);
             tSprite2.transform.localScale = new Vector3(1, 1, 1);
             tSprite = new GameObject("ComboSprite" + -2);
             tRenderer = tSprite.AddComponent<SpriteRenderer>();
@@ -289,7 +289,7 @@ public class mainHandler : MonoBehaviour {
             tRenderer.sprite = comboHolder;
             tRenderer.sortingLayerName = "HUD";
             tSprite2.transform.parent = tSprite.transform;
-            tSprite2.transform.localPosition = new Vector3(0, 0);
+            tSprite2.transform.localPosition = new Vector3(0, -0.08f);
             tSprite2.transform.localScale = new Vector3(1, 1, 1);
 
             int j = 2;
@@ -309,7 +309,7 @@ public class mainHandler : MonoBehaviour {
                     tRenderer.sprite = comboHolder;
                     tRenderer.sortingLayerName = "HUD";
                     tSprite2.transform.parent = tSprite.transform;
-                    tSprite2.transform.localPosition = new Vector3(0, 0);
+                    tSprite2.transform.localPosition = new Vector3(0, -0.08f);
                     tSprite2.transform.localScale = new Vector3(1, 1, 1);
                     j++;
                 }
@@ -455,13 +455,16 @@ public class mainHandler : MonoBehaviour {
 
         hardLevelTimeLimits = new float[] {
             10,
-            80
+            80,
+            120,
+            140,
+            180
         };
 
-        currentTimeLimit = hardLevelTimeLimits[level];
+        if (gameMode == HARD) currentTimeLimit = hardLevelTimeLimits[level];
 
         testSpawn = new EnemySpawn[] {
-            new EnemySpawn(5, new GameObject[] { enemyC, enemyD, enemyA }, new float[] { 12, -12, 11 }, new bool[] { false, false, false }),
+            new EnemySpawn(1, new GameObject[] { enemyC, }, new float[] { 11 }, new bool[] { false }),
 
         };
 
@@ -470,10 +473,10 @@ public class mainHandler : MonoBehaviour {
         // load spawn
         if (gameMode == NORMAL)
         {
-            if (level == 1) currentLevelSpawn = level1Spawn;
-            if (level == 2) currentLevelSpawn = level2Spawn;
-            if (level == 3) currentLevelSpawn = level3Spawn;
-            if (level == 4) currentLevelSpawn = level4Spawn;
+            if (level == 1) currentLevelSpawn = testSpawn;
+            if (level == 2) currentLevelSpawn = testSpawn;
+            if (level == 3) currentLevelSpawn = testSpawn;
+            if (level == 4) currentLevelSpawn = testSpawn;
             if (level == 10) currentLevelSpawn = testSpawn;
             if (level == 100)
             {
@@ -703,6 +706,7 @@ public class mainHandler : MonoBehaviour {
         { 
             currentTimeLimit -= Time.deltaTime;
             if (currentTimeLimit.ToString().Length > 5) txtTimeLeft.text =  currentTimeLimit.ToString().Remove(5);
+            if (currentTimeLimit < 20) txtTimeLeft.transform.localScale = new Vector3(0.5f + (1-(currentTimeLimit/20)) * 1, 0.5f + (1-(currentTimeLimit / 20)) * 1, 0);
 
             if (currentTimeLimit <= 0)
             {
@@ -1017,6 +1021,7 @@ public class mainHandler : MonoBehaviour {
         currentTimeLimit = hardLevelTimeLimits[level];
         player.GetComponent<playerHandler>().Reset();
         txtGameOver.enabled = false;
+        if (gameMode == HARD) txtTimeLeft.transform.localScale = new Vector3(0.5f, 0.5f);
         gameOver = false;
         songStarted = false;
         btnRetry.gameObject.SetActive(false);

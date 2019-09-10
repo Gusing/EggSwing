@@ -48,8 +48,8 @@ public class enemyDHandler : enemyHandler
 
         damage.Add(3);
 
-        soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_attack");
-        soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_death");
+        soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Enemy/Ninja_attack");
+        soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Enemy/Ninja_death");
         soundFall = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_warning");
         soundImpact = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_impact");
         soundSlide = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_swoosh");
@@ -105,7 +105,9 @@ public class enemyDHandler : enemyHandler
                 dodgeCooldown = false;
             }
         }
-        else if (player.GetComponent<playerHandler>().punchingSuccess && player.GetComponent<playerHandler>().attackType == 2 && !player.GetComponent<playerHandler>().punchingActive && !dodging && Vector2.Distance(transform.position, player.transform.position) < 2f)
+        else if (player.GetComponent<playerHandler>().punchingSuccess && player.GetComponent<playerHandler>().attackType == 2 && 
+            !player.GetComponent<playerHandler>().punchingActive && !dodging && Vector2.Distance(transform.position, player.transform.position) < 2f &&
+            !fallFromAbove)
         {
             soundSlide.start();
             attackRecovery = 0;

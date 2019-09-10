@@ -215,6 +215,11 @@ PrefabInstance:
       propertyPath: textCombo
       value: 
       objectReference: {fileID: 8935748466681093649}
+    - target: {fileID: 212263714625456538, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b,
+        type: 3}
+      propertyPath: m_SpriteSortPoint
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 114748089267114276, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b,
         type: 3}
       propertyPath: beatWindow
@@ -532,6 +537,7 @@ MonoBehaviour:
   SecondDisplay: {fileID: 0}
   txtRecordDisplay: {fileID: 0}
   txtRecordAnnouncement: {fileID: 0}
+  txtTimeLeft: {fileID: 0}
   endlessRecord: 0
   clearedLevel: 
   clearedBirdLevel: 
@@ -547,6 +553,9 @@ MonoBehaviour:
   currency: 0
   itemBought: 
   itemActive: 
+  lastMode: 0
+  seenControls: 0
+  seenBirdTutorial: 0
   musicPath: event:/Music/SpaceBagle
   txtSongName: {fileID: 3736454773493243834}
   txtSongBPM: {fileID: 1255992376}
