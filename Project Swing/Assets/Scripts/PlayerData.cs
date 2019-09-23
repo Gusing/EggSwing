@@ -10,12 +10,17 @@ public class PlayerData
     public bool[] unlockedLevel;
     public bool[] clearedBirdLevel;
     public bool[] unlockedBirdLevel;
+    public bool[] clearedHardLevel;
+    public bool[] unlockedHardLevel;
     public int[] streakRecord;
     public int[] comboRecord;
     public int[] scoreRecord;
+    public float[] timeRecord;
     public int[] scoreBirdRecord;
+    public int[] scoreHardRecord;
     public int[] rankRecord;
     public int[] rankBirdRecord;
+    public int[] rankHardRecord;
     public int endlessRecord;
     public int streakLevelEndlessRecord;
     public int currency;
@@ -38,12 +43,17 @@ public class PlayerData
             unlockedLevel = new bool[5];
             clearedBirdLevel = new bool[5];
             unlockedBirdLevel = new bool[5];
+            clearedHardLevel = new bool[5];
+            unlockedHardLevel = new bool[5];
             streakRecord = new int[5];
             comboRecord = new int[5];
+            timeRecord = new float[5];
             scoreRecord = new int[5];
             scoreBirdRecord = new int[5];
+            scoreHardRecord = new int[5];
             rankRecord = new int[5];
             rankBirdRecord = new int[5];
+            rankHardRecord = new int[5];
             itemBought = new bool[10];
             itemActive = new bool[10];
             lastMode = 0;
@@ -59,6 +69,18 @@ public class PlayerData
             unlockedLevel[1] = true;
             unlockedBirdLevel[1] = true;
 
+
+            unlockedHardLevel[1] = true;
+            unlockedHardLevel[2] = true;
+            unlockedHardLevel[3] = true;
+            unlockedHardLevel[4] = true;
+            unlockedLevel[2] = true;
+            unlockedLevel[3] = true;
+            unlockedLevel[4] = true;
+            unlockedBirdLevel[2] = true;
+            unlockedBirdLevel[3] = true;
+            unlockedBirdLevel[4] = true;
+
             for (int i = 0; i < itemActive.Length; i++)
             {
                 itemActive[i] = true;
@@ -70,21 +92,26 @@ public class PlayerData
     {
         clearedLevel = handler.clearedLevel;
         clearedBirdLevel = handler.clearedBirdLevel;
+        clearedHardLevel = handler.clearedHardLevel;
 
         unlockedLevel = handler.unlockedLevel;
         unlockedBirdLevel = handler.unlockedBirdLevel;
+        unlockedHardLevel = handler.unlockedHardLevel;
 
         endlessRecord = handler.endlessRecord;
 
         streakRecord = handler.streakRecord;
         comboRecord = handler.comboRecord;
+        timeRecord = handler.timeRecord;
         streakLevelEndlessRecord = handler.streakLevelEndlessRecord;
 
         scoreRecord = handler.scoreRecord;
         scoreBirdRecord = handler.scoreBirdRecord;
+        scoreHardRecord = handler.scoreHardRecord;
 
         rankRecord = handler.rankRecord;
         rankBirdRecord = handler.rankBirdRecord;
+        rankHardRecord = handler.rankHardRecord;
 
         currency = handler.currency;
         itemBought = handler.itemBought;
@@ -100,21 +127,26 @@ public class PlayerData
     {
         clearedLevel = handler.clearedLevel;
         clearedBirdLevel = handler.clearedBirdLevel;
+        clearedHardLevel = handler.clearedHardLevel;
 
         unlockedLevel = handler.unlockedLevel;
         unlockedBirdLevel = handler.unlockedBirdLevel;
+        unlockedHardLevel = handler.unlockedHardLevel;
 
         endlessRecord = handler.endlessRecord;
 
         streakRecord = handler.streakRecord;
         comboRecord = handler.comboRecord;
+        timeRecord = handler.timeRecord;
         streakLevelEndlessRecord = handler.streakLevelEndlessRecord;
 
         scoreRecord = handler.scoreRecord;
         scoreBirdRecord = handler.scoreBirdRecord;
+        scoreHardRecord = handler.scoreHardRecord;
 
         rankRecord = handler.rankRecord;
         rankBirdRecord = handler.rankBirdRecord;
+        rankHardRecord = handler.rankHardRecord;
 
         currency = handler.currency;
         itemBought = handler.itemBought;

@@ -4,15 +4,25 @@ using UnityEngine;
 
 public class sceneSelectionHandler : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private static sceneSelectionHandler _instance;
+
+    public static sceneSelectionHandler Instance
     {
-        
+        get { return _instance; }
     }
 
-    // Update is called once per frame
-    void Update()
+    // singleton
+    private void Awake()
     {
-        
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+
+        _instance = this;
+        DontDestroyOnLoad(this.gameObject);
     }
+
+    public int gameModeSelected;
 }

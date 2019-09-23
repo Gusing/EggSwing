@@ -11,6 +11,7 @@ public class playerHandler : MonoBehaviour
     
     public Animator animator;
 
+    [Header("Particle Systems")]
     public ParticleSystem pAttackHit;
     public ParticleSystem pPlayerkHit;
     public ParticleSystem pSpecialAttack;
@@ -21,16 +22,18 @@ public class playerHandler : MonoBehaviour
     public ParticleSystem pCurrencyPick;
     public ParticleSystem pHPPickupPick;
 
+    [Header("Animated Effects")]
     public GameObject effectHitBlue;
     public GameObject effectHitRed;
     public GameObject effectHitSuper;
     public GameObject effectHitBird;
 
+    [Header("Object Prefabs")]
     public GameObject damageNumberEnemy;
     public GameObject damageNumberPlayer;
     public GameObject scoreBonusText;
 
-    public List<GameObject> birds;
+    [HideInInspector] public List<GameObject> birds;
 
     int comboState;
     int currentBeat;
@@ -38,6 +41,7 @@ public class playerHandler : MonoBehaviour
     bool lastAttackSlow;
     bool switchBeat;
 
+    [Header("Hitboxes")]
     public BoxCollider2D hitboxAttack1A;
     public BoxCollider2D hitboxAttack1B;
     public BoxCollider2D hitboxAttack1C;
@@ -66,16 +70,16 @@ public class playerHandler : MonoBehaviour
     float actionTimer;
     bool busy;
 
-    public bool punchingSuccess;
+    [HideInInspector] public bool punchingSuccess;
     bool punchingFail;
-    public bool punchingActive;
+    [HideInInspector] public bool punchingActive;
     float punchSuccessTime = 0.32f;
     float quickPunchSuccessTime = 0.3f;
     float specialPunchSuccessTime = 0.7f;
     float rapidPunchSuccessTime = 0.2f;
     float punchFailTime = 0.5f;
     int localBPM;
-    public int attackType;
+    [HideInInspector] public int attackType;
     bool usingSuper;
     bool beatPassed;
     bool holdBeatPassed;
@@ -116,24 +120,25 @@ public class playerHandler : MonoBehaviour
     int maxSpecialCharges;
     float specialChargeTimer;
     float specialChargeExtraTime;
-    public int currentStreak;
+    [HideInInspector] public int currentStreak;
     float streakDisappearDelay;
     float streakTimer;
-    public int streakLevel;
-    public int currentCurrency;
+    [HideInInspector] public int streakLevel;
+    [HideInInspector] public int currentCurrency;
     int startingCurrency;
     float currentSP;
-    public float maxSP = 20;
+    [HideInInspector] public float maxSP = 20;
     bool chargingSP;
-    public int currentScore;
+    [HideInInspector] public int currentScore;
     float currentMultiplier;
-    public int currentRank;
+    [HideInInspector] public int currentRank;
     List<Vector2> previousAttacks;
-    public bool enemyKilled;
+    [HideInInspector] public bool enemyKilled;
     int lastDmg;
     int birdComboHeal;
     bool tookDamage;
 
+    [Header("Local Objects")]
     public SpriteRenderer rendererHPFill;
     public SpriteMask maskHPFill;
     public SpriteRenderer[] renderersSpecialCharges;
@@ -151,14 +156,14 @@ public class playerHandler : MonoBehaviour
     float SPBarFlickerTimer;
     float SPBarFlickerTime = 0.07f;
 
-    public bool dead;
+    [HideInInspector] public bool dead;
     bool resetted;
     bool dpadV1;
     bool dpadV2;
     bool dpadH1;
     bool dpadH2;
 
-    public int direction;
+    [HideInInspector] public int direction;
 
     bool hitstun;
     int hitstunDirection;
@@ -196,7 +201,7 @@ public class playerHandler : MonoBehaviour
 
     PlayerData data;
 
-    // debug
+    [Header("Debug")]
     public Text txtComboState;
     public Text txtNumberCombos;
 
@@ -329,7 +334,6 @@ public class playerHandler : MonoBehaviour
         if (currentSP <= 0 && !chargingSP)
         {
             chargingSP = true;
-            AddBonusScore("SP Usage", 150);
         }
         if (chargingSP)
         {
@@ -357,7 +361,7 @@ public class playerHandler : MonoBehaviour
         // update bonus score display
         if (bonusDisplayTimer > 0)
         {
-            bonusDisplayTimer -= Time.deltaTime;
+            bonusDisplayTimer -= Time.deltaTime * 1.5f;
         }
 
         // update moves
@@ -597,6 +601,15 @@ public class playerHandler : MonoBehaviour
         }
         if (birdHitReady)
         {
+
+            // AUTOPLAY  
+            /*
+            attackID++;
+            attackIDStart = attackID;
+            BirdPunch();
+            */
+            /////////////
+
             if ((Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Heavy Attack") || Input.GetButtonDown("Alternate Bird") || dpadV2 || dpadH2 || Input.GetButtonDown("Super") || Input.GetButtonDown("Other Action")))
             {
                 attackID++;
@@ -1108,7 +1121,6 @@ public class playerHandler : MonoBehaviour
             usingSuper = true;
             hitboxAttack3A.enabled = true;
             RestockCombos();
-            AddBonusScore("Super Usage", 30);
             SuccessfulSpecialPunch();
         }
         else if (beatState == FAIL)
@@ -1244,7 +1256,7 @@ public class playerHandler : MonoBehaviour
                         currentCombos[0][comboState].hitbox.enabled = true;
                         transform.Translate(new Vector3(currentCombos[0][comboState].push * direction, 0));
 
-                        //Instantiate(pHoldAttack, currentCombos[0][comboState].hitbox.transform.position + new Vector3(0.5f, 0), new Quaternion(0, 0, 0, 0));
+                        Instantiate(pHoldAttack, currentCombos[0][comboState].hitbox.transform.position + new Vector3(0.5f * direction, -0.4f), new Quaternion(0, Mathf.Clamp(direction, -1, 0) * 180, 0, 0));
 
                         beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
 
@@ -1328,6 +1340,7 @@ public class playerHandler : MonoBehaviour
         birdHitting = true;
 
         hitboxBody.enabled = true;
+        DisableHurtboxes();
         hitboxAttackBird.enabled = true;
         Instantiate(effectHitBird, transform.position + new Vector3(0, 0.3f), new Quaternion(0, 0, 0, 0));
         currentScore += (int)Mathf.Round(100 * currentMultiplier);
@@ -1342,7 +1355,6 @@ public class playerHandler : MonoBehaviour
         busy = true;
         beatPassed = false;
         punchingActive = false;
-        DisableHurtboxes();
         RestockCombos();
         SuccessfulBirdPunch();
     }
@@ -1468,6 +1480,7 @@ public class playerHandler : MonoBehaviour
         }
         hitboxAttack3A.enabled = false;
         hitboxAttack4A.enabled = false;
+        hitboxAttackBird.enabled = false;
     }
 
     void Dodge()
@@ -1713,6 +1726,7 @@ public class playerHandler : MonoBehaviour
 
     void AddBonusScore(string text, int amount, bool notBonus = false, bool noMultiplier = false)
     {
+        if (mainHandler.HUDTurnedOff) return;
         if (mainHandler.staticLevel > 0)
         {
             if (!notBonus)
@@ -1795,6 +1809,7 @@ public class playerHandler : MonoBehaviour
                 {
                     tDmg = other.GetComponent<enemyHandler>().TakeDamage(tDmg, attackID, birdHitstun, attackType);
                     lastDmg = tDmg;
+                    if (usingSuper) AddBonusScore("Super Hit", 30);
                     if (comboState >= 0)
                     {
                         if (tDmg > 0) currentCombos[0][comboState].soundAttackHit.start();

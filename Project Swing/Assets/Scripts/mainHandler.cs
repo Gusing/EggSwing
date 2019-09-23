@@ -13,6 +13,9 @@ using UnityEngine.EventSystems;
 
 public class mainHandler : MonoBehaviour {
 
+    [Header("Level Data")]
+    public int level;
+    public static int staticLevel;
     public int bpm;
     public static int currentBpm;
     public float offset;
@@ -22,9 +25,12 @@ public class mainHandler : MonoBehaviour {
     float preBeatTime;
     public int gameMode;
     public static int currentGameMode;
+    public string musicPath;
+    public string soundClockPath;
 
     readonly int NORMAL = 0, BIRD = 1, HARD = 2;
-    
+
+    [Header("Object Prefabs")]
     public GameObject enemyA;
     public GameObject enemyB;
     public GameObject enemyC;
@@ -35,10 +41,11 @@ public class mainHandler : MonoBehaviour {
 
     public GameObject player;
 
+    [Header("Local Objects")]
     public Text txtVictory;
     public Text txtGameOver;
     float gameOverTimer;
-    public bool gameOver;
+    [HideInInspector] public bool gameOver;
     public static bool normalLevelFinished;
     public static bool birdLevelFinished;
 
@@ -49,6 +56,10 @@ public class mainHandler : MonoBehaviour {
     public SpriteMask maskProgressFill;
     public SpriteRenderer rendererProgressMarker;
 
+    Canvas levelUI;
+    Canvas playerHUD;
+    public static bool HUDTurnedOff;
+
     float beatTime;
     float beatTimer;
     float offsetTimer;
@@ -56,24 +67,23 @@ public class mainHandler : MonoBehaviour {
     float indicatorTimer;
     bool indicatorReady;
 
-    public int level;
-    public static int staticLevel;
-
     public static float levelTimer;
     int currentSpawn;
     float prevTime;
     bool waitingForDeath;
     public static int enemiesDead;
-    public int totalEnemies;
-    public int totalBirds;
+    [HideInInspector] public int totalEnemies;
+    [HideInInspector] public int totalBirds;
     float[] songLengths;
     float[] hardLevelTimeLimits;
     float currentTimeLimit;
+    bool clockStarted;
 
     float nextSpawn;
 
     readonly int FAIL = 0, SUCCESS = 1, BEAT = 2, OFFBEAT = 3;
     public static int currentState;
+    public static bool beatFrame;
     public static bool offBeat;
     public static bool songStarted;
 
@@ -91,32 +101,40 @@ public class mainHandler : MonoBehaviour {
     EnemySpawn[] level3Spawn;
     EnemySpawn[] level4Spawn;
     EnemySpawn[] level1HardSpawn;
+    EnemySpawn[] level2HardSpawn;
+    EnemySpawn[] level3HardSpawn;
+    EnemySpawn[] level4HardSpawn;
     EnemySpawn[] testSpawn;
     EnemySpawn[] currentLevelSpawn;
     float[] endWaitTimer;
     public static int[] currentRankLimits;
     List<int[]> levelRankLimits;
     List<int[]> hardRankLimits;
-
-    public int endlessRecord;
-    public bool[] clearedLevel;
-    public bool[] clearedBirdLevel;
-    public bool[] unlockedLevel;
-    public bool[] unlockedBirdLevel;
-    public int[] streakRecord;
-    public int[] comboRecord;
-    public int streakLevelEndlessRecord;
-    public int[] scoreRecord;
-    public int[] scoreBirdRecord;
-    public int[] rankRecord;
-    public int[] rankBirdRecord;
-    int currentMaxStreak;
-    public int currency;
-    public bool[] itemBought;
-    public bool[] itemActive;
-    public int lastMode;
-    public bool seenControls;
-    public bool seenBirdTutorial;
+    
+    [HideInInspector] public int endlessRecord;
+    [HideInInspector] public bool[] clearedLevel;
+    [HideInInspector] public bool[] clearedBirdLevel;
+    [HideInInspector] public bool[] clearedHardLevel;
+    [HideInInspector] public bool[] unlockedLevel;
+    [HideInInspector] public bool[] unlockedBirdLevel;
+    [HideInInspector] public bool[] unlockedHardLevel;
+    [HideInInspector] public int[] streakRecord;
+    [HideInInspector] public int[] comboRecord;
+    [HideInInspector] public float[] timeRecord;
+    [HideInInspector] public int streakLevelEndlessRecord;
+    [HideInInspector] public int[] scoreRecord;
+    [HideInInspector] public int[] scoreBirdRecord;
+    [HideInInspector] public int[] scoreHardRecord;
+    [HideInInspector] public int[] rankRecord;
+    [HideInInspector] public int[] rankBirdRecord;
+    [HideInInspector] public int[] rankHardRecord;
+    [HideInInspector] int currentMaxStreak;
+    [HideInInspector] public int currency;
+    [HideInInspector] public bool[] itemBought;
+    [HideInInspector] public bool[] itemActive;
+    [HideInInspector] public int lastMode;
+    [HideInInspector] public bool seenControls;
+    [HideInInspector] public bool seenBirdTutorial;
 
     int[] numBirds;
     public List<int[]> birdRankLimits; 
@@ -127,11 +145,11 @@ public class mainHandler : MonoBehaviour {
     FMOD.Studio.EventInstance soundMusic;
     FMOD.Studio.EVENT_CALLBACK callBack;
 
+    FMOD.Studio.EventInstance soundClock;
+
     FMOD.Studio.EventInstance soundUIClick;
 
     FMOD.Studio.EventInstance soundSinus;
-
-    public string musicPath;
 
     float beatTimer2;
     public static float currentBeatTimer;
@@ -163,6 +181,8 @@ public class mainHandler : MonoBehaviour {
         currentBpm = bpm;
         currentLeniency = leniency;
         staticLevel = level;
+        if (level < 100 && level > 0) gameMode = sceneSelectionHandler.Instance.gameModeSelected;
+        else gameMode = NORMAL;
         currentGameMode = gameMode;
         data = SaveSystem.LoadPlayer();
     }
@@ -170,13 +190,16 @@ public class mainHandler : MonoBehaviour {
     void Start()
     {
         // set music
-        soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath);
+        if (gameMode == BIRD && level < 100) soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath.Insert(12, "/Bird") + "_bird");
+        else soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath);
         offBeatTime = 60 / ((float)bpm * 2);
         preBeatTime = 60 / (float)bpm - leniency;
         
         callBack = new FMOD.Studio.EVENT_CALLBACK(StudioEventCallback);
         soundMusic.setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
         if (level != -1) soundMusic.start();
+        
+        soundClock = FMODUnity.RuntimeManager.CreateInstance(soundClockPath);
 
         soundAmbCafe = FMODUnity.RuntimeManager.CreateInstance("event:/Amb/Amb_cafe");
         soundAmbSea = FMODUnity.RuntimeManager.CreateInstance("event:/Amb/Amb_sea");
@@ -192,15 +215,20 @@ public class mainHandler : MonoBehaviour {
         endlessRecord = data.endlessRecord;
         clearedLevel = data.clearedLevel;
         clearedBirdLevel = data.clearedBirdLevel;
+        clearedHardLevel = data.clearedHardLevel;
         unlockedLevel = data.unlockedLevel;
         unlockedBirdLevel = data.unlockedBirdLevel;
+        unlockedHardLevel = data.unlockedHardLevel;
         streakRecord = data.streakRecord;
         comboRecord = data.comboRecord;
+        timeRecord = data.timeRecord;
         streakLevelEndlessRecord = data.streakLevelEndlessRecord;
         scoreRecord = data.scoreRecord;
         scoreBirdRecord = data.scoreBirdRecord;
+        scoreHardRecord = data.scoreHardRecord;
         rankRecord = data.rankRecord;
         rankBirdRecord = data.rankBirdRecord;
+        rankHardRecord = data.rankHardRecord;
         currency = data.currency;
         itemBought = data.itemBought;
         itemActive = data.itemActive;
@@ -217,6 +245,9 @@ public class mainHandler : MonoBehaviour {
         totalEnemies = 0;
         songStarted = false;
 
+        if (level > 0 && level < 100) levelUI = GameObject.Find("LevelUI").GetComponent<Canvas>();
+        playerHUD = GameObject.Find("playerHUD").GetComponent<Canvas>();
+
         // load practice
         if (level == -1)
         {
@@ -225,7 +256,7 @@ public class mainHandler : MonoBehaviour {
             soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/Elextroswing"));
             soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/PirateBoy"));
             soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/DoomMusic"));
-
+            
             for (int i = 0; i < soundPracticeSongs.Count; i++)
             {
                 soundPracticeSongs[i].setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
@@ -240,7 +271,7 @@ public class mainHandler : MonoBehaviour {
             practiceSongBPM = new List<int> { 100, 128, 140, 108 };
 
             availablePracticeSongBPM = new List<int>();
-
+            
             for (int i = 1; i < data.unlockedLevel.Length; i++)
             {
                 if (data.unlockedLevel[i] || data.unlockedBirdLevel[i])
@@ -250,7 +281,7 @@ public class mainHandler : MonoBehaviour {
                     availablePracticeSongBPM.Add(practiceSongBPM[i - 1]);
                 }
             }
-
+            
             currentSong = 0;
             soundAvailableracticeSongs[currentSong].start();
             txtSongName.text = availablePracticeSongNames[currentSong];
@@ -259,8 +290,7 @@ public class mainHandler : MonoBehaviour {
             currentBpm = bpm;
             offBeatTime = 60 / ((float)bpm * 2);
             preBeatTime = 60 / (float)bpm - leniency;
-
-
+            
             GameObject tSprite;
             GameObject tSprite2;
             tSprite = new GameObject("ComboSprite" + -1);
@@ -348,7 +378,6 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(0, new GameObject[] { enemyB, enemyB }, new float[] { -10, 10 }, new bool[] { false, false })
         };
         
-
         /*
         level2Spawn = new EnemySpawn[] {
             new EnemySpawn(7, new GameObject[] { enemyA, enemyB }, new float[] { -8, 12 }, new bool[] { true, false }),
@@ -453,18 +482,116 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(0, new GameObject[] { enemyC, enemyC,  }, new float[] { -1, 1 }, new bool[] { true, true } ),
         };
 
+        level2HardSpawn = new EnemySpawn[] {
+            new EnemySpawn(7, new GameObject[] { enemyD, enemyD }, new float[] { -12, 6 }, new bool[] { false, true } ),
+            new EnemySpawn(3, new GameObject[] { enemyC }, new float[] { 12 }, new bool[] { false } ),
+            new EnemySpawn(2, new GameObject[] { enemyD }, new float[] { -2 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyD }, new float[] { 12 }, new bool[] { false } ),
+            new EnemySpawn(1, new GameObject[] { enemyC, enemyD }, new float[] { -5, -13 }, new bool[] { true, false } ),
+            new EnemySpawn(3, new GameObject[] { enemyD, enemyC }, new float[] { 2, 15 }, new bool[] { true, false } ),
+            new EnemySpawn(2, new GameObject[] { enemyD }, new float[] { -11 }, new bool[] { false }, 2 ),
+            new EnemySpawn(1, new GameObject[] { enemyB, enemyD, enemyD, enemyD, enemyD }, new float[] { 0, 11, 12, -11, -12 }, new bool[] { true, false, false, false, false }, 1 ),
+            new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { -8 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -6 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -4 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -2 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -0 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { 2 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { 4 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { 6 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { 8 }, new bool[] { true }, 3 ),
+            new EnemySpawn(0, new GameObject[] { enemyC, enemyD }, new float[] { -9, 9 }, new bool[] { true, true } ),
+            new EnemySpawn(3, new GameObject[] { enemyC, enemyD }, new float[] { -1, 1 }, new bool[] { true, true } ),
+            new EnemySpawn(1, new GameObject[] { enemyB, enemyB }, new float[] { -12, 12 }, new bool[] { false, false }, 1 ),
+            new EnemySpawn(0, new GameObject[] { enemyD }, new float[] { 8 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyD }, new float[] { 6 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyD }, new float[] { 4 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyD }, new float[] { 2 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyD }, new float[] { 0 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyD }, new float[] { -2 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyD }, new float[] { -4 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyD }, new float[] { -6 }, new bool[] { true } ),
+            new EnemySpawn(1, new GameObject[] { enemyD }, new float[] { -8 }, new bool[] { true } ),
+            new EnemySpawn(4, new GameObject[] { enemyB, enemyD, enemyB, enemyD }, new float[] { -7, -3, 7, 3 }, new bool[] { true, true, true, true } ),
+
+        };
+
+        level3HardSpawn = new EnemySpawn[] {
+            new EnemySpawn(10, new GameObject[] { enemyB, enemyB }, new float[] { -4, 4 }, new bool[] { true, true } ),
+            new EnemySpawn(4, new GameObject[] { enemyB, enemyB }, new float[] { -7, 7 }, new bool[] { true, true } ),
+            new EnemySpawn(4, new GameObject[] { enemyB, enemyB }, new float[] { -10, 10 }, new bool[] { true, true }, 1 ),
+            new EnemySpawn(0, new GameObject[] { enemyB, enemyC }, new float[] { -12, 0 }, new bool[] { false, true } ),
+            new EnemySpawn(4, new GameObject[] { enemyB, enemyC }, new float[] { 12, 0 }, new bool[] { false, true }, 1 ),
+            new EnemySpawn(0, new GameObject[] { enemyD, }, new float[] { -12, 0 }, new bool[] { false } ),
+            new EnemySpawn(1, new GameObject[] { enemyD, enemyB }, new float[] { -12, -9 }, new bool[] { false, true } ),
+            new EnemySpawn(1, new GameObject[] { enemyD, }, new float[] { -12 }, new bool[] { false } ),
+            new EnemySpawn(1, new GameObject[] { enemyD, enemyD }, new float[] { -12, -8 }, new bool[] { false, true } ),
+            new EnemySpawn(1, new GameObject[] { enemyD, }, new float[] { -12 }, new bool[] { false } ),
+            new EnemySpawn(1, new GameObject[] { enemyD, enemyD }, new float[] { -12, -9 }, new bool[] { false, true } ),
+            new EnemySpawn(1, new GameObject[] { enemyD, }, new float[] { -12, 0 }, new bool[] { false, true }, 1 ),
+            new EnemySpawn(0, new GameObject[] { enemyD, enemyC, enemyD, enemyC }, new float[] { -5, -5, 5, 5 }, new bool[] { true, true, true, true } ),
+            new EnemySpawn(2, new GameObject[] { enemyB, enemyB, }, new float[] { -11, -3 }, new bool[] { false, true } ),
+            new EnemySpawn(1, new GameObject[] { enemyB, enemyB, }, new float[] { 11, 3 }, new bool[] { false, true} ),
+            new EnemySpawn(1, new GameObject[] { enemyB }, new float[] { 0 }, new bool[] { true } ),
+        };
+
+        level4HardSpawn = new EnemySpawn[] {
+            new EnemySpawn(8, new GameObject[] { enemyC, enemyB, enemyA }, new float[] { 8, -3, 12 }, new bool[] { true, true, false } ),
+            new EnemySpawn(3, new GameObject[] { enemyA, enemyD, enemyA }, new float[] { 3, -6, -12 }, new bool[] { true, true, false } ),
+            new EnemySpawn(3, new GameObject[] { enemyD, enemyD, enemyA }, new float[] { 1, -9, 12 }, new bool[] { true, true, false } ),
+            new EnemySpawn(3, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { 5, -2, -12 }, new bool[] { true, true, false } ),
+            new EnemySpawn(3, new GameObject[] { enemyB, enemyA, enemyA }, new float[] { 9, -1, 12 }, new bool[] { true, true, false } ),
+            new EnemySpawn(3, new GameObject[] { enemyD, enemyB, enemyA }, new float[] { 4, -5, -12 }, new bool[] { true, true, false } ),
+            new EnemySpawn(3, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { 6, -3, 12 }, new bool[] { true, true, false }, 0 ),
+            new EnemySpawn(0, new GameObject[] { enemyA, enemyA, enemyA, enemyA }, new float[] { 8, -8, -13, 13 }, new bool[] { true, true, false, false } ),
+            new EnemySpawn(1, new GameObject[] { enemyA, enemyA }, new float[] { 6, -6, }, new bool[] { true, true } ),
+            new EnemySpawn(1, new GameObject[] { enemyA, enemyA }, new float[] { 4, -4, }, new bool[] { true, true }, 0 ),
+            new EnemySpawn(0, new GameObject[] { enemyB, enemyB, }, new float[] { 8, -8 }, new bool[] { true, true } ),
+            new EnemySpawn(1, new GameObject[] { enemyB, enemyB }, new float[] { 6, -6 }, new bool[] { true, true } ),
+            new EnemySpawn(1, new GameObject[] { enemyB, enemyB }, new float[] { 4, -4 }, new bool[] { true, true }, 0 ),
+            new EnemySpawn(0, new GameObject[] { enemyC, enemyC }, new float[] { 8, -8 }, new bool[] { true, true } ),
+            new EnemySpawn(1, new GameObject[] { enemyC, enemyC }, new float[] { 6, -6 }, new bool[] { true, true } ),
+            new EnemySpawn(1, new GameObject[] { enemyC, enemyC }, new float[] { 4, -4 }, new bool[] { true, true }, 0 ),
+            new EnemySpawn(0, new GameObject[] { enemyD, enemyD, enemyD, enemyD }, new float[] { 8, -8, -13, 13 }, new bool[] { true, true, false, false } ),
+            new EnemySpawn(1, new GameObject[] { enemyD, enemyD }, new float[] { 6, -6, }, new bool[] { true, true } ),
+            new EnemySpawn(1, new GameObject[] { enemyD, enemyD }, new float[] { 4, -4, }, new bool[] { true, true }, 0 ),
+            new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
+        };
+
         hardLevelTimeLimits = new float[] {
             10,
             80,
-            120,
-            140,
-            180
+            105,
+            93,
+            120
         };
 
         if (gameMode == HARD) currentTimeLimit = hardLevelTimeLimits[level];
 
         testSpawn = new EnemySpawn[] {
-            new EnemySpawn(1, new GameObject[] { enemyC, }, new float[] { 11 }, new bool[] { false }),
+            new EnemySpawn(1, new GameObject[] { enemyD }, new float[] { 0 }, new bool[] { true }),
 
         };
 
@@ -473,10 +600,10 @@ public class mainHandler : MonoBehaviour {
         // load spawn
         if (gameMode == NORMAL)
         {
-            if (level == 1) currentLevelSpawn = testSpawn;
-            if (level == 2) currentLevelSpawn = testSpawn;
-            if (level == 3) currentLevelSpawn = testSpawn;
-            if (level == 4) currentLevelSpawn = testSpawn;
+            if (level == 1) currentLevelSpawn = level1Spawn;
+            if (level == 2) currentLevelSpawn = level2Spawn;
+            if (level == 3) currentLevelSpawn = level3Spawn;
+            if (level == 4) currentLevelSpawn = level4Spawn;
             if (level == 10) currentLevelSpawn = testSpawn;
             if (level == 100)
             {
@@ -491,6 +618,9 @@ public class mainHandler : MonoBehaviour {
         if (gameMode == HARD)
         {
             if (level == 1) currentLevelSpawn = level1HardSpawn;
+            if (level == 2) currentLevelSpawn = level2HardSpawn;
+            if (level == 3) currentLevelSpawn = level3HardSpawn;
+            if (level == 4) currentLevelSpawn = level4HardSpawn;
         }
 
         for (int i = 0; i < currentLevelSpawn.Length; i++)
@@ -524,15 +654,15 @@ public class mainHandler : MonoBehaviour {
         hardRankLimits = new List<int[]>() {
             new int[] { 10, 20, 30, 40, 50 },
             new int[] { 3000, 5000, 7000, 10000, 15000 },
-            new int[] { 5000, 7000, 9000, 11500, 14000 },
-            new int[] { 8000, 11000, 14000, 17000, 22000 },
-            new int[] { 8000, 10000, 11000, 15000, 18000 },
+            new int[] { 9000, 14000, 17000, 20000, 25000 },
+            new int[] { 8000, 11000, 14500, 18000, 23500 },
+            new int[] { 20000, 26000, 33000, 38000, 50000 },
         };
 
         birdRankLimits = new List<int[]>() {
             new int[] { 10, 20, 30, 40, 50 },
             CalculateRankLimits(100),
-            CalculateRankLimits(147),
+            CalculateRankLimits(146),
             CalculateRankLimits(178),
             CalculateRankLimits(127),
         };
@@ -584,7 +714,7 @@ public class mainHandler : MonoBehaviour {
             }
             if (name.Contains("12") || name.Contains("11") || name.Contains("10") || name.Contains("13") || name.Contains("14") || name.Contains("21"))
             {
-                if (name == "128") soundMusic.setParameterValue("Intro", 1);
+                if (name == "128" && gameMode != HARD) soundMusic.setParameterValue("Intro", 1);
                 bpm = int.Parse(name);
                 currentBpm = bpm;
                 offBeatTime = 60 / ((float)bpm * 2);
@@ -594,9 +724,9 @@ public class mainHandler : MonoBehaviour {
             {
                 totalBirds++;
                 player.GetComponent<playerHandler>().birds.Add(Instantiate(enemyBird, new Vector3(0f, 0f), Quaternion.identity));
-                if (name == "B1") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(1);
-                if (name == "B2") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(2);
-                if (name == "B4") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(0);
+                if (name == "B1") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(1, -totalBirds);
+                if (name == "B2") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(2, -totalBirds);
+                if (name == "B4") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(0, -totalBirds);
             }
         }
         if (type == FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT)
@@ -618,12 +748,63 @@ public class mainHandler : MonoBehaviour {
     
     void Update()
     {
+        beatTimer2 += Time.deltaTime;
+        currentBeatTimer += Time.deltaTime;
+        
+        if (beatTimer2 >= preBeatTime && currentState != SUCCESS && songStarted)
+        {
+            currentState = SUCCESS;
+
+        }
+        else if (beatTimer2 > 0.15f && beatTimer2 < preBeatTime && currentState != FAIL)
+        {
+            currentState = FAIL;
+        }
+
+        if (beatTimer2 >= offBeatTime)
+        {
+            offBeat = true;
+        }
+
+        if (currentState == BEAT && !beatFrame) beatFrame = true;
+        else beatFrame = false;
+
+        // hide HUD
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            levelUI.renderMode = RenderMode.ScreenSpaceOverlay;
+            playerHUD.renderMode = RenderMode.ScreenSpaceOverlay;
+            foreach (Text t in levelUI.GetComponentsInChildren<Text>())
+            {
+                t.transform.position = new Vector3(-10000, 0);
+            }
+            foreach (Image t in levelUI.GetComponentsInChildren<Image>())
+            {
+                t.transform.position = new Vector3(-10000, 0);
+            }
+            foreach (Text t in playerHUD.GetComponentsInChildren<Text>())
+            {
+                t.transform.position = new Vector3(-10000, 0);
+            }
+            foreach (Image t in playerHUD.GetComponentsInChildren<Image>())
+            {
+                t.transform.position = new Vector3(-10000, 0);
+            }
+            HUDTurnedOff = true;
+        }
+        
         if (player.GetComponent<playerHandler>().dead)
         {
             if (gameOverTimer == 0)
             {
+                for (int i = 0; i < enemies.Count; i++)
+                {
+                    enemies[i].GetComponent<enemyHandler>().StopFall();
+                }
                 songStarted = false;
+                soundMusic.setParameterValue("Clock", 0);
                 soundMusic.setParameterValue("Die", 1);
+                //soundClock.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
                 if (level != 100) AnalyticsEvent.LevelFail("Level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
             }
             gameOverTimer += Time.deltaTime;
@@ -706,6 +887,12 @@ public class mainHandler : MonoBehaviour {
         { 
             currentTimeLimit -= Time.deltaTime;
             if (currentTimeLimit.ToString().Length > 5) txtTimeLeft.text =  currentTimeLimit.ToString().Remove(5);
+            if (currentTimeLimit <= 30 && !clockStarted && beatFrame)
+            {
+                clockStarted = true;
+                //soundClock.start();
+                soundMusic.setParameterValue("Clock", 1);
+            }
             if (currentTimeLimit < 20) txtTimeLeft.transform.localScale = new Vector3(0.5f + (1-(currentTimeLimit/20)) * 1, 0.5f + (1-(currentTimeLimit / 20)) * 1, 0);
 
             if (currentTimeLimit <= 0)
@@ -714,35 +901,6 @@ public class mainHandler : MonoBehaviour {
                 currentTimeLimit = 0;
                 txtTimeLeft.text = currentTimeLimit.ToString();
             }
-        }
-        
-        beatTimer2 += Time.deltaTime;
-        currentBeatTimer += Time.deltaTime;
-        
-        /*
-        if (beatTimer2 <= leniency && currentState != BEAT && songStarted)
-        {
-            offBeat = false;
-            currentState = BEAT;
-            rendererIndicator.sprite = spriteIndicatorGreen;
-            
-        }
-        */
-        if (beatTimer2 >= preBeatTime && currentState != SUCCESS && songStarted)
-        {
-            currentState = SUCCESS;
-            //rendererIndicator.sprite = spriteIndicatorOrange;
-            
-        }
-        else if (beatTimer2 > 0.15f && beatTimer2 < preBeatTime && currentState != FAIL)
-        {
-            currentState = FAIL;
-            //rendererIndicator.sprite = spriteIndicatorEmpty;
-        }
-        
-        if (beatTimer2 >= offBeatTime)
-        {
-            offBeat = true;
         }
         
         ProgressLevel();
@@ -819,6 +977,7 @@ public class mainHandler : MonoBehaviour {
         // send analytics
         if (victoryTimer == 0) AnalyticsEvent.LevelQuit("level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
         enemiesDead = 0;
+        soundClock.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         if (level == 2) soundAmbCafe.setParameterValue("End", 1);
         if (level == 3) soundAmbSea.setParameterValue("End", 1);
         soundMusic.setCallback(null, 0);
@@ -854,18 +1013,36 @@ public class mainHandler : MonoBehaviour {
                     victoryTimer = levelTimer;
                     txtVictory.enabled = true;
                     soundMusic.setParameterValue("Win", 1);
+                    soundClock.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
                 }
 
                 // save data
                 if (victoryTimer > 0 && levelTimer > (victoryTimer + endWaitTimer[level - 1]))
                 {
-                    if (currentMaxStreak > streakRecord[level]) streakRecord[level] = currentMaxStreak;
-                    clearedLevel[level] = true;
-                    if (player.GetComponent<playerHandler>().currentScore > scoreRecord[level]) scoreRecord[level] = player.GetComponent<playerHandler>().currentScore;
-                    if (player.GetComponent<playerHandler>().currentRank > rankRecord[level]) rankRecord[level] = player.GetComponent<playerHandler>().currentRank;
+                    if (gameMode == NORMAL)
+                    {
+                        if (currentMaxStreak > streakRecord[level]) streakRecord[level] = currentMaxStreak;
+                        clearedLevel[level] = true;
+                        if (player.GetComponent<playerHandler>().currentScore > scoreRecord[level]) scoreRecord[level] = player.GetComponent<playerHandler>().currentScore;
+                        if (player.GetComponent<playerHandler>().currentRank > rankRecord[level]) rankRecord[level] = player.GetComponent<playerHandler>().currentRank;
 
-                    if (clearedLevel[1]) { unlockedLevel[2] = true; unlockedLevel[3] = true; }
-                    if (clearedLevel[2] && clearedLevel[3]) unlockedLevel[4] = true;
+                        if (clearedLevel[1]) { unlockedLevel[2] = true; unlockedLevel[3] = true; }
+                        if (clearedLevel[2] && clearedLevel[3]) unlockedLevel[4] = true;
+
+                        if ((clearedLevel[2] || clearedLevel[3]) && (clearedBirdLevel[2] || clearedBirdLevel[3])) unlockedHardLevel[1] = true;
+                    }
+                    if (gameMode == HARD)
+                    {
+                        if (currentTimeLimit > timeRecord[level]) timeRecord[level] = Mathf.Round(currentTimeLimit * 100f) / 100f;
+                        clearedHardLevel[level] = true;
+                        if (player.GetComponent<playerHandler>().currentScore > scoreHardRecord[level]) scoreHardRecord[level] = player.GetComponent<playerHandler>().currentScore;
+                        if (player.GetComponent<playerHandler>().currentRank > rankHardRecord[level]) rankHardRecord[level] = player.GetComponent<playerHandler>().currentRank;
+                    
+                        if (clearedHardLevel[1]) unlockedHardLevel[2] = true;
+                        if (clearedHardLevel[2]) unlockedHardLevel[3] = true;
+                        if (clearedHardLevel[3]) unlockedHardLevel[4] = true;
+                    }
+                
                     currency = player.GetComponent<playerHandler>().currentCurrency;
                     SaveSystem.SavePlayer(this);
 
@@ -922,6 +1099,8 @@ public class mainHandler : MonoBehaviour {
 
                 if (clearedBirdLevel[1]) { unlockedBirdLevel[2] = true; unlockedBirdLevel[3] = true; }
                 if (clearedBirdLevel[2] && clearedBirdLevel[3]) unlockedBirdLevel[4] = true;
+
+                if ((clearedLevel[2] || clearedLevel[3]) && (clearedBirdLevel[2] || clearedBirdLevel[3])) unlockedHardLevel[1] = true;
                 currency = player.GetComponent<playerHandler>().currentCurrency;
                 SaveSystem.SavePlayer(this);
 
@@ -1012,9 +1191,10 @@ public class mainHandler : MonoBehaviour {
             Destroy(g);
         }
 
+        clockStarted = false;
         currentSpawn = 0;
         levelTimer = 0;
-        if (level == 3) levelTimer = 6.9f;
+        if (level == 3 && gameMode != HARD) levelTimer = 6.9f;
         nextSpawn = 0;
         prevTime = 0;
         currentMaxStreak = 0;
@@ -1039,14 +1219,16 @@ public class mainHandler : MonoBehaviour {
 
         for (int i = 0; i < enemies.Count; i++)
         {
+            enemies[i].GetComponent<enemyHandler>().Stop();
             Destroy(enemies[i]);
         }
         enemies.Clear();
         gameOverTimer = 0;
         soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-        soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath);
+        if (gameMode == BIRD) soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath.Insert(12, "/Bird") + "_bird");
+        else soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath);
         soundMusic.setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
-        if (level == 3) soundMusic.setParameterValue("Loop", 1);
+        if (level == 3 && gameMode != HARD) soundMusic.setParameterValue("Loop", 1);
         soundMusic.start();
     }
 

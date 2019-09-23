@@ -8,6 +8,7 @@ public class controlsMenuHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundUIClick;
 
     public SpriteRenderer rendererHideSuper;
+    public SpriteRenderer rendererBirdControls;
 
     PlayerData data;
 
@@ -22,6 +23,7 @@ public class controlsMenuHandler : MonoBehaviour
 
         data.Init();
         if (data.itemBought[3]) rendererHideSuper.enabled = false;
+        if (data.seenBirdTutorial) rendererBirdControls.enabled = true;
     }
 
     void Update()

@@ -20,25 +20,30 @@ public class shopHandler : MonoBehaviour
 
     int[] prices;
 
-    public int endlessRecord;
-    public bool[] clearedLevel;
-    public bool[] clearedBirdLevel;
-    public bool[] unlockedLevel;
-    public bool[] unlockedBirdLevel;
-    public int[] streakRecord;
-    public int[] comboRecord;
-    public int streakLevelEndlessRecord;
-    public int[] scoreRecord;
-    public int[] scoreBirdRecord;
-    public int[] rankRecord;
-    public int[] rankBirdRecord;
-    int currentMaxStreak;
-    public int currency;
-    public bool[] itemBought;
-    public bool[] itemActive;
-    public int lastMode;
-    public bool seenControls;
-    public bool seenBirdTutorial;
+    [HideInInspector] public int endlessRecord;
+    [HideInInspector] public bool[] clearedLevel;
+    [HideInInspector] public bool[] clearedBirdLevel;
+    [HideInInspector] public bool[] clearedHardLevel;
+    [HideInInspector] public bool[] unlockedLevel;
+    [HideInInspector] public bool[] unlockedBirdLevel;
+    [HideInInspector] public bool[] unlockedHardLevel;
+    [HideInInspector] public int[] streakRecord;
+    [HideInInspector] public int[] comboRecord;
+    [HideInInspector] public float[] timeRecord;
+    [HideInInspector] public int streakLevelEndlessRecord;
+    [HideInInspector] public int[] scoreRecord;
+    [HideInInspector] public int[] scoreBirdRecord;
+    [HideInInspector] public int[] scoreHardRecord;
+    [HideInInspector] public int[] rankRecord;
+    [HideInInspector] public int[] rankBirdRecord;
+    [HideInInspector] public int[] rankHardRecord;
+    [HideInInspector] int currentMaxStreak;
+    [HideInInspector] public int currency;
+    [HideInInspector] public bool[] itemBought;
+    [HideInInspector] public bool[] itemActive;
+    [HideInInspector] public int lastMode;
+    [HideInInspector] public bool seenControls;
+    [HideInInspector] public bool seenBirdTutorial;
 
     FMOD.Studio.EventInstance soundUIClick;
     FMOD.Studio.EventInstance soundUIStart;
@@ -71,15 +76,20 @@ public class shopHandler : MonoBehaviour
         endlessRecord = data.endlessRecord;
         clearedLevel = data.clearedLevel;
         clearedBirdLevel = data.clearedBirdLevel;
+        clearedHardLevel = data.clearedHardLevel;
         unlockedLevel = data.unlockedLevel;
         unlockedBirdLevel = data.unlockedBirdLevel;
+        unlockedHardLevel = data.unlockedHardLevel;
         streakRecord = data.streakRecord;
         comboRecord = data.comboRecord;
+        timeRecord = data.timeRecord;
         streakLevelEndlessRecord = data.streakLevelEndlessRecord;
         scoreRecord = data.scoreRecord;
         scoreBirdRecord = data.scoreBirdRecord;
+        scoreHardRecord = data.scoreHardRecord;
         rankRecord = data.rankRecord;
         rankBirdRecord = data.rankBirdRecord;
+        rankHardRecord = data.rankHardRecord;
         currency = data.currency;
         itemBought = data.itemBought;
         itemActive = data.itemActive;
@@ -95,6 +105,7 @@ public class shopHandler : MonoBehaviour
             140
         };
 
+        
         prices = new int[] {
             0,
             0,
@@ -102,6 +113,7 @@ public class shopHandler : MonoBehaviour
             0,
             0
         };
+        
 
         // load data
         GameObject ShopListItem = Instantiate(ShopItemContainer) as GameObject;
@@ -159,7 +171,7 @@ public class shopHandler : MonoBehaviour
                 soundShopBuy.start();
                 itemBought[ID] = true;
                 currency -= prices[ID];
-                txtCurrency.text = "MUNNY: " + currency;
+                txtCurrency.text = currency.ToString();
                 return true;
             }
             else

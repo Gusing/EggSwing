@@ -4,24 +4,13 @@ using UnityEngine;
 
 public class enemyDHandler : enemyHandler
 {
-
-    public Sprite spriteIdle;
-    public Sprite spriteStomp1;
-    public Sprite spriteStomp2;
-    public Sprite spriteDead;
-    public Sprite spriteDead2;
-    public Sprite spriteDead3;
-    public Sprite spriteDead4;
-    public Sprite spriteAttackPre;
-    public Sprite spriteAttackActive;
-    public Sprite spriteHitstun;
-
     float dodgeTimer;
     float dodgeTime;
     bool dodging;
     float dodgeCooldownTimer;
     float dodgeCooldownTime;
     bool dodgeCooldown;
+    bool attackBReady;
 
     protected FMOD.Studio.EventInstance soundSlide;
 
@@ -47,6 +36,7 @@ public class enemyDHandler : enemyHandler
         dodgeCooldownTime = (60f / mainHandler.currentBpm) * 1.1f;
 
         damage.Add(3);
+        damage.Add(4);
 
         soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Enemy/Ninja_attack");
         soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Enemy/Ninja_death");
@@ -69,12 +59,18 @@ public class enemyDHandler : enemyHandler
     {
         base.UpdateAnimations();
 
+        animator.SetBool("dodging", dodging);
+
         if (dead) return;
 
         if (!dodging) base.Update();
 
         if (invincible) Invincible();
-        if (attacking) AttackA();
+        if (attacking)
+        {
+            if (currentAttack == 0) AttackA();
+            if (currentAttack == 1) AttackB();
+        }
         if (fallFromAbove) FallFromAbove();
         if (attackHitboxActive) UpdateAttackHitbox();
         if (dodging) Dodge();
@@ -82,13 +78,15 @@ public class enemyDHandler : enemyHandler
         // check for attack
         if (Vector2.Distance(transform.position, player.transform.position) < 1.7f && !attacking && !fallFromAbove && !hitstun && attackRecovery <= 0 && !player.GetComponent<playerHandler>().dead && !dodging)
         {
-            localSpriteRenderer.sprite = spriteIdle;
             UpdateHitboxes();
             attackDelay = Random.Range(0.1f, 1.1f);
             attacking = true;
             busy = true;
             velX = 0;
             accX = 0;
+            if (attackBReady) currentAttack = 1;
+            else currentAttack = 0;
+            attackBReady = false;
             attackState = 1;
             timeToMoveOn = false;
             newBeat = false;
@@ -144,7 +142,6 @@ public class enemyDHandler : enemyHandler
                 soundAttack.start();
                 Instantiate(pYellowWarning, warningPoints[0].position, new Quaternion(0, 0, 0, 0));
                 attackState = 2;
-                localSpriteRenderer.sprite = spriteAttackPre;
             }
             else if (attackState == 2)
             {
@@ -152,7 +149,6 @@ public class enemyDHandler : enemyHandler
                 soundAttack.start();
                 Instantiate(pRedWarning, warningPoints[0].position, new Quaternion(0, 0, 0, 0));
                 attackState = 3;
-                localSpriteRenderer.sprite = spriteAttackPre;
             }
             else if (attackState == 3)
             {
@@ -163,17 +159,59 @@ public class enemyDHandler : enemyHandler
                 attackHitboxActive = true;
                 hitboxAttacks[0].enabled = true;
                 attackState = 4;
-                localSpriteRenderer.sprite = spriteAttackActive;
             }
             else if (attackState == 4)
             {
                 attackActive = false;
                 hitboxAttacks[0].enabled = false;
-                localSpriteRenderer.sprite = spriteIdle;
                 attacking = false;
                 busy = false;
                 attackState = 0;
-                attackRecovery = Random.Range(2, 3);
+                attackRecovery = Random.Range(1, 1.7f);
+            }
+        }
+    }
+
+    void AttackB()
+    {
+        base.Attack();
+
+        // move to next attack state
+        if (timeToMoveOn && mainHandler.currentState == BEAT)
+        {
+            timeToMoveOn = false;
+            if (attackState == 1)
+            {
+                soundAttack.setParameterValue("Pre", 1);
+                soundAttack.start();
+                Instantiate(pYellowWarning, warningPoints[1].position, new Quaternion(0, 0, 0, 0));
+                attackState = 2;
+            }
+            else if (attackState == 2)
+            {
+                soundAttack.setParameterValue("Pre", 2);
+                soundAttack.start();
+                Instantiate(pRedWarning, warningPoints[1].position, new Quaternion(0, 0, 0, 0));
+                attackState = 3;
+            }
+            else if (attackState == 3)
+            {
+                attackActive = true;
+                soundAttack.setParameterValue("Pre", 4);
+                soundAttack.start();
+                attackHitboxTimer = 0;
+                attackHitboxActive = true;
+                hitboxAttacks[1].enabled = true;
+                attackState = 4;
+            }
+            else if (attackState == 4)
+            {
+                attackActive = false;
+                hitboxAttacks[1].enabled = false;
+                attacking = false;
+                busy = false;
+                attackState = 0;
+                attackRecovery = Random.Range(0.8f, 1.2f);
             }
         }
     }
@@ -195,6 +233,7 @@ public class enemyDHandler : enemyHandler
                 direction = RIGHT;
                 localSpriteRenderer.flipX = true;
             }
+            attackBReady = true;
             dodging = false;
             dodgeTimer = 0;
             velX = 0;

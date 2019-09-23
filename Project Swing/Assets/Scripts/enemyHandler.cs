@@ -255,7 +255,8 @@ public class enemyHandler : MonoBehaviour
                     localSpriteRenderer.flipX = true;
                 }
             }
-            fallFromAbove = false;
+            //fallFromAbove = false;
+            fallState = 0;
             rendererHPBar.enabled = true;
             rendererHPFill.enabled = true;
             if (player.transform.position.x < transform.position.x) hitstunDirection = LEFT;
@@ -320,6 +321,11 @@ public class enemyHandler : MonoBehaviour
         soundImpact.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         soundAttack.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         soundDeath.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+    }
+
+    public virtual void StopFall()
+    {
+        soundFall.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 
     protected virtual void Invincible()
@@ -414,7 +420,7 @@ public class enemyHandler : MonoBehaviour
             }
             else if (attackState == 3)
             {
-                hitboxBody.enabled = true;
+                attackRecovery = 1;
                 fallState = 2;
                 attackActive = true;
                 soundFall.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
@@ -428,6 +434,7 @@ public class enemyHandler : MonoBehaviour
             }
             else if (attackState == 4)
             {
+                hitboxBody.enabled = true;
                 print("down from sky");
                 soundFall.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
                 attackActive = false;

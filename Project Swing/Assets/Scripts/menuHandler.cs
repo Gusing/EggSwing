@@ -9,12 +9,15 @@ using UnityEngine.EventSystems;
 public class menuHandler : MonoBehaviour {
     
     public GameObject levelListContent;
-    public GameObject BirdListContent;
     public GameObject LevelScrollList;
+    public GameObject BirdListContent;
     public GameObject BirdScrollList;
+    public GameObject hardListContent;
+    public GameObject hardScrollList;
 
     public List<GameObject> birdContainers;
     public List<GameObject> levelContainers;
+    public List<GameObject> hardContainers;
     public GameObject levelContainerMoon;
     public GameObject levelContainerSwing;
     public GameObject levelContainerPirate;
@@ -23,6 +26,7 @@ public class menuHandler : MonoBehaviour {
     public Button btnEndless;
     public SpriteRenderer spriteLockEndless;
     public Text txtEndlessRecord;
+    public Button btnHard;
 
     public SpriteRenderer rendererBirdTutorial;
     bool birdTutorialVisible;
@@ -36,6 +40,7 @@ public class menuHandler : MonoBehaviour {
     public EventSystem eventSystem;
     public ScrollRect scrollLevelList;
     public ScrollRect scrollBirdList;
+    public ScrollRect hardLevelList;
     public SpriteRenderer rendererMarker;
 
     PlayerData data;
@@ -124,6 +129,34 @@ public class menuHandler : MonoBehaviour {
             else levelListItem.GetComponent<levelContainerHandler>().Init(" ", 0, 0, false, 1);
         }
 
+        hardContainers.Add(levelContainerMoon);
+        hardContainers.Add(levelContainerSwing);
+        hardContainers.Add(levelContainerPirate);
+        hardContainers.Add(levelContainerHell);
+
+        if (data.unlockedHardLevel[1]) btnHard.interactable = true;
+        else btnHard.interactable = false;
+
+        for (int i = 1; i < data.unlockedHardLevel.Length; i++)
+        {
+            GameObject levelListItem = Instantiate(levelContainers[i - 1]) as GameObject;
+            levelListItem.SetActive(true);
+
+            levelListItem.transform.SetParent(hardListContent.transform, false);
+
+            string tRank = "";
+            if (data.rankHardRecord[i] == 0) tRank = "E";
+            if (data.rankHardRecord[i] == 1) tRank = "D";
+            if (data.rankHardRecord[i] == 2) tRank = "C";
+            if (data.rankHardRecord[i] == 3) tRank = "B";
+            if (data.rankHardRecord[i] == 4) tRank = "A";
+            if (data.rankHardRecord[i] == 5) tRank = "S";
+            if (!data.clearedHardLevel[i]) tRank = "F";
+
+            if (data.unlockedHardLevel[i]) levelListItem.GetComponent<levelContainerHandler>().Init(tRank, data.scoreHardRecord[i], data.timeRecord[i], true, 2);
+            else levelListItem.GetComponent<levelContainerHandler>().Init(" ", 0, 0, false, 0);
+        }
+
         ChangeMode(data.lastMode);
     }
     
@@ -176,18 +209,18 @@ public class menuHandler : MonoBehaviour {
 
     public void PlayLevel(int num)
     {
+        print("playing level " + num);
         if (num > 0) soundUIStart.start();
         else soundUIClick.start();
 
         menuMusicPlayerHandler.Instance.stopMusic();
+
+        sceneSelectionHandler.Instance.gameModeSelected = selectedGameMode;
         
         if (num == -1) SceneManager.LoadScene("PracticeScene");
 
-        if (selectedGameMode == NORMAL) if (num > 0 && num < 100) SceneManager.LoadScene("Level" + num + "Scene");
-        if (selectedGameMode == BIRD) if (num > 0 && num < 100) SceneManager.LoadScene("Level" + num + "BirdScene");
-        if (selectedGameMode == HARD) if (num > 0 && num < 100) SceneManager.LoadScene("Level" + num + "HardScene");
-
-
+        if (num > 0 && num < 100) SceneManager.LoadScene("Level" + num + "Scene");
+        
         if (num == 100) SceneManager.LoadScene("LevelEndless");
     }
 
@@ -198,6 +231,7 @@ public class menuHandler : MonoBehaviour {
             selectedGameMode = NORMAL;
             LevelScrollList.SetActive(true);
             BirdScrollList.SetActive(false);
+            hardScrollList.SetActive(false);
         }
 
         if (num == 1)
@@ -210,12 +244,16 @@ public class menuHandler : MonoBehaviour {
             }
             selectedGameMode = BIRD;
             LevelScrollList.SetActive(false);
+            hardScrollList.SetActive(false);
             BirdScrollList.SetActive(true);
         }
 
         if (num == 2)
         {
             selectedGameMode = HARD;
+            LevelScrollList.SetActive(false);
+            BirdScrollList.SetActive(false);
+            hardScrollList.SetActive(true);
         }
     }
 

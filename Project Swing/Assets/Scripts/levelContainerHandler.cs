@@ -19,7 +19,7 @@ public class levelContainerHandler : MonoBehaviour
         mainHandler = GameObject.Find("Main Camera");
     }
 
-    public void Init(string rank, int score, int streak, bool unlocked = true, int gameMode = 0)
+    public void Init(string rank, int score, float streak, bool unlocked = true, int gameMode = 0)
     {
         if (!unlocked)
         {
@@ -41,7 +41,7 @@ public class levelContainerHandler : MonoBehaviour
         {
             if (gameMode == 0) txtLevelStreak.text = "Highest Streak: " + streak.ToString();
             if (gameMode == 1) txtLevelStreak.text = "Longest Combo: " + streak.ToString();
-
+            if (gameMode == 2) txtLevelStreak.text = "Most Time Left: " + streak.ToString();
         }
         else txtLevelStreak.text = "";
     }

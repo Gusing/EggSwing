@@ -17,15 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level1Scene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/Level2Scene.unity
     guid: fc397f3303b0dc24cab810dcdb2a35ee
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/Level3Scene.unity
     guid: 97b5447d9baf50c47a66695f31d3dad9
@@ -36,18 +30,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Level4Scene.unity
     guid: da8533ba1c49ffa4ab716ea1e9849bfa
   - enabled: 1
-    path: Assets/Scenes/Level1BirdScene.unity
-    guid: fd81eec44c768bc44b7732a36a868787
-  - enabled: 1
-    path: Assets/Scenes/Level2BirdScene.unity
-    guid: 1c8329b23b08c674b97123c6a8a813ca
-  - enabled: 1
-    path: Assets/Scenes/Level3BirdScene.unity
-    guid: 940a8600fad8327468a6482a8bab16cb
-  - enabled: 1
-    path: Assets/Scenes/Level4BirdScene.unity
-    guid: c81e1298063f9c242b42801773fe9001
-  - enabled: 1
     path: Assets/Scenes/ShopScene.unity
     guid: afb1a7552b2254946857250f320fd9b9
   - enabled: 1
@@ -56,7 +38,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/OptionsScene.unity
     guid: 1d7c773b6497b8442a814a93c74dbb6d
-  - enabled: 1
-    path: Assets/Scenes/Level1HardScene.unity
-    guid: 7a91387212e7d154c9163a04abf2417a
   m_configObjects: {}

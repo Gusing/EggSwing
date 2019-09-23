@@ -49,7 +49,7 @@ public class enemyBirdHandler : MonoBehaviour
 
     readonly int GREEN = 0, RED = 1, YELLOW = 2;
 
-    public void init(int speedType)
+    public void init(int speedType, int order)
     {
         localRenderer = GetComponent<SpriteRenderer>();
 
@@ -60,6 +60,10 @@ public class enemyBirdHandler : MonoBehaviour
         player = GameObject.Find("Player");
 
         bpmInSeconds = (float)60 / (float)localBpm;
+
+        localRenderer.sortingOrder = order;
+
+        transform.Translate(new Vector3(0, 0, Random.Range(-0.1f, 0.1f)));
 
         type = speedType;
         if (type == RED)
@@ -131,9 +135,9 @@ public class enemyBirdHandler : MonoBehaviour
             }
         }
 
-        if (!dead)
+        if (!dead && !mainHandler.normalLevelFinished)
         {
-            if (beatPassed >= 4 && !mainHandler.normalLevelFinished)
+            if (beatPassed >= 4)
             {
                 if (mainHandler.currentBeatTimer >= timeUntilCrash && !charging)
                 {
