@@ -59,8 +59,8 @@ public class noteHandler : MonoBehaviour
 
         rendererA.transform.Translate(angleA * 1.1f * Time.deltaTime, 0);
         rendererB.transform.Translate(angleB * 1.1f * Time.deltaTime, 0);
-        if (rendererA.transform.localScale.x >= 0.01f) rendererA.transform.localScale = new Vector3(rendererA.transform.localScale.x - 0.12f * Time.deltaTime, rendererA.transform.localScale.y - 0.12f * Time.deltaTime, 1);
-        if (rendererB.transform.localScale.x >= 0.01f) rendererB.transform.localScale = new Vector3(rendererB.transform.localScale.x - 0.12f * Time.deltaTime, rendererB.transform.localScale.y - 0.12f * Time.deltaTime, 1);
+        if (rendererA.transform.localScale.x >= 0.01f) rendererA.transform.localScale = new Vector3(rendererA.transform.localScale.x - 0.06f * Time.deltaTime, rendererA.transform.localScale.y - 0.06f * Time.deltaTime, 1);
+        if (rendererB.transform.localScale.x >= 0.01f) rendererB.transform.localScale = new Vector3(rendererB.transform.localScale.x - 0.06f * Time.deltaTime, rendererB.transform.localScale.y - 0.06f * Time.deltaTime, 1);
 
         if ((!mainHandler.offBeat && !currentBeat) || (mainHandler.offBeat && currentBeat))
         {
@@ -72,16 +72,16 @@ public class noteHandler : MonoBehaviour
                 angleB = Vector3.Normalize(new Vector3(Random.Range(0.1f, 0.8f), Random.Range(0.3f, 0.9f)));
                 rendererA.sprite = notes[Random.Range((int)0, notes.Length - 1)];
                 rendererB.sprite = notes[Random.Range((int)0, notes.Length - 1)];
-                rendererA.transform.localScale = new Vector3(0.3f, 0.3f, 1);
-                rendererB.transform.localScale = new Vector3(0.3f, 0.3f, 1);
-                rendererA.transform.localPosition = new Vector3(-7.24f, 3);
-                rendererB.transform.localPosition = new Vector3(-4.7f, 3.31f);
+                rendererA.transform.localScale = new Vector3(0.15f, 0.15f, 1);
+                rendererB.transform.localScale = new Vector3(0.15f, 0.15f, 1);
+                rendererA.transform.localPosition = new Vector3(-3.6f, 1.5f);
+                rendererB.transform.localPosition = new Vector3(-2.35f, 1.65f);
                 currentCount = 0;
             }
             if (currentCount == count / 2)
             {
-                rendererA.transform.localScale = new Vector3(0.3f, 0.3f, 1);
-                rendererB.transform.localScale = new Vector3(0.3f, 0.3f, 1);
+                rendererA.transform.localScale = new Vector3(0.15f, 0.15f, 1);
+                rendererB.transform.localScale = new Vector3(0.15f, 0.15f, 1);
             }
         }
 

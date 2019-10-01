@@ -635,7 +635,8 @@ public class playerHandler : MonoBehaviour
             DisableHurtboxes();
             RestockCombos();
 
-            soundFail.start();
+            soundAttackSuperUnable.start();
+            //soundFail.start();
             holdBeatPassed = false;
             punchingFail = true;
             busy = true;
@@ -787,6 +788,7 @@ public class playerHandler : MonoBehaviour
             currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 0);
             currentCombos[0][comboState].soundAttackHit.start();
 
+            beatIndicator.GetComponent<beatIndicatorHandlerB>().HeavyAttackRemove();
             SuccessfulPunch();
         }
         else if (beatState == FAIL)
@@ -1604,7 +1606,7 @@ public class playerHandler : MonoBehaviour
     {
         soundDie.start();
         currentHP = 0;
-        beatIndicator.GetComponent<beatIndicatorHandlerB>().Clear();
+        if (mainHandler.currentGameMode != 1) beatIndicator.GetComponent<beatIndicatorHandlerB>().Clear();
         hitboxBody.enabled = false;
         dead = true;
     }
@@ -1613,7 +1615,7 @@ public class playerHandler : MonoBehaviour
     {
         normalLevelFinished = false;
         birdLevelFinished = false;
-        beatIndicator.GetComponent<beatIndicatorHandlerB>().Restart();
+        if (mainHandler.currentGameMode != 1) beatIndicator.GetComponent<beatIndicatorHandlerB>().Restart();
         currentHP = maxHP;
         dead = false;
         if (data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER]) specialCharges = maxSpecialCharges;
@@ -1842,7 +1844,6 @@ public class playerHandler : MonoBehaviour
                 }
 
                 //Instantiate(pAttackHit, tBox, new Quaternion(0, 0, 0, 0));
-                print("num");
                 GameObject tDmgNumber = Instantiate(damageNumberEnemy, other.transform.position + new Vector3(0, 0.7f), new Quaternion(0, 0, 0, 0));
                 tDmgNumber.GetComponent<dmgNumberHandler>().Init(tDmg);
             }

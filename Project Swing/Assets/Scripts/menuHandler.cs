@@ -37,10 +37,12 @@ public class menuHandler : MonoBehaviour {
     FMOD.Studio.EventInstance soundUIClick;
     FMOD.Studio.EventInstance soundUIStart;
 
-    public EventSystem eventSystem;
+    EventSystem eventSystem;
+    GameObject oldSelected;
     public ScrollRect scrollLevelList;
     public ScrollRect scrollBirdList;
     public ScrollRect hardLevelList;
+    public ScrollRect currentScrollList;
     public SpriteRenderer rendererMarker;
 
     PlayerData data;
@@ -61,6 +63,8 @@ public class menuHandler : MonoBehaviour {
 
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
         soundUIStart = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_Start");
+
+        eventSystem = EventSystem.current;
 
         levelContainers = new List<GameObject>();
 
@@ -158,6 +162,8 @@ public class menuHandler : MonoBehaviour {
         }
 
         ChangeMode(data.lastMode);
+
+        oldSelected = eventSystem.currentSelectedGameObject;
     }
     
     void Update()
@@ -173,28 +179,13 @@ public class menuHandler : MonoBehaviour {
         }
         else
         {
-            // scroll with input
-            if (selectedGameMode == NORMAL)
+            if (Input.GetAxis("NavigateRight") > 0.5f)
             {
-                if (Input.GetAxis("NavigateRight") > 0.5f)
-                {
-                    scrollLevelList.verticalNormalizedPosition -= 2.5f * Time.deltaTime;
-                }
-                if (Input.GetAxis("NavigateLeft") > 0.5f)
-                {
-                    scrollLevelList.verticalNormalizedPosition += 2.5f * Time.deltaTime;
-                }
+                currentScrollList.verticalNormalizedPosition -= 2.5f * Time.deltaTime;
             }
-            if (selectedGameMode == BIRD)
+            if (Input.GetAxis("NavigateLeft") > 0.5f)
             {
-                if (Input.GetAxis("NavigateRight") > 0.5f)
-                {
-                    scrollBirdList.verticalNormalizedPosition -= 2.5f * Time.deltaTime;
-                }
-                if (Input.GetAxis("NavigateLeft") > 0.5f)
-                {
-                    scrollBirdList.verticalNormalizedPosition += 2.5f * Time.deltaTime;
-                }
+                currentScrollList.verticalNormalizedPosition += 2.5f * Time.deltaTime;
             }
             // back to main menu
             if (Input.GetButtonDown("Cancel") || Input.GetButtonDown("Super"))
@@ -203,8 +194,25 @@ public class menuHandler : MonoBehaviour {
             }
         }
 
+        if (eventSystem.currentSelectedGameObject != null)
+        {
+            if (eventSystem.currentSelectedGameObject != oldSelected && eventSystem.currentSelectedGameObject.transform.parent.parent != null)
+            {
+                if (eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == levelListContent ||
+                    eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == hardListContent ||
+                    eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == BirdListContent)
+                {
+
+                    if (eventSystem.currentSelectedGameObject.transform.position.y < -3.42f) currentScrollList.verticalNormalizedPosition = Mathf.Clamp(currentScrollList.verticalNormalizedPosition - 1f, 0, 1);
+                    if (eventSystem.currentSelectedGameObject.transform.position.y > 2.9f) currentScrollList.verticalNormalizedPosition = Mathf.Clamp(currentScrollList.verticalNormalizedPosition + 1f, 0, 1);
+                }
+            }
+        }
+        
+        oldSelected = eventSystem.currentSelectedGameObject;
+
         // update marker
-        rendererMarker.transform.position = new Vector3(rendererMarker.transform.position.x, 4.18f - 0.95f * selectedGameMode);
+        rendererMarker.transform.position = new Vector3(rendererMarker.transform.position.x, 3.9f - 0.72f * selectedGameMode);
     }
 
     public void PlayLevel(int num)
@@ -232,6 +240,7 @@ public class menuHandler : MonoBehaviour {
             LevelScrollList.SetActive(true);
             BirdScrollList.SetActive(false);
             hardScrollList.SetActive(false);
+            currentScrollList = scrollLevelList;
         }
 
         if (num == 1)
@@ -246,6 +255,7 @@ public class menuHandler : MonoBehaviour {
             LevelScrollList.SetActive(false);
             hardScrollList.SetActive(false);
             BirdScrollList.SetActive(true);
+            currentScrollList = scrollBirdList;
         }
 
         if (num == 2)
@@ -254,6 +264,7 @@ public class menuHandler : MonoBehaviour {
             LevelScrollList.SetActive(false);
             BirdScrollList.SetActive(false);
             hardScrollList.SetActive(true);
+            currentScrollList = hardLevelList;
         }
     }
 

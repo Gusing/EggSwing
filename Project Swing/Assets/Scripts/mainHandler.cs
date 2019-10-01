@@ -245,7 +245,7 @@ public class mainHandler : MonoBehaviour {
         totalEnemies = 0;
         songStarted = false;
 
-        if (level > 0 && level < 100) levelUI = GameObject.Find("LevelUI").GetComponent<Canvas>();
+        if (level > 0) levelUI = GameObject.Find("LevelUI").GetComponent<Canvas>();
         playerHUD = GameObject.Find("playerHUD").GetComponent<Canvas>();
 
         // load practice
@@ -268,7 +268,7 @@ public class mainHandler : MonoBehaviour {
 
             availablePracticeSongNames = new List<string>();
 
-            practiceSongBPM = new List<int> { 100, 128, 140, 108 };
+            practiceSongBPM = new List<int> { 100, 128, 148, 108 };
 
             availablePracticeSongBPM = new List<int>();
             
@@ -363,7 +363,7 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(8, new GameObject[] { enemyA, enemyA, enemyB }, new float[] { 10 * RandDirection(), 10 * RandDirection(), 0 }, new bool[] { false, false, true }),
             new EnemySpawn(3, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }, new bool[] { false })
         };
-    
+
         level1Spawn = new EnemySpawn[] {
             new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 }, new bool[] { false }, 0 ),
             new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false }),
@@ -1112,6 +1112,7 @@ public class mainHandler : MonoBehaviour {
             }
         }
 
+        // endless mode
         if (level == 100)
         {
             if (currentLevelSpawn.Length == currentSpawn)
@@ -1126,26 +1127,19 @@ public class mainHandler : MonoBehaviour {
                     {
                         bool tAbove = false;
                         print("spawn");
-                        if (Random.value > 0.25f)
+                        if (Random.value > 0.20f)
                         {
                             if (Random.value < 0.3f)
                             {
-                                enemies.Add(Instantiate(enemyA, new Vector3(Random.Range(-5f, 5f), 0), Quaternion.identity));
+                                enemies.Add(Instantiate(RandEnemy(), new Vector3(Random.Range(-5f, 5f), 0), Quaternion.identity));
                                 tAbove = true;
                             }
-                            else enemies.Add(Instantiate(enemyA, new Vector3((10.1f + tDistance) * RandDirection(), 0), Quaternion.identity));
+                            else enemies.Add(Instantiate(RandEnemy(), new Vector3((10.1f + tDistance) * RandDirection(), 0), Quaternion.identity));
+
+                            enemies[enemies.Count - 1].GetComponent<enemyHandler>().Init(tAbove);
+                            tDistance++;
                         }
-                        else
-                        {
-                            if (Random.value < 0.3f)
-                            {
-                                enemies.Add(Instantiate(enemyB, new Vector3(Random.Range(-5f, 5f), 0), Quaternion.identity));
-                                tAbove = true;
-                            }
-                            else enemies.Add(Instantiate(enemyB, new Vector3((10.1f + tDistance) * RandDirection(), 0), Quaternion.identity));
-                        }
-                        enemies[enemies.Count - 1].GetComponent<enemyHandler>().Init(tAbove);
-                        tDistance++;
+                        
                     }
                 }
             }
@@ -1194,11 +1188,11 @@ public class mainHandler : MonoBehaviour {
         clockStarted = false;
         currentSpawn = 0;
         levelTimer = 0;
-        if (level == 3 && gameMode != HARD) levelTimer = 6.9f;
+        if (level == 3 && gameMode == NORMAL) levelTimer = 6.9f;
         nextSpawn = 0;
         prevTime = 0;
         currentMaxStreak = 0;
-        currentTimeLimit = hardLevelTimeLimits[level];
+        if (gameMode == HARD) currentTimeLimit = hardLevelTimeLimits[level];
         player.GetComponent<playerHandler>().Reset();
         txtGameOver.enabled = false;
         if (gameMode == HARD) txtTimeLeft.transform.localScale = new Vector3(0.5f, 0.5f);
@@ -1228,7 +1222,7 @@ public class mainHandler : MonoBehaviour {
         if (gameMode == BIRD) soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath.Insert(12, "/Bird") + "_bird");
         else soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath);
         soundMusic.setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
-        if (level == 3 && gameMode != HARD) soundMusic.setParameterValue("Loop", 1);
+        if (level == 3 && gameMode == NORMAL) soundMusic.setParameterValue("Loop", 1);
         soundMusic.start();
     }
 
@@ -1261,9 +1255,11 @@ public class mainHandler : MonoBehaviour {
 
     GameObject RandEnemy()
     {
-        bool eB = Random.Range((int)0, (int)2) == 0;
-        if (eB) return enemyA;
-        else return enemyB;
+        float eB = Random.Range(0f, 1f);
+        if (eB < 0.4f) return enemyA;
+        else if (eB < 0.6f) return enemyB;
+        else if (eB < 0.8f) return enemyC;
+        else return enemyD;
     }
 
     int[] CalculateRankLimits(int nBirds)

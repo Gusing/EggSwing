@@ -2447,10 +2447,10 @@ MonoBehaviour:
   txtEndlessRecord: {fileID: 731414918}
   btnHard: {fileID: 608859332}
   rendererBirdTutorial: {fileID: 1649265782}
-  eventSystem: {fileID: 41876051}
   scrollLevelList: {fileID: 918870600}
   scrollBirdList: {fileID: 1947116665}
   hardLevelList: {fileID: 1947263101}
+  currentScrollList: {fileID: 0}
   rendererMarker: {fileID: 1979861425}
 --- !u!114 &1059716760
 MonoBehaviour:
@@ -3174,7 +3174,7 @@ SpriteRenderer:
   m_SortingLayerID: -1892743819
   m_SortingLayer: 7
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 2e2dd8be7695c5146a00c285001fbee1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 96e3f116473c6ee4b9a9e26d806673a3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3730,7 +3730,7 @@ SpriteRenderer:
   m_SortingLayerID: -1892743819
   m_SortingLayer: 7
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 88102ee5ab92170418f18c10da2d0264, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 217c9818b761d75458e47c20b331bb7b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3749,8 +3749,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1979861424}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.94, y: 4.13, z: -126.828125}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -6.9, y: 3.9, z: 0}
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2

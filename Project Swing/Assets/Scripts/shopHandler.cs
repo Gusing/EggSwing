@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class shopHandler : MonoBehaviour
 {
@@ -45,6 +46,10 @@ public class shopHandler : MonoBehaviour
     [HideInInspector] public bool seenControls;
     [HideInInspector] public bool seenBirdTutorial;
 
+    EventSystem eventSystem;
+
+    GameObject oldSelected;
+
     FMOD.Studio.EventInstance soundUIClick;
     FMOD.Studio.EventInstance soundUIStart;
     FMOD.Studio.EventInstance soundShopBuy;
@@ -71,6 +76,8 @@ public class shopHandler : MonoBehaviour
         soundShopBuy = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Buy");
 
         textCurrency.text = data.currency.ToString();
+
+        eventSystem = EventSystem.current;
 
         data.Init();
         endlessRecord = data.endlessRecord;
@@ -160,6 +167,20 @@ public class shopHandler : MonoBehaviour
         {
             BackToPlayMenu();
         }
+
+        if (eventSystem.currentSelectedGameObject != null)
+        {
+            if (eventSystem.currentSelectedGameObject != oldSelected && eventSystem.currentSelectedGameObject.transform.parent.parent != null)
+            {
+                if (eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == ShopListContent)
+                {
+                    if (eventSystem.currentSelectedGameObject.transform.position.y < -3.6f) ShopScrollList.verticalNormalizedPosition = Mathf.Clamp(ShopScrollList.verticalNormalizedPosition - 0.51f, 0, 1);
+                    if (eventSystem.currentSelectedGameObject.transform.position.y > 2.6f) ShopScrollList.verticalNormalizedPosition = Mathf.Clamp(ShopScrollList.verticalNormalizedPosition + 0.51f, 0, 1);
+                }
+            }
+        }
+
+        oldSelected = eventSystem.currentSelectedGameObject;
     }
 
     public bool ClickBuy(int ID)

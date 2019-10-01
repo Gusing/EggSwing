@@ -16,12 +16,11 @@ public class scoreTextHandler : MonoBehaviour
     public void Init(string scoreSource, int score, float offset = 0)
     {
         scoreText.text = scoreSource + " +" + score.ToString();
-        transform.position = new Vector3(-2.92f, 3.73f - offset);
+        transform.position = new Vector3(-1.20f, 3.73f - offset);
     }
     
     void Update()
     {
-
         transform.Translate(new Vector3(0, (1.2f - lifeTimer) * Time.deltaTime));
         scoreText.color = new Color(scoreText.color.r, scoreText.color.g, scoreText.color.b, 1 - lifeTimer);
 

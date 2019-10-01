@@ -62,6 +62,7 @@ public class beatIndicatorHandlerB : MonoBehaviour
     {
         if (mainHandler.currentBpm != localBpm)
         {
+            print("diff bpm");
             localBpm = mainHandler.currentBpm;
 
             bpmInSeconds = (float)60 / (float)localBpm;
@@ -221,6 +222,23 @@ public class beatIndicatorHandlerB : MonoBehaviour
         }
     }
 
+    public void HeavyAttackRemove()
+    {
+        if (lines.Count > 8)
+        {
+            if (mainHandler.currentState == 2)
+            {
+                lines[lines.Count - 7].GetComponent<beatLineHandler>().Kill();
+                lines[lines.Count - 8].GetComponent<beatLineHandler>().Kill();
+            }
+            else
+            {
+                lines[lines.Count - 5].GetComponent<beatLineHandler>().Kill();
+                lines[lines.Count - 6].GetComponent<beatLineHandler>().Kill();
+            }
+        }
+    }
+
     public void Clear()
     {
         for (int i = lines.Count - 8; i < lines.Count; i++)
@@ -233,6 +251,7 @@ public class beatIndicatorHandlerB : MonoBehaviour
 
     public void Restart()
     {
+        print("restart");
         stopped = false;
     }
 }

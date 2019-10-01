@@ -176,7 +176,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'BPM: 140'
+  m_Text: 'BPM: 148'
 --- !u!225 &5440010265763897901
 CanvasGroup:
   m_ObjectHideFlags: 0

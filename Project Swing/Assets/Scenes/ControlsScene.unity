@@ -181,9 +181,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9150943, g: 0.8916283, b: 0.85898006, a: 1}
+    m_HighlightedColor: {r: 0.9056604, g: 0.85256577, b: 0.7817729, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9245283, g: 0.90082043, b: 0.8678355, a: 1}
+    m_SelectedColor: {r: 0.8962264, g: 0.83365965, b: 0.7398095, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0
@@ -1198,12 +1198,12 @@ SpriteRenderer:
   m_SortingLayerID: -1892743819
   m_SortingLayer: 7
   m_SortingOrder: -1
-  m_Sprite: {fileID: 21300000, guid: 2e2dd8be7695c5146a00c285001fbee1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0f18eca7b2a35674fa68b592dbec43e4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 15.46, y: 2.34}
+  m_Size: {x: 4.14, y: 4.52}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
