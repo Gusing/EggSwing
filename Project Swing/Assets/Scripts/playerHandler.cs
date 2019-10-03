@@ -1308,6 +1308,8 @@ public class playerHandler : MonoBehaviour
     {
         actionTimer += Time.deltaTime;
 
+        hitboxBody.enabled = false;
+
         if (actionTimer >= counterTime / 3 && attackID == attackIDStart)
         {
             attackID++;
@@ -1322,6 +1324,7 @@ public class playerHandler : MonoBehaviour
             busy = false;
             beatPassed = false;
             punchingActive = false;
+            hitboxBody.enabled = true;
         }
     }
 
@@ -1819,7 +1822,7 @@ public class playerHandler : MonoBehaviour
                     }
                 }
 
-                UpdateStreak(tDmg);
+                if (!(tDmg == 0 && currentStreak == 0)) UpdateStreak(tDmg);
 
                 lastAttackHit = true;
                 lastHitBeat = currentBeat;
