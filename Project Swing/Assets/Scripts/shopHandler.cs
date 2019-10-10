@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Analytics;
 
 public class shopHandler : MonoBehaviour
 {
@@ -112,7 +113,7 @@ public class shopHandler : MonoBehaviour
             140
         };
 
-        
+        /*
         prices = new int[] {
             0,
             0,
@@ -120,7 +121,7 @@ public class shopHandler : MonoBehaviour
             0,
             0
         };
-        
+        */
 
         // load data
         GameObject ShopListItem = Instantiate(ShopItemContainer) as GameObject;
@@ -185,10 +186,12 @@ public class shopHandler : MonoBehaviour
 
     public bool ClickBuy(int ID)
     {
+        
         if (!itemBought[ID])
         {
             if (currency >= prices[ID])
             {
+                AnalyticsEvent.ItemAcquired(AcquisitionType.Soft, "Shop", 1, "item_ID_" + ID.ToString());
                 soundShopBuy.start();
                 itemBought[ID] = true;
                 currency -= prices[ID];

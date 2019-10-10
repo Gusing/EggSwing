@@ -168,7 +168,7 @@ public class enemyBirdHandler : MonoBehaviour
                 }
             }
 
-            if (!charging) transform.Translate(new Vector3(-3f * Time.deltaTime, 0));
+            if (!charging) transform.Translate(new Vector3(-2.8f * Time.deltaTime, 0));
 
         }
         else if (!waitingForAnimation)

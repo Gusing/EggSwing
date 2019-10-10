@@ -16,7 +16,7 @@ public class scoreTextHandler : MonoBehaviour
     public void Init(string scoreSource, int score, float offset = 0)
     {
         scoreText.text = scoreSource + " +" + score.ToString();
-        transform.position = new Vector3(-1.20f, 3.73f - offset);
+        transform.position = new Vector3(-1.20f, 3.6f - offset);
     }
     
     void Update()

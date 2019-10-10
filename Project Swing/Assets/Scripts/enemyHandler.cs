@@ -278,6 +278,11 @@ public class enemyHandler : MonoBehaviour
         else return true;
     }
 
+    public virtual int GetDefense()
+    {
+        return defense;
+    }
+
     public virtual void Die(int dmg)
     {
         GameObject tempObject;

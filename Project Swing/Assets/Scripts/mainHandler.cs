@@ -690,7 +690,7 @@ public class mainHandler : MonoBehaviour {
         if (level == 3) soundAmbSea.start();
 
         // send analytics
-        AnalyticsEvent.LevelStart("Level_" + level, level);
+        AnalyticsEvent.LevelStart("Level_" + level + "_Mode_" + gameMode, level);
     }
 
     public FMOD.RESULT StudioEventCallback(FMOD.Studio.EVENT_CALLBACK_TYPE type, FMOD.Studio.EventInstance eventInstance, System.IntPtr parameters)
@@ -805,7 +805,7 @@ public class mainHandler : MonoBehaviour {
                 soundMusic.setParameterValue("Clock", 0);
                 soundMusic.setParameterValue("Die", 1);
                 //soundClock.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-                if (level != 100) AnalyticsEvent.LevelFail("Level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
+                if (level != 100) AnalyticsEvent.LevelFail("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
             }
             gameOverTimer += Time.deltaTime;
         }
@@ -825,7 +825,7 @@ public class mainHandler : MonoBehaviour {
             if (level == 100)
             {
                 // send analytics
-                AnalyticsEvent.LevelComplete("level_100", 100, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_survived", Mathf.Round(levelTimer) } });
+                AnalyticsEvent.LevelComplete("level_100" + "_Mode_" + gameMode, 100, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_survived", Mathf.Round(levelTimer) } });
 
                 if (Mathf.Round(levelTimer) > endlessRecord)
                 {
@@ -975,7 +975,7 @@ public class mainHandler : MonoBehaviour {
             enemies[i].GetComponent<enemyHandler>().Stop();
         }
         // send analytics
-        if (victoryTimer == 0) AnalyticsEvent.LevelQuit("level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
+        if (victoryTimer == 0) AnalyticsEvent.LevelQuit("level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
         enemiesDead = 0;
         soundClock.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         if (level == 2) soundAmbCafe.setParameterValue("End", 1);
@@ -1047,7 +1047,7 @@ public class mainHandler : MonoBehaviour {
                     SaveSystem.SavePlayer(this);
 
                     // send analytics
-                    AnalyticsEvent.LevelComplete("Level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } } );
+                    AnalyticsEvent.LevelComplete("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) }, { "rank", player.GetComponent<playerHandler>().currentRank } } );
 
                     print("save, level 1 clear: " + clearedLevel[1] + ", unlocked hell: " + unlockedLevel[4] + ", streak record: " + streakRecord[1]);
                     QuitLevel();
@@ -1105,7 +1105,7 @@ public class mainHandler : MonoBehaviour {
                 SaveSystem.SavePlayer(this);
 
                 // send analytics
-                AnalyticsEvent.LevelComplete("Level_" + level, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
+                AnalyticsEvent.LevelComplete("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", comboRecord[level] }, { "rank", player.GetComponent<playerHandler>().currentRank } });
 
                 print("save, level 1 clear: " + clearedLevel[1] + ", unlocked hell: " + unlockedLevel[4] + ", streak record: " + streakRecord[1]);
                 QuitLevel();
@@ -1174,7 +1174,7 @@ public class mainHandler : MonoBehaviour {
     {
         soundUIClick.start();
 
-        AnalyticsEvent.LevelStart("Level_" + level, level);
+        AnalyticsEvent.LevelStart("Level_" + level + "_Mode_" + gameMode, level);
 
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("currency"))
         {

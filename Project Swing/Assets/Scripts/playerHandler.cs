@@ -142,6 +142,7 @@ public class playerHandler : MonoBehaviour
     public SpriteRenderer rendererHPFill;
     public SpriteMask maskHPFill;
     public SpriteRenderer[] renderersSpecialCharges;
+    public Image spriteScoreBg;
     public Text textStreak;
     public Text textCombo;
     public Text textCurrency;
@@ -185,6 +186,7 @@ public class playerHandler : MonoBehaviour
 
     readonly int COMBOFLATTEN = 0, COMBOCHARGEPUNCH = 1, COMBORAPIDKICKS = 2, COMBOSUPER = 3, COMBOCOUNTERHIT = 4;
 
+    FMOD.Studio.EventInstance soundHitArmor;
     FMOD.Studio.EventInstance soundAttackSuper;
     FMOD.Studio.EventInstance soundAttackSuperUnable;
 
@@ -213,6 +215,7 @@ public class playerHandler : MonoBehaviour
     void Start()
     {
         // load audio
+        soundHitArmor = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/HitArmorDamage");
         soundAttackSuper = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_super");
         soundAttackSuperUnable = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_super_fail");
         soundDodge = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Dodge");
@@ -273,7 +276,11 @@ public class playerHandler : MonoBehaviour
         textRank.text = "E";
         textMultiplier.enabled = false;
         if (mainHandler.staticLevel < 1 || mainHandler.staticLevel > 99) textRank.enabled = false;
-        if (mainHandler.staticLevel < 1) textScore.enabled = false;
+        if (mainHandler.staticLevel < 1)
+        {
+            textScore.enabled = false;
+            spriteScoreBg.enabled = false;
+        }
 
         localRenderer = GetComponent<SpriteRenderer>();
 
@@ -361,7 +368,7 @@ public class playerHandler : MonoBehaviour
         // update bonus score display
         if (bonusDisplayTimer > 0)
         {
-            bonusDisplayTimer -= Time.deltaTime * 1.5f;
+            bonusDisplayTimer -= Time.deltaTime * 2.5f;
         }
 
         // update moves
@@ -523,6 +530,51 @@ public class playerHandler : MonoBehaviour
                 tScoreBonus = Instantiate(scoreBonusText, new Vector3(0, 0f), new Quaternion(0, 0, 0, 0));
                 tScoreBonus.GetComponent<scoreTextHandler>().Init("Health Bonus", currentHP * 50);
                 currentScore += 50 * currentHP;
+            }
+            if (currentRank != 5 && currentRank > 0)
+            {
+                if (currentRank < 5 && mainHandler.staticLevel < 100 && mainHandler.staticLevel > 0)
+                {
+                    if (currentScore >= mainHandler.currentRankLimits[currentRank])
+                    {
+                        currentRank++;
+                        if (currentRank == 1)
+                        {
+                            textRank.text = "D";
+                            textRank.color = new Color(0.57f, 0.6f, 0.91f);
+                        }
+                        if (currentRank == 2)
+                        {
+                            textRank.text = "C";
+                            textRank.color = new Color(0.94f, 0.69f, 0.3f);
+                        }
+                        if (currentRank == 3)
+                        {
+                            textRank.text = "B";
+                            textRank.color = new Color(0.2f, 0.76f, 1f);
+                        }
+                        if (currentRank == 4)
+                        {
+                            textRank.text = "A";
+                            textRank.color = new Color(1f, 0.05f, 0.95f);
+                        }
+                        if (currentRank == 5)
+                        {
+                            textRank.text = "P";
+                            textRank.color = new Color(1f, 0.9f, 0f);
+                        }
+                    }
+                }
+                if (currentRank < 5 && currentRank > 0)
+                {
+                    soundRankAnnouncer.setParameterValue("Announcer", currentRank);
+                    soundRankAnnouncer.start();
+                }
+                else if (currentRank == 5)
+                {
+                    soundRankAnnouncer.setParameterValue("Announcer", 6);
+                    soundRankAnnouncer.start();
+                }
             }
             
         }
@@ -1739,7 +1791,7 @@ public class playerHandler : MonoBehaviour
                 GameObject tScoreBonus = Instantiate(scoreBonusText, new Vector3(0, 0f), new Quaternion(0, 0, 0, 0));
                 if (!noMultiplier) tScoreBonus.GetComponent<scoreTextHandler>().Init(text, (int)(amount * currentMultiplier), bonusDisplayTimer);
                 else tScoreBonus.GetComponent<scoreTextHandler>().Init(text, amount, bonusDisplayTimer);
-                bonusDisplayTimer += 0.5f;
+                bonusDisplayTimer += 0.4f;
             }
             if (!noMultiplier) currentScore += (int)(amount * currentMultiplier);
             else currentScore += amount;
@@ -1819,6 +1871,8 @@ public class playerHandler : MonoBehaviour
                     {
                         if (tDmg > 0) currentCombos[0][comboState].soundAttackHit.start();
                         else soundEnemyBlock.start();
+
+                        if (other.GetComponent<enemyHandler>().GetDefense() > 0 && tDmg > 0) soundHitArmor.start();
                     }
                 }
 

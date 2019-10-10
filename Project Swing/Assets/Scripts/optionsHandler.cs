@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
 
 public class optionsHandler : MonoBehaviour
 {
@@ -85,6 +86,8 @@ public class optionsHandler : MonoBehaviour
         sliderAmbience.value = volumeAmbience;
         
         ChangeMode(0);
+
+        AnalyticsEvent.CustomEvent(new Dictionary<string, object> { { "Enter_Settings", 1 } });
     }
 
     // Update is called once per frame

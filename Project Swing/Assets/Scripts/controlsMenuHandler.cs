@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Analytics;
 
 public class controlsMenuHandler : MonoBehaviour
 {
@@ -24,6 +25,8 @@ public class controlsMenuHandler : MonoBehaviour
         data.Init();
         if (data.itemBought[3]) rendererHideSuper.enabled = false;
         if (data.seenBirdTutorial) rendererBirdControls.enabled = true;
+
+        AnalyticsEvent.CustomEvent(new Dictionary<string, object> { { "Enter_Controls", 1 } });
     }
 
     void Update()

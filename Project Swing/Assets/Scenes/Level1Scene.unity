@@ -2865,11 +2865,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelUI
       objectReference: {fileID: 0}
-    - target: {fileID: 303937643396106905, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 303937643309945714, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -2990,31 +2985,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
-    - target: {fileID: 303937643396106906, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 303937643396106906, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_SortingLayerID
-      value: -1892743819
-      objectReference: {fileID: 0}
-    - target: {fileID: 303937643396106906, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_RenderMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4314144518124510493, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -5.0300293
-      objectReference: {fileID: 0}
-    - target: {fileID: 8200025180201035766, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 024694b4cb46c694581f8476382507b3, type: 3}
 --- !u!331 &303937643440660902 stripped
@@ -3034,11 +3004,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: playerHUD
-      objectReference: {fileID: 0}
-    - target: {fileID: 4813939583015148638, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4813939583015148578, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
         type: 3}
@@ -3150,31 +3115,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
-    - target: {fileID: 4813939583015148637, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4813939583015148637, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
-        type: 3}
-      propertyPath: m_SortingLayerID
-      value: -1892743819
-      objectReference: {fileID: 0}
-    - target: {fileID: 4813939583015148637, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
-        type: 3}
-      propertyPath: m_RenderMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4813939583015148636, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
-        type: 3}
-      propertyPath: m_ReferencePixelsPerUnit
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 2141540808862620256, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba4024dc994b0f0449c7fa5a6dffaecb, type: 3}
 --- !u!114 &2141540809053295107 stripped
