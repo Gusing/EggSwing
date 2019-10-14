@@ -30,6 +30,7 @@ public class menuHandler : MonoBehaviour {
     public SpriteRenderer spriteLockEndless;
     public Text txtEndlessRecord;
     public Button btnHard;
+    public SpriteRenderer spriteLockHard;
 
     public SpriteRenderer rendererBirdTutorial;
     bool birdTutorialVisible;
@@ -39,7 +40,6 @@ public class menuHandler : MonoBehaviour {
     FMOD.Studio.EventInstance soundMenuMusic;
     FMOD.Studio.EventInstance soundUIClick;
     FMOD.Studio.EventInstance soundUIStart;
-
     
     public ScrollRect scrollLevelList;
     public ScrollRect scrollBirdList;
@@ -122,7 +122,11 @@ public class menuHandler : MonoBehaviour {
         }
 
         if (data.unlockedHardLevel[1]) btnHard.interactable = true;
-        else btnHard.interactable = false;
+        else
+        {
+            spriteLockHard.enabled = true;
+            btnHard.gameObject.SetActive(false);
+        }
 
         for (int i = 1; i < data.unlockedHardLevel.Length; i++)
         {

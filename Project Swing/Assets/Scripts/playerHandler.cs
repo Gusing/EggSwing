@@ -734,13 +734,13 @@ public class playerHandler : MonoBehaviour
             }
         }
 
-        if (((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0 || Input.GetAxisRaw("Move Axis 2") > 0) && !busy) && mainHandler.currentGameMode != 1 && !normalLevelFinished)
+        if (((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0) && !busy) && mainHandler.currentGameMode != 1 && !normalLevelFinished)
         {
             accX = 26f;
             direction = 1;
             localRenderer.flipX = false;
         }
-        else if (((Input.GetButton("MoveLeft") || Input.GetAxisRaw("Move Axis") < 0 || Input.GetAxisRaw("Move Axis 2") < 0) && !busy) && mainHandler.currentGameMode != 1 && !normalLevelFinished)
+        else if (((Input.GetButton("MoveLeft") || Input.GetAxisRaw("Move Axis") < 0) && !busy) && mainHandler.currentGameMode != 1 && !normalLevelFinished)
         {
             accX = -26f;
             direction = -1;

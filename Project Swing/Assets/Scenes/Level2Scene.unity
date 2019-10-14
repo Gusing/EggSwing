@@ -205,6 +205,8 @@ MonoBehaviour:
   txtRecordDisplay: {fileID: 0}
   txtRecordAnnouncement: {fileID: 0}
   txtTimeLeft: {fileID: 1643678107}
+  UIMarker: {fileID: 4072682925154051409, guid: 861e1dec572283f46834fa3bc3341327,
+    type: 3}
   endlessRecord: 0
   clearedLevel: 
   clearedBirdLevel: 
@@ -1172,15 +1174,15 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 25819224}
-    - target: {fileID: 4314144518124510493, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -5.0299683
-      objectReference: {fileID: 0}
     - target: {fileID: 303937643309945712, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314144518124510493, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -5.0299683
       objectReference: {fileID: 0}
     - target: {fileID: 303937644554827044, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}

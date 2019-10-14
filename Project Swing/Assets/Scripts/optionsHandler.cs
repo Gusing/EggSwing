@@ -126,6 +126,12 @@ public class optionsHandler : MonoBehaviour
             currentUIMarker.GetComponent<Image>().color = new Color(UIMarkerColor * 0.5f, UIMarkerColor, UIMarkerColor * 0.5f);
         }
 
+        // back to main menu
+        if (Input.GetButtonDown("Cancel") || Input.GetButtonDown("Super"))
+        {
+            BackToMainMenu();
+        }
+
         if (eventSystem.currentSelectedGameObject != null)
         {
             if (eventSystem.currentSelectedGameObject != oldSelected)

@@ -563,6 +563,8 @@ MonoBehaviour:
   txtRecordDisplay: {fileID: 0}
   txtRecordAnnouncement: {fileID: 0}
   txtTimeLeft: {fileID: 1450735915}
+  UIMarker: {fileID: 4072682925154051409, guid: 861e1dec572283f46834fa3bc3341327,
+    type: 3}
   endlessRecord: 0
   clearedLevel: 
   clearedBirdLevel: 
@@ -2494,6 +2496,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameModeSelected: 0
+  lastButtonName: 
 --- !u!4 &1550020923
 Transform:
   m_ObjectHideFlags: 0

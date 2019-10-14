@@ -110,7 +110,14 @@ public class mainHandler : MonoBehaviour {
     public static int[] currentRankLimits;
     List<int[]> levelRankLimits;
     List<int[]> hardRankLimits;
-    
+
+    EventSystem eventSystem;
+    GameObject oldSelected;
+    public GameObject UIMarker;
+    GameObject currentUIMarker;
+    float UIMarkerColor;
+    bool UIMarkerColorSwitch;
+
     [HideInInspector] public int endlessRecord;
     [HideInInspector] public bool[] clearedLevel;
     [HideInInspector] public bool[] clearedBirdLevel;
@@ -209,6 +216,8 @@ public class mainHandler : MonoBehaviour {
         soundSinus = FMODUnity.RuntimeManager.CreateInstance("event:/Sinus_test");
         
         enemies = new List<GameObject>();
+
+        eventSystem = EventSystem.current;
 
         // load data
         data.Init();
@@ -841,6 +850,46 @@ public class mainHandler : MonoBehaviour {
             btnRetry.gameObject.SetActive(true);
             btnGameOver.gameObject.SetActive(true);
             btnRetry.Select();
+        }
+
+        if (gameOverTimer >= 2f && gameOver)
+        {
+            // update marker
+            if (!UIMarkerColorSwitch)
+            {
+                if (UIMarkerColor < 1)
+                {
+                    UIMarkerColor += 2f * Time.deltaTime;
+                }
+                else UIMarkerColorSwitch = true;
+            }
+            if (UIMarkerColorSwitch)
+            {
+                if (UIMarkerColor > 0.4)
+                {
+                    UIMarkerColor -= 2f * Time.deltaTime;
+                }
+                else UIMarkerColorSwitch = false;
+            }
+
+            if (currentUIMarker != null)
+            {
+                currentUIMarker.GetComponent<Image>().color = new Color(UIMarkerColor * 0.5f, UIMarkerColor, UIMarkerColor * 0.5f);
+            }
+
+            if (eventSystem.currentSelectedGameObject != null)
+            {
+                if (eventSystem.currentSelectedGameObject != oldSelected)
+                {
+                    print(eventSystem.currentSelectedGameObject.transform.position.y);
+
+                    Destroy(currentUIMarker);
+                    currentUIMarker = Instantiate(UIMarker, eventSystem.currentSelectedGameObject.transform);
+                    currentUIMarker.GetComponent<RectTransform>().sizeDelta = new Vector2(eventSystem.currentSelectedGameObject.GetComponent<RectTransform>().sizeDelta.x, eventSystem.currentSelectedGameObject.GetComponent<RectTransform>().sizeDelta.y);
+                }
+            }
+
+            oldSelected = eventSystem.currentSelectedGameObject;
         }
 
         // update progress bar

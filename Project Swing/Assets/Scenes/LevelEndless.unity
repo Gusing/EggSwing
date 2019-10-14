@@ -217,6 +217,8 @@ MonoBehaviour:
   txtRecordDisplay: {fileID: 7852190862542533626}
   txtRecordAnnouncement: {fileID: 817457315920000759}
   txtTimeLeft: {fileID: 0}
+  UIMarker: {fileID: 4072682925154051409, guid: 861e1dec572283f46834fa3bc3341327,
+    type: 3}
   endlessRecord: 0
   clearedLevel: 
   clearedBirdLevel: 
@@ -772,11 +774,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelUI
       objectReference: {fileID: 0}
+    - target: {fileID: 303937643167976242, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 303937643309945714, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 140039480}
+    - target: {fileID: 303937643258123311, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 303937644554827046, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -887,21 +899,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4314144518124510493, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -5.0300293
-      objectReference: {fileID: 0}
-    - target: {fileID: 303937643167976242, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 303937643258123311, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2516233379524250001, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -935,6 +932,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -785.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4314144518124510493, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -5.0300293
       objectReference: {fileID: 0}
     - target: {fileID: 1567838613, guid: 024694b4cb46c694581f8476382507b3, type: 3}
       propertyPath: m_Enabled
