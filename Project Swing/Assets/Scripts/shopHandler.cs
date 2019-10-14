@@ -48,8 +48,11 @@ public class shopHandler : MonoBehaviour
     [HideInInspector] public bool seenBirdTutorial;
 
     EventSystem eventSystem;
-
     GameObject oldSelected;
+    public GameObject UIMarker;
+    GameObject currentUIMarker;
+    float UIMarkerColor;
+    bool UIMarkerColorSwitch;
 
     FMOD.Studio.EventInstance soundUIClick;
     FMOD.Studio.EventInstance soundUIStart;
@@ -113,7 +116,7 @@ public class shopHandler : MonoBehaviour
             140
         };
 
-        /*
+        
         prices = new int[] {
             0,
             0,
@@ -121,7 +124,7 @@ public class shopHandler : MonoBehaviour
             0,
             0
         };
-        */
+        
 
         // load data
         GameObject ShopListItem = Instantiate(ShopItemContainer) as GameObject;
@@ -148,6 +151,8 @@ public class shopHandler : MonoBehaviour
         ShopListItem.SetActive(true);
         ShopListItem.transform.SetParent(ShopListContent.transform, false);
         ShopListItem.GetComponent<ShopItemContainerHandler>().Init(data.itemBought[2], data.itemActive[2], "Rapid Kicks", spriteCombo3, prices[2], 2);
+
+        oldSelected = eventSystem.currentSelectedGameObject;
     }
 
     void Update()
@@ -169,18 +174,50 @@ public class shopHandler : MonoBehaviour
             BackToPlayMenu();
         }
 
+        // update marker
+        if (!UIMarkerColorSwitch)
+        {
+            if (UIMarkerColor < 1)
+            {
+                UIMarkerColor += 2f * Time.deltaTime;
+            }
+            else UIMarkerColorSwitch = true;
+        }
+        if (UIMarkerColorSwitch)
+        {
+            if (UIMarkerColor > 0.4)
+            {
+                UIMarkerColor -= 2f * Time.deltaTime;
+            }
+            else UIMarkerColorSwitch = false;
+        }
+
+        if (currentUIMarker != null)
+        {
+            currentUIMarker.GetComponent<Image>().color = new Color(UIMarkerColor * 0.5f, UIMarkerColor, UIMarkerColor * 0.5f);
+        }
+
         if (eventSystem.currentSelectedGameObject != null)
         {
-            if (eventSystem.currentSelectedGameObject != oldSelected && eventSystem.currentSelectedGameObject.transform.parent.parent != null)
+            if (eventSystem.currentSelectedGameObject != oldSelected)
             {
-                if (eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == ShopListContent)
+                print(eventSystem.currentSelectedGameObject.transform.position.y);
+
+                Destroy(currentUIMarker);
+                currentUIMarker = Instantiate(UIMarker, eventSystem.currentSelectedGameObject.transform);
+                currentUIMarker.GetComponent<RectTransform>().sizeDelta = new Vector2(eventSystem.currentSelectedGameObject.GetComponent<RectTransform>().sizeDelta.x, eventSystem.currentSelectedGameObject.GetComponent<RectTransform>().sizeDelta.y);
+
+
+                if (eventSystem.currentSelectedGameObject.transform.parent.parent != null)
                 {
-                    if (eventSystem.currentSelectedGameObject.transform.position.y < -3.6f) ShopScrollList.verticalNormalizedPosition = Mathf.Clamp(ShopScrollList.verticalNormalizedPosition - 0.51f, 0, 1);
-                    if (eventSystem.currentSelectedGameObject.transform.position.y > 2.6f) ShopScrollList.verticalNormalizedPosition = Mathf.Clamp(ShopScrollList.verticalNormalizedPosition + 0.51f, 0, 1);
+                    if (eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == ShopListContent)
+                    {
+                        if (eventSystem.currentSelectedGameObject.transform.position.y < -3.6f) ShopScrollList.verticalNormalizedPosition = Mathf.Clamp(ShopScrollList.verticalNormalizedPosition - 0.51f, 0, 1);
+                        if (eventSystem.currentSelectedGameObject.transform.position.y > 2.6f) ShopScrollList.verticalNormalizedPosition = Mathf.Clamp(ShopScrollList.verticalNormalizedPosition + 0.51f, 0, 1);
+                    }
                 }
             }
         }
-
         oldSelected = eventSystem.currentSelectedGameObject;
     }
 

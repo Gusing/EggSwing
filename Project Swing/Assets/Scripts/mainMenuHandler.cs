@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Analytics;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class mainMenuHandler : MonoBehaviour
 {
@@ -13,10 +15,19 @@ public class mainMenuHandler : MonoBehaviour
     PlayerData data;
     PlayerOptions optionsData;
 
+    EventSystem eventSystem;
+
+    GameObject oldSelected;
+    public GameObject UIMarker;
+    GameObject currentUIMarker;
+    float UIMarkerColor;
+    bool UIMarkerColorSwitch;
+
     void Awake()
     {
         data = SaveSystem.LoadPlayer();
         optionsData = SaveSystem.LoadOptions();
+        eventSystem = EventSystem.current;
     }
 
     void Start()
@@ -24,6 +35,8 @@ public class mainMenuHandler : MonoBehaviour
         soundMenuMusic = FMODUnity.RuntimeManager.CreateInstance("event:/Music/MenuMusic");
 
         menuMusicPlayerHandler.Instance.checkStarted();
+
+        oldSelected = eventSystem.currentSelectedGameObject;
 
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
         soundUIStart = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_Start");
@@ -36,10 +49,45 @@ public class mainMenuHandler : MonoBehaviour
         FMODUnity.RuntimeManager.GetVCA("vca:/SFX VCA").setVolume(optionsData.volumeSFX * optionsData.volumeMaster);
         FMODUnity.RuntimeManager.GetVCA("vca:/Ambience VCA").setVolume(optionsData.volumeAmbience * optionsData.volumeMaster);
     }
-    
+
     void Update()
     {
-        
+        // update marker
+        if (!UIMarkerColorSwitch)
+        {
+            if (UIMarkerColor < 1)
+            {
+                UIMarkerColor += 2f * Time.deltaTime;
+            }
+            else UIMarkerColorSwitch = true;
+        }
+        if (UIMarkerColorSwitch)
+        {
+            if (UIMarkerColor > 0.4)
+            {
+                UIMarkerColor -= 2f * Time.deltaTime;
+            }
+            else UIMarkerColorSwitch = false;
+        }
+
+        if (currentUIMarker != null)
+        {
+            currentUIMarker.GetComponent<Image>().color = new Color(UIMarkerColor * 0.5f, UIMarkerColor, UIMarkerColor * 0.5f);
+        }
+
+        if (eventSystem.currentSelectedGameObject != null)
+        {
+            if (eventSystem.currentSelectedGameObject != oldSelected)
+            {
+                print(eventSystem.currentSelectedGameObject.transform.position.y);
+
+                Destroy(currentUIMarker);
+                currentUIMarker = Instantiate(UIMarker, eventSystem.currentSelectedGameObject.transform);
+                currentUIMarker.GetComponent<RectTransform>().sizeDelta = new Vector2(eventSystem.currentSelectedGameObject.GetComponent<RectTransform>().sizeDelta.x, eventSystem.currentSelectedGameObject.GetComponent<RectTransform>().sizeDelta.y);
+            }
+        }
+
+        oldSelected = eventSystem.currentSelectedGameObject;
     }
 
     public void ClickOptions()

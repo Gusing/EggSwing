@@ -8,10 +8,17 @@ public class levelContainerHandler : MonoBehaviour
     public Text txtLevelRank;
     public Text txtLevelScore;
     public Text txtLevelStreak;
+    public Text txtLevelName;
+    public Text txtBpm;
     public Image imgLocked;
     public Button btnPlayLevel;
-    public int levelNumber;
+     int levelNumber;
     GameObject mainHandler;
+    public Image imgBg;
+
+    public Sprite[] bgImages;
+    public string[] levelNames;
+    public string[] levelBPMs;
 
     // Start is called before the first frame update
     void Start()
@@ -19,13 +26,18 @@ public class levelContainerHandler : MonoBehaviour
         mainHandler = GameObject.Find("Main Camera");
     }
 
-    public void Init(string rank, int score, float streak, bool unlocked = true, int gameMode = 0)
+    public void Init(string rank, int score, float streak, int level, bool unlocked = true, int gameMode = 0)
     {
         if (!unlocked)
         {
             imgLocked.enabled = true;
             btnPlayLevel.enabled = false;
         }
+
+        imgBg.sprite = bgImages[level - 1];
+        txtLevelName.text = levelNames[level - 1];
+        txtBpm.text = "BPM: " + levelBPMs[level - 1];
+        levelNumber = level;
 
         txtLevelRank.text = rank;
         if (rank == "F") txtLevelRank.color = new Color(0.35f, 0.1f, 0.08f);

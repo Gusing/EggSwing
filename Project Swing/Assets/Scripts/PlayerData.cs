@@ -71,16 +71,16 @@ public class PlayerData
             unlockedBirdLevel[1] = true;
 
 
-            //unlockedHardLevel[1] = true;
-            //unlockedHardLevel[2] = true;
-            //unlockedHardLevel[3] = true;
-            //unlockedHardLevel[4] = true;
-            //unlockedLevel[2] = true;
-            //unlockedLevel[3] = true;
-            //unlockedLevel[4] = true;
-            //unlockedBirdLevel[2] = true;
-            //unlockedBirdLevel[3] = true;
-            //unlockedBirdLevel[4] = true;
+            unlockedHardLevel[1] = true;
+            unlockedHardLevel[2] = true;
+            unlockedHardLevel[3] = true;
+            unlockedHardLevel[4] = true;
+            unlockedLevel[2] = true;
+            unlockedLevel[3] = true;
+            unlockedLevel[4] = true;
+            unlockedBirdLevel[2] = true;
+            unlockedBirdLevel[3] = true;
+            unlockedBirdLevel[4] = true;
 
             for (int i = 0; i < itemActive.Length; i++)
             {

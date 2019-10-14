@@ -851,6 +851,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rendererHideSuper: {fileID: 529654936}
   rendererBirdControls: {fileID: 2062234210}
+  UIMarker: {fileID: 4072682925154051409, guid: 861e1dec572283f46834fa3bc3341327,
+    type: 3}
 --- !u!114 &1059716760
 MonoBehaviour:
   m_ObjectHideFlags: 0

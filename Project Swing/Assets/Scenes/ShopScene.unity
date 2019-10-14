@@ -157,8 +157,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -341.36, y: -184.7}
-  m_SizeDelta: {x: 82.55, y: 33}
+  m_AnchoredPosition: {x: -345, y: 142.07}
+  m_SizeDelta: {x: 82.55, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &9101678
 MonoBehaviour:
@@ -181,9 +181,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.7264151, g: 0.6354431, b: 0.51054645, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.7264151, g: 0.6354431, b: 0.51054645, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0
@@ -1158,16 +1158,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 1a4d9feb61cff8b4a8389a41527e521d,
         type: 3}
-    - target: {fileID: 2340307879891810035, guid: d08a051651cbb8e4788b5804fa3f3c9b,
-        type: 3}
-      propertyPath: m_Name
-      value: ShopListScrollbar
-      objectReference: {fileID: 0}
-    - target: {fileID: 5889856663129239303, guid: d08a051651cbb8e4788b5804fa3f3c9b,
-        type: 3}
-      propertyPath: m_Name
-      value: ShopListViewport
-      objectReference: {fileID: 0}
     - target: {fileID: 2906518417672912195, guid: d08a051651cbb8e4788b5804fa3f3c9b,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -1188,11 +1178,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 541.5
       objectReference: {fileID: 0}
-    - target: {fileID: 3511838749271167251, guid: d08a051651cbb8e4788b5804fa3f3c9b,
-        type: 3}
-      propertyPath: levelContainerMoon
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 1825621641193807386, guid: d08a051651cbb8e4788b5804fa3f3c9b,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -1207,6 +1192,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 177.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 2340307879891810035, guid: d08a051651cbb8e4788b5804fa3f3c9b,
+        type: 3}
+      propertyPath: m_Name
+      value: ShopListScrollbar
+      objectReference: {fileID: 0}
+    - target: {fileID: 5889856663129239303, guid: d08a051651cbb8e4788b5804fa3f3c9b,
+        type: 3}
+      propertyPath: m_Name
+      value: ShopListViewport
+      objectReference: {fileID: 0}
+    - target: {fileID: 3511838749271167251, guid: d08a051651cbb8e4788b5804fa3f3c9b,
+        type: 3}
+      propertyPath: levelContainerMoon
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8955198489287700360, guid: d08a051651cbb8e4788b5804fa3f3c9b,
         type: 3}
@@ -1688,6 +1688,8 @@ MonoBehaviour:
   lastMode: 0
   seenControls: 0
   seenBirdTutorial: 0
+  UIMarker: {fileID: 4072682925154051409, guid: 861e1dec572283f46834fa3bc3341327,
+    type: 3}
   textCurrency: {fileID: 443518499}
 --- !u!114 &1059716760
 MonoBehaviour:
@@ -1748,7 +1750,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -341.36, y: -205.6}
+  m_AnchoredPosition: {x: -346.2, y: 117.5}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1249623066
