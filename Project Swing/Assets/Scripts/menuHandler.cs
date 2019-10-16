@@ -34,6 +34,7 @@ public class menuHandler : MonoBehaviour {
 
     public SpriteRenderer rendererBirdTutorial;
     bool birdTutorialVisible;
+    float birdTutorialTimer;
 
     bool clickedLevel;
 
@@ -161,12 +162,16 @@ public class menuHandler : MonoBehaviour {
     {
         if (birdTutorialVisible)
         {
-            if (Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Heavy Attack") || Input.GetButtonDown("Alternate Bird") || Input.GetButtonDown("Super") || Input.GetButtonDown("Other Action") || Input.GetButtonDown("Dodge") || Input.GetMouseButtonDown(0))
+            if (birdTutorialTimer > 0)
             {
-                birdTutorialVisible = false;
-                rendererBirdTutorial.enabled = false;
-                eventSystem.enabled = true;
+                if (Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Heavy Attack") || Input.GetButtonDown("Alternate Bird") || Input.GetButtonDown("Super") || Input.GetButtonDown("Other Action") || Input.GetButtonDown("Dodge") || Input.GetMouseButtonDown(0))
+                {
+                    birdTutorialVisible = false;
+                    rendererBirdTutorial.enabled = false;
+                    eventSystem.enabled = true;
+                }
             }
+            birdTutorialTimer += Time.deltaTime;
         }
         else
         {
@@ -285,12 +290,13 @@ public class menuHandler : MonoBehaviour {
 
         if (num == 1)
         {
-            if (!data.seenBirdTutorial)
-            {
+           // if (!data.seenBirdTutorial)
+            //{
+                print("show bird tut");
                 eventSystem.enabled = false;
                 rendererBirdTutorial.enabled = true;
                 birdTutorialVisible = true;
-            }
+           // }
             selectedGameMode = BIRD;
             LevelScrollList.SetActive(false);
             hardScrollList.SetActive(false);

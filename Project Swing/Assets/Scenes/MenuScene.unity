@@ -1960,7 +1960,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: -1
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -3503,7 +3503,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1892743819
   m_SortingLayer: 7
-  m_SortingOrder: 2
+  m_SortingOrder: 6
   m_Sprite: {fileID: 21300000, guid: 96e3f116473c6ee4b9a9e26d806673a3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -4675,6 +4675,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 154.99998
       objectReference: {fileID: 0}
+    - target: {fileID: 4907461599431256833, guid: d08a051651cbb8e4788b5804fa3f3c9b,
+        type: 3}
+      propertyPath: m_Spacing
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2340307879891810035, guid: d08a051651cbb8e4788b5804fa3f3c9b,
         type: 3}
       propertyPath: m_Name
@@ -4974,6 +4979,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 154.99998
+      objectReference: {fileID: 0}
+    - target: {fileID: 6217338386800611584, guid: 8ec433290ffd37b41b3c84345e72c910,
+        type: 3}
+      propertyPath: m_Spacing
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8ec433290ffd37b41b3c84345e72c910, type: 3}
