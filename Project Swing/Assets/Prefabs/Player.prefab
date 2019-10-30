@@ -518,6 +518,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  spriteScoreBg: {fileID: 0}
   textStreak: {fileID: 0}
   textCombo: {fileID: 0}
   textCurrency: {fileID: 0}
@@ -528,6 +529,9 @@ MonoBehaviour:
   rendererSPFill: {fileID: 2361852901421952468}
   spriteSPBar1: {fileID: 21300000, guid: 0dc46d9e55ddfef44837330137fd2594, type: 3}
   spriteSPBar2: {fileID: 21300000, guid: 8f7dac6f3ad1a3c4f9d3c40d038b2943, type: 3}
+  spriteSuperFull: {fileID: 21300000, guid: 4604acc9d9235684cb79dd4e60b8f78b, type: 3}
+  spriteSuperCharging: {fileID: 21300000, guid: 24d07f0b01bb2bc409b4c94a3639edf0,
+    type: 3}
   dead: 0
   direction: 0
   txtComboState: {fileID: 0}

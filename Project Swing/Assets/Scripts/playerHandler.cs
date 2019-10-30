@@ -153,6 +153,8 @@ public class playerHandler : MonoBehaviour
     public SpriteRenderer rendererSPFill;
     public Sprite spriteSPBar1;
     public Sprite spriteSPBar2;
+    public Sprite spriteSuperFull;
+    public Sprite spriteSuperCharging;
     bool SPSprite;
     float SPBarFlickerTimer;
     float SPBarFlickerTime = 0.07f;
@@ -256,7 +258,7 @@ public class playerHandler : MonoBehaviour
         currentHP = maxHP;
         maxSpecialCharges = 3;
         if (data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER]) specialCharges = maxSpecialCharges;
-        specialChargeExtraTime = 15;
+        specialChargeExtraTime = 50;
         streakDisappearDelay = 3;
         direction = 1;
         blockTime = (60f / mainHandler.currentBpm) * 1.5f;
@@ -315,8 +317,20 @@ public class playerHandler : MonoBehaviour
         
         for (int i = 2; i >= 0; i--)
         {
-            if (specialCharges > i) renderersSpecialCharges[i].enabled = true;
+            if (specialCharges > i)
+            {
+                renderersSpecialCharges[i].sprite = spriteSuperFull;
+                renderersSpecialCharges[i].enabled = true;
+                renderersSpecialCharges[i].GetComponentInChildren<RectTransform>().localPosition = new Vector3(0, 0);
+            }
+            else if (specialCharges == (i))
+            {
+                renderersSpecialCharges[i].sprite = spriteSuperCharging;
+                renderersSpecialCharges[i].enabled = true;
+                renderersSpecialCharges[i].gameObject.GetComponentInChildren<RectTransform>().localPosition = new Vector3(0, -0.82f + 0.82f * (specialChargeTimer / specialChargeExtraTime));
+            }
             else renderersSpecialCharges[i].enabled = false;
+
         }
 
         if (currentStreak > 0 && mainHandler.currentGameMode != 1)
@@ -390,7 +404,7 @@ public class playerHandler : MonoBehaviour
         if (hitstun) Hitstun();
         
         // update special charges
-        if (specialCharges < 3 && data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER]) specialChargeTimer += Time.deltaTime;
+        //if (specialCharges < 3 && data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER]) specialChargeTimer += Time.deltaTime;
 
         if (specialChargeTimer >= specialChargeExtraTime)
         {
@@ -1193,7 +1207,7 @@ public class playerHandler : MonoBehaviour
         if (actionTimer >= specialPunchSuccessTime)
         {
             usingSuper = false;
-            specialChargeTimer = 0;
+            //specialChargeTimer = 0;
             hitboxAttack3A.enabled = false;
             actionTimer = 0;
             punchingSuccess = false;
@@ -1678,11 +1692,13 @@ public class playerHandler : MonoBehaviour
         hitstun = false;
         RestockCombos();
         comboState = 0;
+        birdInSequence = 0;
         currentCurrency = startingCurrency;
         hitboxBody.enabled = true;
         streakTimer = 0;
         tookDamage = false;
         streakLevel = 0;
+        specialChargeTimer = 0;
         currentStreak = 0;
         birdComboHeal = 0;
         currentScore = 0;
@@ -1871,6 +1887,8 @@ public class playerHandler : MonoBehaviour
                     {
                         if (tDmg > 0) currentCombos[0][comboState].soundAttackHit.start();
                         else soundEnemyBlock.start();
+                        if (!hitboxAttack3A.IsTouching(other) && data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER] && specialCharges < 3) specialChargeTimer += tDmg;
+                        print(specialChargeTimer);
 
                         if (other.GetComponent<enemyHandler>().GetDefense() > 0 && tDmg > 0) soundHitArmor.start();
                     }

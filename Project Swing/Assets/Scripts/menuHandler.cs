@@ -152,8 +152,7 @@ public class menuHandler : MonoBehaviour {
         ChangeMode(data.lastMode);
 
         oldSelected = eventSystem.currentSelectedGameObject;
-
-        print(sceneSelectionHandler.Instance.lastButtonName);
+        
         if (sceneSelectionHandler.Instance.lastButtonName != "") eventSystem.SetSelectedGameObject(GameObject.Find(sceneSelectionHandler.Instance.lastButtonName));
         
     }
@@ -188,6 +187,8 @@ public class menuHandler : MonoBehaviour {
             {
                 Back();
             }
+            if (Input.GetButtonDown("Cycle Right")) CycleMode(true);
+            if (Input.GetButtonDown("Cycle Left")) CycleMode(false);
         }
 
         // update marker
@@ -217,7 +218,7 @@ public class menuHandler : MonoBehaviour {
         {
             if (eventSystem.currentSelectedGameObject != oldSelected)
             {
-                print(eventSystem.currentSelectedGameObject.transform.position.y);
+                //print(eventSystem.currentSelectedGameObject.transform.position.y);
 
                 sceneSelectionHandler.Instance.lastButtonName = eventSystem.currentSelectedGameObject.name;
 
@@ -232,8 +233,6 @@ public class menuHandler : MonoBehaviour {
                         eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == hardListContent ||
                         eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == BirdListContent)
                     {
-
-                        
                         if (eventSystem.currentSelectedGameObject.transform.position.y < -4f) currentScrollList.verticalNormalizedPosition = Mathf.Clamp(currentScrollList.verticalNormalizedPosition - 1f, 0, 1);
                         if (eventSystem.currentSelectedGameObject.transform.position.y > 1.8f) currentScrollList.verticalNormalizedPosition = Mathf.Clamp(currentScrollList.verticalNormalizedPosition + 1f, 0, 1);
                     }
@@ -277,6 +276,22 @@ public class menuHandler : MonoBehaviour {
         if (num == 100) SceneManager.LoadScene("LevelEndless");
     }
 
+    public void CycleMode(bool right)
+    {
+        int maxmodes = 2;
+        if (data.unlockedHardLevel[1]) maxmodes = 3;
+
+        if (right) ChangeMode(mod(selectedGameMode + 1, maxmodes));
+        else ChangeMode(mod(selectedGameMode - 1, maxmodes));
+
+        eventSystem.SetSelectedGameObject(GameObject.Find("btnStartLevelMoon"));
+    }
+
+    int mod(int x, int m)
+    {
+        return (x % m + m) % m;
+    }
+
     public void ChangeMode(int num)
     {
         if (num == 0)
@@ -290,13 +305,13 @@ public class menuHandler : MonoBehaviour {
 
         if (num == 1)
         {
-           // if (!data.seenBirdTutorial)
-            //{
+            if (!data.seenBirdTutorial)
+            {
                 print("show bird tut");
                 eventSystem.enabled = false;
                 rendererBirdTutorial.enabled = true;
                 birdTutorialVisible = true;
-           // }
+            }
             selectedGameMode = BIRD;
             LevelScrollList.SetActive(false);
             hardScrollList.SetActive(false);
