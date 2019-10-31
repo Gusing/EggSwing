@@ -33,6 +33,8 @@ public class enemyAHandler : enemyHandler {
 
         stopDistance = 1.4f;
 
+        parryTime = 2f;
+
         damage.Add(3);
 
         soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_attack");
@@ -50,8 +52,8 @@ public class enemyAHandler : enemyHandler {
         transform.position = new Vector3(transform.position.x, groundY, Random.Range(0f, 0.1f));
 
     }
-	
-	public override void Update()
+
+    public override void Update()
     {
         base.UpdateAnimations();
 
@@ -59,13 +61,14 @@ public class enemyAHandler : enemyHandler {
 
         base.Update();
 
+        if (parried) Parried();
         if (invincible) Invincible();
         if (attacking) AttackA();
         if (fallFromAbove) FallFromAbove();
         if (attackHitboxActive) UpdateAttackHitbox();
         
         // check for attack
-        if (Vector2.Distance(transform.position, player.transform.position) < 1.8f && !attacking && !fallFromAbove && !hitstun && attackRecovery <= 0 && !player.GetComponent<playerHandler>().dead)
+        if (Vector2.Distance(transform.position, player.transform.position) < 1.8f && !attacking && !fallFromAbove && !hitstun && attackRecovery <= 0 && !player.GetComponent<playerHandler>().dead && !parried)
         {
             localSpriteRenderer.sprite = spriteIdle;
             UpdateHitboxes();
@@ -85,7 +88,7 @@ public class enemyAHandler : enemyHandler {
     void AttackA()
     {
         base.Attack();
-        
+
         // move to next attack state
         if (timeToMoveOn && mainHandler.currentState == BEAT)
         {
@@ -113,12 +116,14 @@ public class enemyAHandler : enemyHandler {
                 soundAttack.start();
                 attackHitboxTimer = 0;
                 attackHitboxActive = true;
+                parryable = true;
                 hitboxAttacks[0].enabled = true;
                 attackState = 4;
                 localSpriteRenderer.sprite = spriteAttackActive;
             }
             else if (attackState == 4)
             {
+                attackHitting = false;
                 attackActive = false;
                 hitboxAttacks[0].enabled = false;
                 localSpriteRenderer.sprite = spriteIdle;
@@ -127,6 +132,12 @@ public class enemyAHandler : enemyHandler {
                 attackState = 0;
                 attackRecovery = Random.Range(2, 3);
             }
+        }
+        
+        if (mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
+        {
+            parryable = false;
+            attackHitting = true;
         }
     }
 }

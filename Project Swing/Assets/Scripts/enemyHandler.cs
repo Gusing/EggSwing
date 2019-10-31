@@ -7,6 +7,7 @@ public class enemyHandler : MonoBehaviour
     public bool dead;
     public int currentHP;
     public int maxHP;
+    public bool parryable;
     protected float walkAcc;
     protected float walkSpeed;
     protected float stopDistance;
@@ -43,9 +44,12 @@ public class enemyHandler : MonoBehaviour
     protected bool fallFromAbove;
     protected bool inTheSky;
     protected int fallState;
+    protected bool attackHitting;
 
     protected bool immuneToSlow;
     protected int defense;
+    protected bool parried;
+    protected float parryTime;
 
     protected int currencyValue;
 
@@ -135,6 +139,8 @@ public class enemyHandler : MonoBehaviour
 
         direction = LEFT;
 
+        parried = false;
+
         player = GameObject.Find("Player");
 
         localSpriteRenderer = GetComponent<SpriteRenderer>();
@@ -156,7 +162,7 @@ public class enemyHandler : MonoBehaviour
         //else GetComponent<BoxCollider2D>().enabled = true;
 
         // turn around
-        if (!attacking && !hitstun && attackRecovery <= 1 && !player.GetComponent<playerHandler>().dead)
+        if (!attacking && !hitstun && !parried && attackRecovery <= 1 && !player.GetComponent<playerHandler>().dead)
         {
             hitboxBody.offset = new Vector2(Mathf.Abs(hitboxBody.offset.x) * direction, hitboxBody.offset.y);
             if (player.transform.position.x < transform.position.x)
@@ -180,6 +186,7 @@ public class enemyHandler : MonoBehaviour
 
     public virtual void UpdateAnimations()
     {
+        animator.SetBool("parried", parried);
         animator.SetBool("attacking", attacking);
         animator.SetBool("isHit", hitstun);
         animator.SetBool("attackActive", attackActive);
@@ -222,6 +229,7 @@ public class enemyHandler : MonoBehaviour
         lastAttackHitBy = attackID;
 
         int finalDmg = dmg;
+        if (parried) finalDmg *= 3;
 
         randomHitValue = Random.Range(0f, 1f);
         if (!specialHitstun) finalDmg -= defense;
@@ -233,6 +241,7 @@ public class enemyHandler : MonoBehaviour
             if (finalDmg >= hitstunLimit || specialHitstun)
             {
                 attackActive = false;
+                attackHitting = false;
                 hitstun = true;
                 attacking = false;
                 attackState = 0;
@@ -257,6 +266,8 @@ public class enemyHandler : MonoBehaviour
             }
             //fallFromAbove = false;
             fallState = 0;
+            parryable = false;
+            parried = false;
             rendererHPBar.enabled = true;
             rendererHPFill.enabled = true;
             if (player.transform.position.x < transform.position.x) hitstunDirection = LEFT;
@@ -267,6 +278,24 @@ public class enemyHandler : MonoBehaviour
         }
 
         return finalDmg;
+    }
+
+    public virtual void GetParried()
+    {
+        for (int i = 0; i < hitboxAttacks.Count; i++)
+        {
+            hitboxAttacks[i].enabled = false;
+        }
+        actionTimer = 0;
+        attackActive = false;
+        attacking = false;
+        parryable = false;
+        busy = true;
+        attackState = 0;
+        fallState = 0;
+        if (player.transform.position.x < transform.position.x) hitstunDirection = LEFT;
+        else hitstunDirection = RIGHT;
+        parried = true;
     }
 
     public virtual bool CheckHit(int attackID)
@@ -310,6 +339,7 @@ public class enemyHandler : MonoBehaviour
         rendererHPBar.enabled = false;
         rendererHPFill.enabled = false;
         attacking = false;
+        parried = false;
         attackActive = false;
         for (int i = 0; i < hitboxAttacks.Count; i++)
         {
@@ -349,6 +379,20 @@ public class enemyHandler : MonoBehaviour
             knockback = false;
             bigKnockback = false;
             invincible = false;
+        }
+    }
+
+    protected virtual void Parried()
+    {
+        actionTimer += Time.deltaTime;
+
+        velX = 0;
+
+        if (actionTimer >= parryTime)
+        {
+            actionTimer = 0;
+            busy = false;
+            parried = false;
         }
     }
 
@@ -457,7 +501,7 @@ public class enemyHandler : MonoBehaviour
     {
         attackHitboxTimer += Time.deltaTime;
 
-        if (attackHitboxTimer >= attackHitboxTime)
+        if (attackHitboxTimer >= attackHitboxTime * 2)
         {
             attackHitboxActive = false;
             attackHitboxTimer = 0;
@@ -479,9 +523,9 @@ public class enemyHandler : MonoBehaviour
         offBeat = ob;
     }
 
-    void OnTriggerStay2D(Collider2D other)
+    public virtual void OnTriggerStay2D(Collider2D other)
     {
-        if (other.tag == "player")
+        if (other.tag == "player" && attackHitting == true)
         {
             soundAttack.setParameterValue("Pre", 3);
             soundAttack.start();

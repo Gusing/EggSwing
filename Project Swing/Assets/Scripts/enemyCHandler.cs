@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class enemyCHandler : enemyHandler
 {
-
     public Sprite spriteIdle;
     public Sprite spriteStomp1;
     public Sprite spriteStomp2;
@@ -33,6 +32,8 @@ public class enemyCHandler : enemyHandler
         currencyValue = 5;
 
         stopDistance = 1.1f;
+
+        parryTime = 2.5f;
 
         defense = 1;
         immuneToSlow = true;
@@ -63,13 +64,14 @@ public class enemyCHandler : enemyHandler
 
         base.Update();
 
+        if (parried) Parried();
         if (invincible) Invincible();
         if (attacking) AttackA();
         if (fallFromAbove) FallFromAbove();
         if (attackHitboxActive) UpdateAttackHitbox();
 
         // check for attack
-        if (Vector2.Distance(transform.position, player.transform.position) < 1.8f && !attacking && !fallFromAbove && !hitstun && attackRecovery <= 0 && !player.GetComponent<playerHandler>().dead)
+        if (Vector2.Distance(transform.position, player.transform.position) < 1.8f && !attacking && !fallFromAbove && !hitstun && attackRecovery <= 0 && !player.GetComponent<playerHandler>().dead && !parried)
         {
             localSpriteRenderer.sprite = spriteIdle;
             UpdateHitboxes();
@@ -117,6 +119,7 @@ public class enemyCHandler : enemyHandler
                 soundAttack.start();
                 attackHitboxTimer = 0;
                 attackHitboxActive = true;
+                parryable = true;
                 hitboxAttacks[0].enabled = true;
                 attackState = 4;
                 localSpriteRenderer.sprite = spriteAttackActive;
@@ -132,10 +135,11 @@ public class enemyCHandler : enemyHandler
                 attackRecovery = Random.Range(2.5f, 3);
             }
         }
-    }
 
-    public override void Die(int dmg)
-    {
-        base.Die(dmg);
+        if (mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
+        {
+            parryable = false;
+            attackHitting = true;
+        }
     }
 }

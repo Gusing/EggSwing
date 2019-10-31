@@ -64,6 +64,8 @@ public class playerHandler : MonoBehaviour
 
     public BoxCollider2D hitboxPickup;
 
+    public BoxCollider2D hitboxParry;
+
     BoxCollider2D hitboxBody;
     SpriteRenderer localRenderer;
 
@@ -109,6 +111,11 @@ public class playerHandler : MonoBehaviour
     float blockTime;
     int blockBeat;
     bool successfulBlock;
+
+    bool parrying;
+    bool parryHitting;
+    float parryTime;
+    float parryHitTime;
    
     bool counterReady;
     float counterTime = 0.4f;
@@ -262,6 +269,8 @@ public class playerHandler : MonoBehaviour
         streakDisappearDelay = 3;
         direction = 1;
         blockTime = (60f / mainHandler.currentBpm) * 1.5f;
+        parryTime = 1.5f;
+        parryHitTime = 0.2f;
         blockBeat = -10;
         currentMultiplier = 1;
         currentSP = maxSP;
@@ -398,6 +407,8 @@ public class playerHandler : MonoBehaviour
         if (dodgeSucces) SuccessfulDodge();
         if (dodgeFail) FailedDodge();
         if (blocking) SuccessfulBlock();
+        if (parryHitting) ParryHitting();
+        else if (parrying) SuccessfulParry();
         if (countering) SuccessfulCounterPunch();
         if (birdHitting) SuccessfulBirdPunch();
 
@@ -743,8 +754,9 @@ public class playerHandler : MonoBehaviour
             }
             if (Input.GetButtonDown("Block"))
             {
-                Block();
-                beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
+                Parry();
+                //Block();
+                //beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
             }
         }
 
@@ -774,7 +786,6 @@ public class playerHandler : MonoBehaviour
 
         if (transform.position.x < -9.2f) transform.position = new Vector3(-9.2f, transform.position.y);
         if (transform.position.x > 9.3f) transform.position = new Vector3(9.3f, transform.position.y);
-
         
     }
 
@@ -783,6 +794,8 @@ public class playerHandler : MonoBehaviour
         animator.SetBool("dead", dead);
         //animator.SetBool("countering", countering);
         animator.SetBool("blocking", blocking);
+        animator.SetBool("parrying", parrying);
+        animator.SetBool("parryHit", parryHitting);
         animator.SetBool("usingSuper", usingSuper);
         animator.SetBool("hit", hitstun);
         animator.SetBool("dodging", dodgeSucces);
@@ -1483,6 +1496,54 @@ public class playerHandler : MonoBehaviour
         }
     }
 
+    void Parry()
+    {
+        accX = 0;
+        velX = 0;
+        attackType = 0;
+        parrying = true;
+        soundBlock.start();
+        hitboxParry.enabled = true;
+        UpdateHitboxes();
+        lastAttackBeat = currentBeat;
+        busy = true;
+        RestockCombos();
+    }
+    
+    void SuccessfulParry()
+    {
+        actionTimer += Time.deltaTime;
+
+        if (actionTimer >= 0.2f)
+        {
+            hitboxParry.enabled = false;
+        }
+
+        if (actionTimer >= parryTime)
+        {
+            actionTimer = 0;
+            parrying = false;
+            hitboxParry.enabled = false;
+            busy = false;
+            beatPassed = false;
+        }
+    }
+
+    void ParryHitting()
+    {
+        actionTimer += Time.deltaTime;
+
+        if (actionTimer >= parryHitTime)
+        {
+            actionTimer = 0;
+            parrying = false;
+            parryHitting = false;
+            hitboxParry.enabled = false;
+            busy = false;
+            beatPassed = false;
+        }
+    }
+
     void RestockCombos()
     {
         currentCombos = new List<Attack[]>(allCombos);
@@ -1552,6 +1613,7 @@ public class playerHandler : MonoBehaviour
         hitboxAttack3A.enabled = false;
         hitboxAttack4A.enabled = false;
         hitboxAttackBird.enabled = false;
+        hitboxParry.enabled = false;
     }
 
     void Dodge()
@@ -1656,6 +1718,7 @@ public class playerHandler : MonoBehaviour
             secondRapid = false;
             holdBeatPassed = false;
             dodgeSucces = false;
+            parrying = false;
 
             DisableHurtboxes();
             RestockCombos();
@@ -1839,6 +1902,19 @@ public class playerHandler : MonoBehaviour
         // hit enemy
         if (other.tag.Contains("enemy"))
         {
+            // parry enemy
+            if (hitboxParry.IsTouching(other))
+            {
+                if (other.GetComponent<enemyHandler>().parryable)
+                {
+                    blockBeat = currentBeat;
+                    actionTimer = 0;
+                    parryHitting = true;
+                    other.GetComponent<enemyHandler>().GetParried();
+                    //other.GetComponent<enemyHandler>().TakeDamage(4, 100);
+                }
+            }
+
             if (!other.GetComponent<enemyHandler>().CheckHit(attackID)) return;
             
             birdHitstun = false;
@@ -1865,7 +1941,7 @@ public class playerHandler : MonoBehaviour
 
             if (hitboxAttack4A.IsTouching(other))
             {
-                tDmg = 4;
+                tDmg = 3;
                 tBox = (Vector2)hitboxAttack4A.transform.position + hitboxAttack4A.offset;
             }
 

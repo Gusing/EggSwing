@@ -32,6 +32,8 @@ public class enemyDHandler : enemyHandler
 
         stopDistance = 1.1f;
 
+        parryTime = 1.3f;
+
         dodgeTime = 0.2f;
         dodgeCooldownTime = (60f / mainHandler.currentBpm) * 1.1f;
 
@@ -65,6 +67,7 @@ public class enemyDHandler : enemyHandler
 
         if (!dodging) base.Update();
 
+        if (parried) Parried();
         if (invincible) Invincible();
         if (attacking)
         {
@@ -76,7 +79,7 @@ public class enemyDHandler : enemyHandler
         if (dodging) Dodge();
 
         // check for attack
-        if (Vector2.Distance(transform.position, player.transform.position) < 1.7f && !attacking && !fallFromAbove && !hitstun && attackRecovery <= 0 && !player.GetComponent<playerHandler>().dead && !dodging)
+        if (Vector2.Distance(transform.position, player.transform.position) < 1.7f && !attacking && !fallFromAbove && !hitstun && attackRecovery <= 0 && !player.GetComponent<playerHandler>().dead && !dodging && !parried)
         {
             UpdateHitboxes();
             attackDelay = Random.Range(0.1f, 1.1f);
@@ -157,6 +160,7 @@ public class enemyDHandler : enemyHandler
                 soundAttack.start();
                 attackHitboxTimer = 0;
                 attackHitboxActive = true;
+                parryable = true;
                 hitboxAttacks[0].enabled = true;
                 attackState = 4;
             }
@@ -169,6 +173,12 @@ public class enemyDHandler : enemyHandler
                 attackState = 0;
                 attackRecovery = Random.Range(1, 1.7f);
             }
+        }
+
+        if (mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
+        {
+            parryable = false;
+            attackHitting = true;
         }
     }
 
@@ -201,6 +211,7 @@ public class enemyDHandler : enemyHandler
                 soundAttack.start();
                 attackHitboxTimer = 0;
                 attackHitboxActive = true;
+                parryable = true;
                 hitboxAttacks[1].enabled = true;
                 attackState = 4;
             }
@@ -213,6 +224,12 @@ public class enemyDHandler : enemyHandler
                 attackState = 0;
                 attackRecovery = Random.Range(0.8f, 1.2f);
             }
+        }
+
+        if (mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
+        {
+            parryable = false;
+            attackHitting = true;
         }
     }
 
