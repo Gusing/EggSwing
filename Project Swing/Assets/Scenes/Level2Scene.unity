@@ -1611,7 +1611,7 @@ SpriteRenderer:
   m_PrefabAsset: {fileID: 0}
 --- !u!212 &1858204349 stripped
 SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 2141540808773492929, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
+  m_CorrespondingSourceObject: {fileID: 9205136965741012846, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
     type: 3}
   m_PrefabInstance: {fileID: 1858204345}
   m_PrefabAsset: {fileID: 0}

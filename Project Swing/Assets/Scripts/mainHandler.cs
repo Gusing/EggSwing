@@ -178,6 +178,11 @@ public class mainHandler : MonoBehaviour {
     public Sprite comboBasicHeavy;
     public Sprite comboBasicLight;
 
+    public Sprite spriteControlsOpen;
+    public Sprite spriteControlsClosed;
+    public Image imgControlsTraining;
+    bool trainingControlsOpen;
+
     PlayerData data;
 
     bool holdingRT;
@@ -269,6 +274,7 @@ public class mainHandler : MonoBehaviour {
             for (int i = 0; i < soundPracticeSongs.Count; i++)
             {
                 soundPracticeSongs[i].setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
+                soundPracticeSongs[i].setParameterValue("Practice", 1);
             }
 
             soundAvailableracticeSongs = new List<FMOD.Studio.EventInstance>();
@@ -980,6 +986,10 @@ public class mainHandler : MonoBehaviour {
             {
                 holdingLT = false;
             }
+            if (Input.GetButtonDown("Other Action"))
+            {
+                ToggleTrainingControls();
+            }
         }
         
 
@@ -1001,6 +1011,13 @@ public class mainHandler : MonoBehaviour {
             indicatorTimer = 0;
             //rendererIndicator.sprite = spriteIndicatorEmpty;
         }
+    }
+
+    public void ToggleTrainingControls()
+    {
+        if (trainingControlsOpen) imgControlsTraining.sprite = spriteControlsClosed;
+        else imgControlsTraining.sprite = spriteControlsOpen;
+        trainingControlsOpen = !trainingControlsOpen;
     }
 
     public void StartLevel(int lvl)

@@ -178,27 +178,20 @@ public class beatIndicatorHandlerB : MonoBehaviour
         */
     }
 
-    public void PlayerInput(bool forceGood = false)
+    public void PlayerInput(bool forceGood = false, bool forceBad = false)
     {
         ringChanged = true;
-
-        // funkar inte
-        if (lines.Count > 0)
-        {
-            /*
-            if (rings[rings.Count - 1].transform.localScale.x < startingScale / 2)
-            {
-                Destroy(rings[rings.Count - 1]);
-                rings.RemoveAt(rings.Count - 1);
-            }
-            */
-        }
 
         if (forceGood)
         {
             rendererFeedback.gameObject.GetComponent<beatLightHandler>().Activate(2);
             rendererIcon.transform.localScale = new Vector3(1, 1, 1);
             hitState = 2;
+        }
+        else if (forceBad)
+        {
+            rendererFeedback.gameObject.GetComponent<beatLightHandler>().Activate(0);
+            hitState = 0;
         }
         else
         {

@@ -474,6 +474,8 @@ MonoBehaviour:
     type: 3}
   pHPPickupPick: {fileID: 198933463995965036, guid: a29b5e37ba17032488e6c7fe0b5c2676,
     type: 3}
+  pSuperCharged: {fileID: 198933463995965036, guid: 75aa0e4fd497a684c8e1e5b2cba5020b,
+    type: 3}
   effectHitBlue: {fileID: 1811336824147919723, guid: 8b2ab7fc34013944ebb0191fb8d5f9fd,
     type: 3}
   effectHitRed: {fileID: 1811336824147919723, guid: 99184936697973a4fbeedf39474b3513,
@@ -529,6 +531,7 @@ MonoBehaviour:
   textRank: {fileID: 0}
   maskSPFill: {fileID: 6076490977180517456}
   rendererSPFill: {fileID: 2361852901421952468}
+  SPBar: {fileID: 6724189256972124182}
   spriteSPBar1: {fileID: 21300000, guid: 0dc46d9e55ddfef44837330137fd2594, type: 3}
   spriteSPBar2: {fileID: 21300000, guid: 8f7dac6f3ad1a3c4f9d3c40d038b2943, type: 3}
   spriteSuperFull: {fileID: 21300000, guid: 4604acc9d9235684cb79dd4e60b8f78b, type: 3}

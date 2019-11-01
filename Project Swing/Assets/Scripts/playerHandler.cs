@@ -21,6 +21,7 @@ public class playerHandler : MonoBehaviour
     public ParticleSystem pBirdHit;
     public ParticleSystem pCurrencyPick;
     public ParticleSystem pHPPickupPick;
+    public ParticleSystem pSuperCharged;
 
     [Header("Animated Effects")]
     public GameObject effectHitBlue;
@@ -158,6 +159,7 @@ public class playerHandler : MonoBehaviour
     public Text textRank;
     public SpriteMask maskSPFill;
     public SpriteRenderer rendererSPFill;
+    public GameObject SPBar;
     public Sprite spriteSPBar1;
     public Sprite spriteSPBar2;
     public Sprite spriteSuperFull;
@@ -165,6 +167,7 @@ public class playerHandler : MonoBehaviour
     bool SPSprite;
     float SPBarFlickerTimer;
     float SPBarFlickerTime = 0.07f;
+    bool SPBarAvailable;
 
     [HideInInspector] public bool dead;
     bool resetted;
@@ -256,6 +259,14 @@ public class playerHandler : MonoBehaviour
         currentCombos = new List<Attack[]>();
         RestockCombos();
 
+        // activate SP bar if relevant
+        if (data.itemBought[COMBOCHARGEPUNCH] || data.itemBought[COMBORAPIDKICKS]) SPBarAvailable = true;
+        else
+        {
+            SPBarAvailable = false;
+            SPBar.SetActive(false);
+        }
+
         lastCombo = new List<int>();
         lastCombo.Add(-1);
         lastCombo.Add(-1);
@@ -324,15 +335,20 @@ public class playerHandler : MonoBehaviour
         // update HUD
         maskHPFill.transform.localPosition = new Vector3(-4.44f + (((float)currentHP / (float)maxHP * 4.77f)), 0);
         
+        // update special visuals
         for (int i = 2; i >= 0; i--)
         {
             if (specialCharges > i)
             {
-                renderersSpecialCharges[i].sprite = spriteSuperFull;
-                renderersSpecialCharges[i].enabled = true;
-                renderersSpecialCharges[i].GetComponentInChildren<RectTransform>().localPosition = new Vector3(0, 0);
+                if (renderersSpecialCharges[i].sprite != spriteSuperFull)
+                {
+                    renderersSpecialCharges[i].sprite = spriteSuperFull;
+                    renderersSpecialCharges[i].enabled = true;
+                    renderersSpecialCharges[i].GetComponentInChildren<RectTransform>().localPosition = new Vector3(0, 0);
+                    Instantiate(pSuperCharged, renderersSpecialCharges[i].transform.position + new Vector3(0.4f, 0), new Quaternion(0, 0, 0, 0));
+                }
             }
-            else if (specialCharges == (i))
+            else if (specialCharges == i)
             {
                 renderersSpecialCharges[i].sprite = spriteSuperCharging;
                 renderersSpecialCharges[i].enabled = true;
@@ -361,32 +377,35 @@ public class playerHandler : MonoBehaviour
         }
 
         // update SP and SP bar
-        if (currentSP <= 0 && !chargingSP)
+        if (SPBarAvailable)
         {
-            chargingSP = true;
-        }
-        if (chargingSP)
-        {
-            currentSP += 1.3f * Time.deltaTime;
-            SPBarFlickerTimer += Time.deltaTime;
-            if (SPBarFlickerTimer >= SPBarFlickerTime)
+            if (currentSP <= 0 && !chargingSP)
             {
-                SPBarFlickerTimer = 0;
-                if (SPSprite) rendererSPFill.sprite = spriteSPBar1;
-                else rendererSPFill.sprite = spriteSPBar2;
-                SPSprite = !SPSprite;
+                chargingSP = true;
             }
+            if (chargingSP)
+            {
+                currentSP += 1.3f * Time.deltaTime;
+                SPBarFlickerTimer += Time.deltaTime;
+                if (SPBarFlickerTimer >= SPBarFlickerTime)
+                {
+                    SPBarFlickerTimer = 0;
+                    if (SPSprite) rendererSPFill.sprite = spriteSPBar1;
+                    else rendererSPFill.sprite = spriteSPBar2;
+                    SPSprite = !SPSprite;
+                }
 
+            }
+            if (currentSP < maxSP) currentSP += 1.7f * Time.deltaTime;
+            if (currentSP > maxSP)
+            {
+                soundSPBarFull.start();
+                currentSP = maxSP;
+                chargingSP = false;
+                rendererSPFill.sprite = spriteSPBar1;
+            }
+            maskSPFill.transform.localPosition = new Vector3(-2.5f + (currentSP / maxSP) * 2.5f, 0);
         }
-        if (currentSP < maxSP) currentSP += 1.7f * Time.deltaTime;
-        if (currentSP > maxSP)
-        {
-            soundSPBarFull.start();
-            currentSP = maxSP;
-            chargingSP = false;
-            rendererSPFill.sprite = spriteSPBar1;
-        }
-        maskSPFill.transform.localPosition = new Vector3(-2.5f + (currentSP / maxSP) * 2.5f, 0);
 
         // update bonus score display
         if (bonusDisplayTimer > 0)
@@ -746,7 +765,7 @@ public class playerHandler : MonoBehaviour
                 attackID++;
                 attackIDStart = attackID;
                 SpecialPunch();
-                beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
+                //beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
             }
             if (Input.GetButtonDown("Dodge"))
             {
@@ -1182,8 +1201,10 @@ public class playerHandler : MonoBehaviour
         if (specialCharges == 0)
         {
             soundAttackSuperUnable.start();
+            beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput(false, true);
             return;
         }
+        beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
         accX = 0;
         velX = 0;
         attackType = SUPERATTACK;
@@ -1907,6 +1928,7 @@ public class playerHandler : MonoBehaviour
             {
                 if (other.GetComponent<enemyHandler>().parryable)
                 {
+                    beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
                     blockBeat = currentBeat;
                     actionTimer = 0;
                     parryHitting = true;
