@@ -345,7 +345,7 @@ public class playerHandler : MonoBehaviour
                     renderersSpecialCharges[i].sprite = spriteSuperFull;
                     renderersSpecialCharges[i].enabled = true;
                     renderersSpecialCharges[i].GetComponentInChildren<RectTransform>().localPosition = new Vector3(0, 0);
-                    Instantiate(pSuperCharged, renderersSpecialCharges[i].transform.position + new Vector3(0.4f, 0), new Quaternion(0, 0, 0, 0));
+                    Instantiate(pSuperCharged, renderersSpecialCharges[i].transform.position + new Vector3(0, 0.4f), new Quaternion(0, 0, 0, 0));
                 }
             }
             else if (specialCharges == i)

@@ -52,7 +52,7 @@ public class beatLineHandler : MonoBehaviour
         //if (currentX <= 1f) Destroy(gameObject);
         //if (transform.localPosition.x <= 0.01f && transform.localPosition.x >= -0.01f) Destroy(gameObject);
 
-        transform.localPosition = (new Vector3((5 * -xSide) - (lifeTime / (bpmInSeconds * 4)) * 5 * -xSide, 0));
+        transform.localPosition = (new Vector3((5.1f * -xSide) - (lifeTime / (bpmInSeconds * 4)) * 5f * -xSide, 0));
 
         //transform.localPosition = new Vector3((currentX - 1) * xSide, 0);
         //transform.localScale = new Vector3(currentX, currentX, 1);
