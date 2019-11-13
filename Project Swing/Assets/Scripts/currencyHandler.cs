@@ -41,12 +41,14 @@ public class currencyHandler : MonoBehaviour
         }
         value = size;
 
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!mainHandler.normalLevelFinished)
+        if (!mainHandler.normalLevelFinished && !mainHandler.birdLevelFinished)
         {
             if (!landed) velY += accY * Time.deltaTime;
 

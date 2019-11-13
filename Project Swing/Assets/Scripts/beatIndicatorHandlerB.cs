@@ -29,7 +29,10 @@ public class beatIndicatorHandlerB : MonoBehaviour
     int hitState;
     bool songStarted;
     bool stopped;
-    
+
+    bool showEveryOther;
+    bool otherBeat;
+
     List<GameObject> lines;
 
     void Awake()
@@ -147,7 +150,6 @@ public class beatIndicatorHandlerB : MonoBehaviour
             lines[lines.Count - 1].GetComponent<beatLineHandler>().Init(false, bpmInSeconds, 3);
         }
         
-
         if (mainHandler.currentState == 2 && !recordedBeat && !stopped)
         {
             recordedBeat = true;
@@ -177,7 +179,7 @@ public class beatIndicatorHandlerB : MonoBehaviour
         }
         */
     }
-
+    
     public void PlayerInput(bool forceGood = false, bool forceBad = false)
     {
         ringChanged = true;

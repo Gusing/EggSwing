@@ -188,6 +188,18 @@ public class mainHandlerTutorial : MonoBehaviour {
     bool holdingRT;
     bool holdingLT;
 
+    // tutorial
+    public GameObject enemyBoxLight;
+    public GameObject enemyBoxHeavy;
+    public GameObject objectWall;
+    public GameObject parryPractice;
+    public GameObject enemyTutorial;
+
+    int tutorialState;
+    float tutorialTimer;
+    public Text txtTutorial;
+    public beatIndicatorHandlerBTutorial beatIndicator;
+
     void Awake()
     {
         currentBpm = bpm;
@@ -996,9 +1008,13 @@ public class mainHandlerTutorial : MonoBehaviour {
 
 	}
 
-    void SetReady()
+    void UpdateTutorial()
     {
-        //rendererIndicator.sprite = spriteIndicatorOrange;
+        if (tutorialState == 0 && currentState == BEAT)
+        {
+            tutorialState++;
+            beatIndicator.SetShowEveryOther();
+        }
     }
 
     void SetBeat()

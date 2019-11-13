@@ -1449,7 +1449,7 @@ public class playerHandler : MonoBehaviour
         hitboxAttackBird.enabled = true;
         Instantiate(effectHitBird, transform.position + new Vector3(0, 0.3f), new Quaternion(0, 0, 0, 0));
         currentScore += (int)Mathf.Round(100 * currentMultiplier);
-        print("100 * " + currentMultiplier + " = " + (int)Mathf.Round(100 * currentMultiplier));
+        //print("100 * " + currentMultiplier + " = " + (int)Mathf.Round(100 * currentMultiplier));
         UpdateStreak(1);
 
         actionTimer = 0;
@@ -1710,6 +1710,7 @@ public class playerHandler : MonoBehaviour
             tookDamage = true;
             streakTimer = 0;
             currentStreak = 0;
+            textCombo.color = new Color(0.4f, 0.49f, 0.41f);
             birdComboHeal = 0;
             streakLevel = 0;
             textStreak.enabled = false;
@@ -1963,7 +1964,7 @@ public class playerHandler : MonoBehaviour
 
             if (hitboxAttack4A.IsTouching(other))
             {
-                tDmg = 4;
+                tDmg = 3;
                 tBox = (Vector2)hitboxAttack4A.transform.position + hitboxAttack4A.offset;
             }
 

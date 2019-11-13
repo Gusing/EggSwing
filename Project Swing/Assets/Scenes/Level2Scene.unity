@@ -190,6 +190,8 @@ MonoBehaviour:
   enemyD: {fileID: 1386477621940742, guid: f17819d1c6c6ff94e9d6fc045011eb23, type: 3}
   enemyBird: {fileID: 8370553139761448980, guid: cfee2d09f6fddee4dab3c0b33913eab2,
     type: 3}
+  currencyObject: {fileID: 338368309248678210, guid: d6324fbbf6cdd7f4fb4131545d93f055,
+    type: 3}
   player: {fileID: 1364628209}
   txtVictory: {fileID: 1643678104}
   txtGameOver: {fileID: 1643678103}
@@ -236,6 +238,9 @@ MonoBehaviour:
   comboHolder: {fileID: 0}
   comboBasicHeavy: {fileID: 0}
   comboBasicLight: {fileID: 0}
+  spriteControlsOpen: {fileID: 0}
+  spriteControlsClosed: {fileID: 0}
+  imgControlsTraining: {fileID: 0}
 --- !u!20 &25819224
 Camera:
   m_ObjectHideFlags: 0
@@ -1054,16 +1059,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelUI
       objectReference: {fileID: 0}
-    - target: {fileID: 303937643309945714, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 25819222}
-    - target: {fileID: 303937644554827046, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 25819222}
     - target: {fileID: 303937643396106981, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1174,15 +1169,25 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 25819224}
-    - target: {fileID: 303937643309945712, guid: 024694b4cb46c694581f8476382507b3,
+    - target: {fileID: 303937644554827046, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 25819222}
+    - target: {fileID: 303937643309945714, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 25819222}
     - target: {fileID: 4314144518124510493, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -5.0299683
+      objectReference: {fileID: 0}
+    - target: {fileID: 303937643309945712, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 303937644554827044, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}

@@ -534,6 +534,13 @@ MonoBehaviour:
   spriteControlsOpen: {fileID: 0}
   spriteControlsClosed: {fileID: 0}
   imgControlsTraining: {fileID: 0}
+  enemyBoxLight: {fileID: 0}
+  enemyBoxHeavy: {fileID: 0}
+  objectWall: {fileID: 0}
+  parryPractice: {fileID: 0}
+  enemyTutorial: {fileID: 0}
+  txtTutorial: {fileID: 0}
+  beatIndicator: {fileID: 792279978}
 --- !u!20 &602683335
 Camera:
   m_ObjectHideFlags: 0
@@ -1144,7 +1151,7 @@ PrefabInstance:
     - target: {fileID: 881514103494841171, guid: 3073844ef2db9fc4b932278d94f9bf50,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.78
+      value: -2.31
       objectReference: {fileID: 0}
     - target: {fileID: 881514103494841171, guid: 3073844ef2db9fc4b932278d94f9bf50,
         type: 3}

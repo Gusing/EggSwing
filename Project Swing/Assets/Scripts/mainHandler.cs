@@ -36,6 +36,7 @@ public class mainHandler : MonoBehaviour {
     public GameObject enemyC;
     public GameObject enemyD;
     public GameObject enemyBird;
+    public GameObject currencyObject;
 
     List<GameObject> enemies;
 
@@ -723,9 +724,22 @@ public class mainHandler : MonoBehaviour {
             {
                 songStarted = false;
             }
-            if (name == "End" && gameMode == BIRD && !player.GetComponent<playerHandler>().dead)
+            if (name == "End" && gameMode == BIRD && !player.GetComponent<playerHandler>().dead && !birdLevelFinished)
             {
                 birdLevelFinished = true;
+                int currAmount = 75 + player.GetComponent<playerHandler>().currentRank * 15;
+                currAmount = Random.Range(currAmount - 20, currAmount + 20);
+                for (int i = 0; i < currAmount / 2; i++)
+                {
+                    GameObject tempObject = Instantiate(currencyObject, new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(0.3f, 1.4f), 0), new Quaternion(0, 0, 0, 0));
+                    tempObject.GetComponent<currencyHandler>().Init(true, 0);
+                }
+                for (int i = 0; i < currAmount / 2; i++)
+                {
+                    GameObject tempObject = Instantiate(currencyObject, transform.position + new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(0.3f, 1.4f), 0), new Quaternion(0, 0, 0, 0));
+                    tempObject.GetComponent<currencyHandler>().Init(false, 0);
+                }
+
             }
             if (name.Contains("12") || name.Contains("11") || name.Contains("10") || name.Contains("13") || name.Contains("14") || name.Contains("21"))
             {
