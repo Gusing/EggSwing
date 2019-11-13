@@ -78,7 +78,7 @@ public class enemyHandler : MonoBehaviour
     protected GameObject player;
 
     public List<Transform> warningPoints;
-    List<Vector3> warningPointPositions;
+    protected List<Vector3> warningPointPositions;
 
     protected SpriteRenderer localSpriteRenderer;
 
@@ -232,7 +232,7 @@ public class enemyHandler : MonoBehaviour
         if (parried) finalDmg *= 3;
 
         randomHitValue = Random.Range(0f, 1f);
-        if (!specialHitstun) finalDmg -= defense;
+        if (!specialHitstun) finalDmg = Mathf.Clamp(finalDmg - defense, 0, 999);
         if (immuneToSlow && (attackType == 1 || attackType == 6) && !specialHitstun) finalDmg = 0;
         currentHP -= finalDmg;
         if (currentHP <= 0) Die(finalDmg);
@@ -494,6 +494,12 @@ public class enemyHandler : MonoBehaviour
                 attackState = 0;
                 attackRecovery = Random.Range(2, 3);
             }
+        }
+
+        if (mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
+        {
+            parryable = false;
+            attackHitting = true;
         }
     }
 

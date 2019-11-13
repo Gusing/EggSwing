@@ -4,7 +4,7 @@ using UnityEngine;
 using SynchronizerData;
 using UnityEngine.UI;
 
-public class playerHandler : MonoBehaviour
+public class playerHandlerTutorial : MonoBehaviour
 {
     float velX;
     float accX;
@@ -279,26 +279,26 @@ public class playerHandler : MonoBehaviour
         specialChargeExtraTime = 50;
         streakDisappearDelay = 3;
         direction = 1;
-        blockTime = (60f / mainHandler.currentBpm) * 1.5f;
+        blockTime = (60f / mainHandlerTutorial.currentBpm) * 1.5f;
         parryTime = 1.5f;
         parryHitTime = 0.2f;
         blockBeat = -10;
         currentMultiplier = 1;
         currentSP = maxSP;
         lastDmg = 0;
-        punchSuccessTime = (60f / mainHandler.currentBpm) * 0.75f;
-        quickPunchSuccessTime = (60f / mainHandler.currentBpm) * 0.6f;
-        specialPunchSuccessTime = (60f / mainHandler.currentBpm) * 1f;
-        rapidPunchSuccessTime = (60f / mainHandler.currentBpm) * 0.5f;
-        localBPM = mainHandler.currentBpm;
+        punchSuccessTime = (60f / mainHandlerTutorial.currentBpm) * 0.75f;
+        quickPunchSuccessTime = (60f / mainHandlerTutorial.currentBpm) * 0.6f;
+        specialPunchSuccessTime = (60f / mainHandlerTutorial.currentBpm) * 1f;
+        rapidPunchSuccessTime = (60f / mainHandlerTutorial.currentBpm) * 0.5f;
+        localBPM = mainHandlerTutorial.currentBpm;
         normalLevelFinished = false;
         birdLevelFinished = false;
         tookDamage = false;
 
         textRank.text = "E";
         textMultiplier.enabled = false;
-        if (mainHandler.staticLevel < 1 || mainHandler.staticLevel > 99) textRank.enabled = false;
-        if (mainHandler.staticLevel < 1)
+        if (mainHandlerTutorial.staticLevel < 1 || mainHandlerTutorial.staticLevel > 99) textRank.enabled = false;
+        if (mainHandlerTutorial.staticLevel < 1)
         {
             textScore.enabled = false;
             spriteScoreBg.enabled = false;
@@ -358,17 +358,17 @@ public class playerHandler : MonoBehaviour
 
         }
 
-        if (currentStreak > 0 && mainHandler.currentGameMode != 1)
+        if (currentStreak > 0 && mainHandlerTutorial.currentGameMode != 1)
         {
             textStreak.text = "Streak: " + currentStreak;
             textStreak.transform.localScale = new Vector3((0.5f + streakLevel * 0.15f) - (streakTimer / streakDisappearDelay) * 0.5f, (0.5f + streakLevel * 0.15f) - (streakTimer / streakDisappearDelay) * 0.5f, 1);
         }
-        if (mainHandler.currentGameMode == 1)
+        if (mainHandlerTutorial.currentGameMode == 1)
         {
             textCombo.text = "Combo: " + currentStreak;
         }
 
-        if (mainHandler.staticLevel > 0) textCurrency.text = currentCurrency.ToString();
+        if (mainHandlerTutorial.staticLevel > 0) textCurrency.text = currentCurrency.ToString();
 
         // return if dead
         if (dead)
@@ -443,7 +443,7 @@ public class playerHandler : MonoBehaviour
         }
 
         // update streak
-        if (mainHandler.currentGameMode != 1)
+        if (mainHandlerTutorial.currentGameMode != 1)
         {
             if (currentStreak > 0) streakTimer += Time.deltaTime;
 
@@ -463,61 +463,15 @@ public class playerHandler : MonoBehaviour
 
         // update multiplier
         textMultiplier.text = "x " + currentMultiplier;
-
-        // update rank
-        if (currentRank < 5 && mainHandler.staticLevel < 100 && mainHandler.staticLevel > 0)
-        {
-            if (currentScore >= mainHandler.currentRankLimits[currentRank])
-            {
-                currentRank++;
-                if (currentRank == 1)
-                {
-                    soundRankAnnouncer.setParameterValue("Announcer", 1);
-                    if (mainHandler.currentGameMode != 1) soundRankAnnouncer.start();
-                    textRank.text = "D";
-                    textRank.color = new Color(0.57f, 0.6f, 0.91f);
-                }
-                if (currentRank == 2)
-                {
-                    soundRankAnnouncer.setParameterValue("Announcer", 2);
-                    if (mainHandler.currentGameMode != 1) soundRankAnnouncer.start();
-                    textRank.text = "C";
-                    textRank.color = new Color(0.94f, 0.69f, 0.3f);
-                }
-                if (currentRank == 3)
-                {
-                    soundRankAnnouncer.setParameterValue("Announcer", 3);
-                    if (mainHandler.currentGameMode != 1) soundRankAnnouncer.start();
-                    textRank.text = "B";
-                    textRank.color = new Color(0.2f, 0.76f, 1f);
-                }
-                if (currentRank == 4)
-                {
-                    soundRankAnnouncer.setParameterValue("Announcer", 4);
-                    if (mainHandler.currentGameMode != 1) soundRankAnnouncer.start();
-                    textRank.text = "A";
-                    textRank.color = new Color(1f, 0.05f, 0.95f);
-                }
-                if (currentRank == 5)
-                {
-                    if (mainHandler.currentGameMode != 1) soundRankAnnouncer.setParameterValue("Announcer", 5);
-                    else soundRankAnnouncer.setParameterValue("Announcer", 6);
-                    soundRankAnnouncer.start();
-                    textRank.text = "S";
-                    if (mainHandler.currentGameMode == 1) textRank.text = "P";
-                    textRank.color = new Color(1f, 0.9f, 0f);
-                }
-            }
-        }
         
         // update bpm
-        if (localBPM != mainHandler.currentBpm)
+        if (localBPM != mainHandlerTutorial.currentBpm)
         {
-            localBPM = mainHandler.currentBpm;
-            punchSuccessTime = (60f / mainHandler.currentBpm) * 0.75f;
-            quickPunchSuccessTime = (60f / mainHandler.currentBpm) * 0.6f;
-            specialPunchSuccessTime = (60f / mainHandler.currentBpm) * 1f;
-            rapidPunchSuccessTime = (60f / mainHandler.currentBpm) * 0.5f;
+            localBPM = mainHandlerTutorial.currentBpm;
+            punchSuccessTime = (60f / mainHandlerTutorial.currentBpm) * 0.75f;
+            quickPunchSuccessTime = (60f / mainHandlerTutorial.currentBpm) * 0.6f;
+            specialPunchSuccessTime = (60f / mainHandlerTutorial.currentBpm) * 1f;
+            rapidPunchSuccessTime = (60f / mainHandlerTutorial.currentBpm) * 0.5f;
         }
 
         // update birds
@@ -549,17 +503,17 @@ public class playerHandler : MonoBehaviour
             if (currentHP > maxHP) currentHP = maxHP;
         }
         
-        if (mainHandler.normalLevelFinished && !normalLevelFinished)
+        if (mainHandlerTutorial.normalLevelFinished && !normalLevelFinished)
         {
-            beatIndicator.GetComponent<beatIndicatorHandlerB>().Clear();
+            beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().Clear();
             normalLevelFinished = true;
             if (currentHP == maxHP) AddBonusScore("Full HP", 2000, false, true);
             else AddBonusScore("HP Bonus", currentHP * 50, false, true);
             if (specialCharges > 0) AddBonusScore("Supers Left", specialCharges * 150, false, true);
-            if (mainHandler.levelTimer <= 180) AddBonusScore("Time Bonus", 1000 - (int)((mainHandler.levelTimer / 180f) * 1000f), false, true);
+            if (mainHandlerTutorial.levelTimer <= 180) AddBonusScore("Time Bonus", 1000 - (int)((mainHandlerTutorial.levelTimer / 180f) * 1000f), false, true);
         }
 
-        if (mainHandler.birdLevelFinished && !birdLevelFinished)
+        if (mainHandlerTutorial.birdLevelFinished && !birdLevelFinished)
         {
             GameObject tScoreBonus;
             birdLevelFinished = true;
@@ -577,9 +531,9 @@ public class playerHandler : MonoBehaviour
             }
             if (currentRank != 5 && currentRank > 0)
             {
-                if (currentRank < 5 && mainHandler.staticLevel < 100 && mainHandler.staticLevel > 0)
+                if (currentRank < 5 && mainHandlerTutorial.staticLevel < 100 && mainHandlerTutorial.staticLevel > 0)
                 {
-                    if (currentScore >= mainHandler.currentRankLimits[currentRank])
+                    if (currentScore >= mainHandlerTutorial.currentRankLimits[currentRank])
                     {
                         currentRank++;
                         if (currentRank == 1)
@@ -624,11 +578,11 @@ public class playerHandler : MonoBehaviour
         }
 
         // update beat and combo state
-        if (mainHandler.currentState == BEAT)
+        if (mainHandlerTutorial.currentState == BEAT)
         {
             beatState = BEAT;
         }
-        else if (mainHandler.currentState == SUCCESS)
+        else if (mainHandlerTutorial.currentState == SUCCESS)
         {
             beatState = SUCCESS;
             
@@ -713,7 +667,7 @@ public class playerHandler : MonoBehaviour
                 BirdPunch();
             }
         }
-        else if (mainHandler.currentGameMode == 1 && !birdLevelFinished)
+        else if (mainHandlerTutorial.currentGameMode == 1 && !birdLevelFinished)
         {
             if ((Input.GetButtonDown("Heavy Attack") || Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Alternate Bird") || dpadV2 || dpadH2 || Input.GetButtonDown("Super") || Input.GetButtonDown("Other Action")) && !punchingFail && !resetted)
             {
@@ -744,21 +698,21 @@ public class playerHandler : MonoBehaviour
             FailedPunch();
         }
 
-        if (!busy && mainHandler.songStarted && mainHandler.currentGameMode != 1 && !normalLevelFinished)
+        if (!busy && mainHandlerTutorial.songStarted && mainHandlerTutorial.currentGameMode != 1 && !normalLevelFinished)
         {
             if (Input.GetButtonDown("Heavy Attack"))
             {
                 attackID++;
                 attackIDStart = attackID;
                 Punch();
-                beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
+                beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().PlayerInput();
             }
             if (Input.GetButtonDown("Light Attack"))
             {
                 attackID++;
                 attackIDStart = attackID;
                 QuickPunch();
-                beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
+                beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().PlayerInput();
             }
             if (Input.GetButtonDown("Super") && data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER])
             {
@@ -775,17 +729,17 @@ public class playerHandler : MonoBehaviour
             {
                 Parry();
                 //Block();
-                //beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
+                //beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().PlayerInput();
             }
         }
 
-        if (((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0) && !busy) && mainHandler.currentGameMode != 1 && !normalLevelFinished)
+        if (((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0) && !busy) && mainHandlerTutorial.currentGameMode != 1 && !normalLevelFinished)
         {
             accX = 26f;
             direction = 1;
             localRenderer.flipX = false;
         }
-        else if (((Input.GetButton("MoveLeft") || Input.GetAxisRaw("Move Axis") < 0) && !busy) && mainHandler.currentGameMode != 1 && !normalLevelFinished)
+        else if (((Input.GetButton("MoveLeft") || Input.GetAxisRaw("Move Axis") < 0) && !busy) && mainHandlerTutorial.currentGameMode != 1 && !normalLevelFinished)
         {
             accX = -26f;
             direction = -1;
@@ -824,7 +778,7 @@ public class playerHandler : MonoBehaviour
         animator.SetBool("attacking", punchingSuccess);
         animator.SetBool("failedAttack", punchingFail);
         animator.SetBool("attackActive", punchingActive);
-        animator.SetBool("offBeat", mainHandler.offBeat);
+        animator.SetBool("offBeat", mainHandlerTutorial.offBeat);
         animator.SetBool("victory", normalLevelFinished || birdLevelFinished);
     }
 
@@ -886,7 +840,7 @@ public class playerHandler : MonoBehaviour
             currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 0);
             currentCombos[0][comboState].soundAttackHit.start();
 
-            beatIndicator.GetComponent<beatIndicatorHandlerB>().HeavyAttackRemove();
+            beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().HeavyAttackRemove();
             SuccessfulPunch();
         }
         else if (beatState == FAIL)
@@ -1066,7 +1020,7 @@ public class playerHandler : MonoBehaviour
                         DisableHurtboxes();
                         attackID++;
                         attackIDStart = attackID;
-                        beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput(true);
+                        beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().PlayerInput(true);
                         RapidPunch();
                         break;
                     }
@@ -1172,7 +1126,7 @@ public class playerHandler : MonoBehaviour
                         DisableHurtboxes();
                         attackID++;
                         attackIDStart = attackID;
-                        beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
+                        beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().PlayerInput();
                         RapidPunch();
                         break;
                     }
@@ -1201,10 +1155,10 @@ public class playerHandler : MonoBehaviour
         if (specialCharges == 0)
         {
             soundAttackSuperUnable.start();
-            beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput(false, true);
+            beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().PlayerInput(false, true);
             return;
         }
-        beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
+        beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().PlayerInput();
         accX = 0;
         velX = 0;
         attackType = SUPERATTACK;
@@ -1360,7 +1314,7 @@ public class playerHandler : MonoBehaviour
 
                         Instantiate(pHoldAttack, currentCombos[0][comboState].hitbox.transform.position + new Vector3(0.5f * direction, -0.4f), new Quaternion(0, Mathf.Clamp(direction, -1, 0) * 180, 0, 0));
 
-                        beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
+                        beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().PlayerInput();
 
                         punchingActive = true;
                     }
@@ -1600,7 +1554,7 @@ public class playerHandler : MonoBehaviour
     {
         hitboxBody.enabled = false;
 
-        velX = (-3f - actionTimer * 5) * hitstunDirection;
+        //velX = (-3f - actionTimer * 5) * hitstunDirection;
 
         actionTimer += Time.deltaTime;
 
@@ -1759,7 +1713,7 @@ public class playerHandler : MonoBehaviour
     {
         soundDie.start();
         currentHP = 0;
-        if (mainHandler.currentGameMode != 1) beatIndicator.GetComponent<beatIndicatorHandlerB>().Clear();
+        if (mainHandlerTutorial.currentGameMode != 1) beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().Clear();
         hitboxBody.enabled = false;
         dead = true;
     }
@@ -1768,7 +1722,7 @@ public class playerHandler : MonoBehaviour
     {
         normalLevelFinished = false;
         birdLevelFinished = false;
-        if (mainHandler.currentGameMode != 1) beatIndicator.GetComponent<beatIndicatorHandlerB>().Restart();
+        if (mainHandlerTutorial.currentGameMode != 1) beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().Restart();
         currentHP = maxHP;
         dead = false;
         if (data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER]) specialCharges = maxSpecialCharges;
@@ -1817,11 +1771,11 @@ public class playerHandler : MonoBehaviour
     void UpdateStreak(int dmg)
     {
         // update streak
-        if (mainHandler.staticLevel > 0)
+        if (mainHandlerTutorial.staticLevel > 0)
         {
             if (dmg > 0) currentStreak++;
-            if (mainHandler.currentGameMode == 1) birdComboHeal++;
-            if (mainHandler.currentGameMode != 1)
+            if (mainHandlerTutorial.currentGameMode == 1) birdComboHeal++;
+            if (mainHandlerTutorial.currentGameMode != 1)
             {
                 textStreak.enabled = true;
                 textStreak.transform.localEulerAngles = new Vector3(0, 0, Random.Range(-4f, 4f));
@@ -1883,8 +1837,8 @@ public class playerHandler : MonoBehaviour
 
     void AddBonusScore(string text, int amount, bool notBonus = false, bool noMultiplier = false)
     {
-        if (mainHandler.HUDTurnedOff) return;
-        if (mainHandler.staticLevel > 0)
+        if (mainHandlerTutorial.HUDTurnedOff) return;
+        if (mainHandlerTutorial.staticLevel > 0)
         {
             if (!notBonus)
             {
@@ -1926,9 +1880,10 @@ public class playerHandler : MonoBehaviour
             // parry enemy
             if (hitboxParry.IsTouching(other))
             {
+                print("gfjkops");
                 if (other.GetComponent<enemyHandler>().parryable)
                 {
-                    beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
+                    beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().PlayerInput();
                     blockBeat = currentBeat;
                     actionTimer = 0;
                     parryHitting = true;

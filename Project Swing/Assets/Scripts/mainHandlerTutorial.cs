@@ -11,7 +11,7 @@ using UnityEngine.Analytics;
 using UnityEngine.EventSystems;
 
 
-public class mainHandler : MonoBehaviour {
+public class mainHandlerTutorial : MonoBehaviour {
 
     [Header("Level Data")]
     public int level;
@@ -193,8 +193,7 @@ public class mainHandler : MonoBehaviour {
         currentBpm = bpm;
         currentLeniency = leniency;
         staticLevel = level;
-        if (level < 100 && level > 0) gameMode = sceneSelectionHandler.Instance.gameModeSelected;
-        else gameMode = NORMAL;
+        gameMode = NORMAL;
         currentGameMode = gameMode;
         data = SaveSystem.LoadPlayer();
     }
@@ -250,7 +249,7 @@ public class mainHandler : MonoBehaviour {
         seenControls = data.seenControls;
         seenBirdTutorial = data.seenBirdTutorial;
 
-        player.GetComponent<playerHandler>().Init(currency);
+        player.GetComponent<playerHandlerTutorial>().Init(currency);
         
         currentSpawn = 0;
         levelTimer = 0;
@@ -723,7 +722,7 @@ public class mainHandler : MonoBehaviour {
             {
                 songStarted = false;
             }
-            if (name == "End" && gameMode == BIRD && !player.GetComponent<playerHandler>().dead)
+            if (name == "End" && gameMode == BIRD && !player.GetComponent<playerHandlerTutorial>().dead)
             {
                 birdLevelFinished = true;
             }
@@ -738,10 +737,10 @@ public class mainHandler : MonoBehaviour {
             if ((name.Contains("B") && name.Length == 2 && level >= 0) && gameMode != NORMAL)
             {
                 totalBirds++;
-                player.GetComponent<playerHandler>().birds.Add(Instantiate(enemyBird, new Vector3(0f, 0f), Quaternion.identity));
-                if (name == "B1") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(1, -totalBirds);
-                if (name == "B2") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(2, -totalBirds);
-                if (name == "B4") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(0, -totalBirds);
+                player.GetComponent<playerHandlerTutorial>().birds.Add(Instantiate(enemyBird, new Vector3(0f, 0f), Quaternion.identity));
+                if (name == "B1") player.GetComponent<playerHandlerTutorial>().birds[player.GetComponent<playerHandlerTutorial>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(1, -totalBirds);
+                if (name == "B2") player.GetComponent<playerHandlerTutorial>().birds[player.GetComponent<playerHandlerTutorial>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(2, -totalBirds);
+                if (name == "B4") player.GetComponent<playerHandlerTutorial>().birds[player.GetComponent<playerHandlerTutorial>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(0, -totalBirds);
             }
         }
         if (type == FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT)
@@ -808,7 +807,7 @@ public class mainHandler : MonoBehaviour {
             HUDTurnedOff = true;
         }
         
-        if (player.GetComponent<playerHandler>().dead)
+        if (player.GetComponent<playerHandlerTutorial>().dead)
         {
             if (gameOverTimer == 0)
             {
@@ -848,8 +847,8 @@ public class mainHandler : MonoBehaviour {
                     txtRecordAnnouncement.enabled = true;
                 }
                 if (currentMaxStreak > streakLevelEndlessRecord) streakLevelEndlessRecord = currentMaxStreak;
-                currency = player.GetComponent<playerHandler>().currentCurrency;
-                SaveSystem.SavePlayer(this);
+                currency = player.GetComponent<playerHandlerTutorial>().currentCurrency;
+                //SaveSystem.SavePlayer(this);
             }
             gameOver = true;
             print("buttons");
@@ -899,6 +898,7 @@ public class mainHandler : MonoBehaviour {
         }
 
         // update progress bar
+        /*
         if (level > 0 && level < 100 && currentGameMode != BIRD)
         {
             maskProgressFill.transform.localPosition = new Vector3(-4.66f * (1 - ((float)enemiesDead / (float)totalEnemies)), 0);
@@ -909,9 +909,10 @@ public class mainHandler : MonoBehaviour {
             maskProgressFill.transform.localPosition = new Vector3(-4.66f * (1 - Mathf.Clamp((levelTimer / songLengths[level]), 0, 1)), 0);
             rendererProgressMarker.transform.localPosition = new Vector3(-2.22f + 4.44f * Mathf.Clamp((levelTimer / songLengths[level]), 0, 1), 0);
         }
+        */
 
         // update streak parameter
-        if (player.GetComponent<playerHandler>().streakLevel > 2)
+        if (player.GetComponent<playerHandlerTutorial>().streakLevel > 2)
         {
             soundMusic.setParameterValue("Cool", 1);
             soundMusic.setParameterValue("CoolFail", 0);
@@ -927,9 +928,9 @@ public class mainHandler : MonoBehaviour {
             soundMusic.setParameterValue("Cool", 0);
         }
 
-        if (player.GetComponent<playerHandler>().currentStreak > currentMaxStreak) currentMaxStreak = player.GetComponent<playerHandler>().currentStreak;
+        if (player.GetComponent<playerHandlerTutorial>().currentStreak > currentMaxStreak) currentMaxStreak = player.GetComponent<playerHandlerTutorial>().currentStreak;
         
-        if (player.GetComponent<playerHandler>().streakLevel >= 3) GetComponent<Camera>().orthographicSize = 5.35f + (beatTimer2 / 0.6f) * 0.05f;
+        if (player.GetComponent<playerHandlerTutorial>().streakLevel >= 3) GetComponent<Camera>().orthographicSize = 5.35f + (beatTimer2 / 0.6f) * 0.05f;
         else GetComponent<Camera>().orthographicSize = 5.4f;
 
         if (Input.GetButtonDown("Cancel"))
@@ -938,7 +939,7 @@ public class mainHandler : MonoBehaviour {
         }
 
         // update time limit
-        if (gameMode == HARD && !normalLevelFinished && !player.GetComponent<playerHandler>().dead)
+        if (gameMode == HARD && !normalLevelFinished && !player.GetComponent<playerHandlerTutorial>().dead)
         { 
             currentTimeLimit -= Time.deltaTime;
             if (currentTimeLimit.ToString().Length > 5) txtTimeLeft.text =  currentTimeLimit.ToString().Remove(5);
@@ -952,7 +953,7 @@ public class mainHandler : MonoBehaviour {
 
             if (currentTimeLimit <= 0)
             {
-                player.GetComponent<playerHandler>().TakeDamage(999, 0, true);
+                player.GetComponent<playerHandlerTutorial>().TakeDamage(999, 0, true);
                 currentTimeLimit = 0;
                 txtTimeLeft.text = currentTimeLimit.ToString();
             }
@@ -960,7 +961,7 @@ public class mainHandler : MonoBehaviour {
         
         ProgressLevel();
 
-        if (level == 100 && !player.GetComponent<playerHandler>().dead)
+        if (level == 100 && !player.GetComponent<playerHandlerTutorial>().dead)
         {
             SecondCounter.text = "TIME: " + Mathf.Round(levelTimer).ToString();
         }
@@ -1035,7 +1036,7 @@ public class mainHandler : MonoBehaviour {
         lastMode = currentGameMode;
         if (gameMode == BIRD) seenBirdTutorial = true;
         seenControls = true;
-        SaveSystem.SavePlayer(this);
+        //SaveSystem.SavePlayer(this);
         for (int i = 0; i < enemies.Count; i++)
         {
             enemies[i].GetComponent<enemyHandler>().Stop();
@@ -1059,7 +1060,7 @@ public class mainHandler : MonoBehaviour {
 
     void ProgressLevel()
     {
-        if (!player.GetComponent<playerHandler>().dead) levelTimer += Time.deltaTime;
+        if (!player.GetComponent<playerHandlerTutorial>().dead) levelTimer += Time.deltaTime;
 
         // normal/hard mode
         if (level > 0 && level < 100 && gameMode == NORMAL || gameMode == HARD)
@@ -1089,8 +1090,8 @@ public class mainHandler : MonoBehaviour {
                     {
                         if (currentMaxStreak > streakRecord[level]) streakRecord[level] = currentMaxStreak;
                         clearedLevel[level] = true;
-                        if (player.GetComponent<playerHandler>().currentScore > scoreRecord[level]) scoreRecord[level] = player.GetComponent<playerHandler>().currentScore;
-                        if (player.GetComponent<playerHandler>().currentRank > rankRecord[level]) rankRecord[level] = player.GetComponent<playerHandler>().currentRank;
+                        if (player.GetComponent<playerHandlerTutorial>().currentScore > scoreRecord[level]) scoreRecord[level] = player.GetComponent<playerHandlerTutorial>().currentScore;
+                        if (player.GetComponent<playerHandlerTutorial>().currentRank > rankRecord[level]) rankRecord[level] = player.GetComponent<playerHandlerTutorial>().currentRank;
 
                         if (clearedLevel[1]) { unlockedLevel[2] = true; unlockedLevel[3] = true; }
                         if (clearedLevel[2] && clearedLevel[3]) unlockedLevel[4] = true;
@@ -1101,16 +1102,16 @@ public class mainHandler : MonoBehaviour {
                     {
                         if (currentTimeLimit > timeRecord[level]) timeRecord[level] = Mathf.Round(currentTimeLimit * 100f) / 100f;
                         clearedHardLevel[level] = true;
-                        if (player.GetComponent<playerHandler>().currentScore > scoreHardRecord[level]) scoreHardRecord[level] = player.GetComponent<playerHandler>().currentScore;
-                        if (player.GetComponent<playerHandler>().currentRank > rankHardRecord[level]) rankHardRecord[level] = player.GetComponent<playerHandler>().currentRank;
+                        if (player.GetComponent<playerHandlerTutorial>().currentScore > scoreHardRecord[level]) scoreHardRecord[level] = player.GetComponent<playerHandlerTutorial>().currentScore;
+                        if (player.GetComponent<playerHandlerTutorial>().currentRank > rankHardRecord[level]) rankHardRecord[level] = player.GetComponent<playerHandlerTutorial>().currentRank;
                     
                         if (clearedHardLevel[1]) unlockedHardLevel[2] = true;
                         if (clearedHardLevel[2]) unlockedHardLevel[3] = true;
                         if (clearedHardLevel[3]) unlockedHardLevel[4] = true;
                     }
                 
-                    currency = player.GetComponent<playerHandler>().currentCurrency;
-                    SaveSystem.SavePlayer(this);
+                    currency = player.GetComponent<playerHandlerTutorial>().currentCurrency;
+                    //SaveSystem.SavePlayer(this);
 
                     // send analytics
                     AnalyticsEvent.LevelComplete("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) }, { "rank", player.GetComponent<playerHandler>().currentRank } } );
@@ -1160,15 +1161,15 @@ public class mainHandler : MonoBehaviour {
             {
                 if (currentMaxStreak > comboRecord[level]) comboRecord[level] = currentMaxStreak;
                 clearedBirdLevel[level] = true;
-                if (player.GetComponent<playerHandler>().currentScore > scoreBirdRecord[level]) scoreBirdRecord[level] = player.GetComponent<playerHandler>().currentScore;
-                if (player.GetComponent<playerHandler>().currentRank > rankBirdRecord[level]) rankBirdRecord[level] = player.GetComponent<playerHandler>().currentRank;
+                if (player.GetComponent<playerHandlerTutorial>().currentScore > scoreBirdRecord[level]) scoreBirdRecord[level] = player.GetComponent<playerHandlerTutorial>().currentScore;
+                if (player.GetComponent<playerHandlerTutorial>().currentRank > rankBirdRecord[level]) rankBirdRecord[level] = player.GetComponent<playerHandlerTutorial>().currentRank;
 
                 if (clearedBirdLevel[1]) { unlockedBirdLevel[2] = true; unlockedBirdLevel[3] = true; }
                 if (clearedBirdLevel[2] && clearedBirdLevel[3]) unlockedBirdLevel[4] = true;
 
                 if ((clearedLevel[2] || clearedLevel[3]) && (clearedBirdLevel[2] || clearedBirdLevel[3])) unlockedHardLevel[1] = true;
-                currency = player.GetComponent<playerHandler>().currentCurrency;
-                SaveSystem.SavePlayer(this);
+                currency = player.GetComponent<playerHandlerTutorial>().currentCurrency;
+                //SaveSystem.SavePlayer(this);
 
                 // send analytics
                 AnalyticsEvent.LevelComplete("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", comboRecord[level] }, { "rank", player.GetComponent<playerHandler>().currentRank } });
@@ -1259,7 +1260,7 @@ public class mainHandler : MonoBehaviour {
         prevTime = 0;
         currentMaxStreak = 0;
         if (gameMode == HARD) currentTimeLimit = hardLevelTimeLimits[level];
-        player.GetComponent<playerHandler>().Reset();
+        player.GetComponent<playerHandlerTutorial>().Reset();
         txtGameOver.enabled = false;
         if (gameMode == HARD) txtTimeLeft.transform.localScale = new Vector3(0.5f, 0.5f);
         gameOver = false;
