@@ -341,6 +341,13 @@ public class menuHandler : MonoBehaviour {
         soundUIClick.start();
         SceneManager.LoadScene("ControlsScene");
     }
+
+    public void EnterTutorial()
+    {
+        menuMusicPlayerHandler.Instance.stopMusic();
+        soundUIClick.start();
+        SceneManager.LoadScene("TutorialScene");
+    }
     
     public void Back()
     {

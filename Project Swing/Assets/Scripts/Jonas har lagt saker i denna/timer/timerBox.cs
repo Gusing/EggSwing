@@ -105,7 +105,7 @@ public class timerBox : MonoBehaviour
     public void UpdateText(float currentTime)
     {
         timerText.text = currentTime.ToString();
-        if (currentTime.ToString().Length >= 5) timerText.text = currentTime.ToString().Remove(5);
+        if (currentTime.ToString().Length >= 6) timerText.text = currentTime.ToString().Remove(5);
 
     }
 }

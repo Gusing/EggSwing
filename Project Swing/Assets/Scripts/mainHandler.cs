@@ -188,8 +188,7 @@ public class mainHandler : MonoBehaviour {
 
     bool holdingRT;
     bool holdingLT;
-
-
+    
     public timerBox timerBox;
 
     void Awake()
@@ -601,7 +600,7 @@ public class mainHandler : MonoBehaviour {
 
         hardLevelTimeLimits = new float[] {
             10,
-            40,
+            80,
             105,
             93,
             120
@@ -686,9 +685,9 @@ public class mainHandler : MonoBehaviour {
             CalculateRankLimits(127),
         };
 
-        if (gameMode == HARD)
+        if (!(gameMode == HARD))
         {
-            txtTimeLeft.enabled = true;
+            timerBox.gameObject.SetActive(false);
         }
 
         // load rank data

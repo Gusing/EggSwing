@@ -10,6 +10,7 @@ TagManager:
   - enemyDummy
   - currency
   - HPPickup
+  - wall
   layers:
   - Default
   - TransparentFX

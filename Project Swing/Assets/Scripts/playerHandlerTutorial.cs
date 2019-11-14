@@ -743,12 +743,14 @@ public class playerHandlerTutorial : MonoBehaviour
 
         if (((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0) && !busy) && mainHandlerTutorial.currentGameMode != 1 && !normalLevelFinished && !disabledMove)
         {
+            mainCamera.GetComponent<mainHandlerTutorial>().playerMoved = true;
             accX = 26f;
             direction = 1;
             localRenderer.flipX = false;
         }
         else if (((Input.GetButton("MoveLeft") || Input.GetAxisRaw("Move Axis") < 0) && !busy) && mainHandlerTutorial.currentGameMode != 1 && !normalLevelFinished && !disabledMove)
         {
+            mainCamera.GetComponent<mainHandlerTutorial>().playerMoved = true;
             accX = -26f;
             direction = -1;
             localRenderer.flipX = true;
@@ -797,11 +799,13 @@ public class playerHandlerTutorial : MonoBehaviour
         attackType = SLOWATTACK;
         if (beatState == SUCCESS || beatState == BEAT)
         {
+            /*
             if (blockBeat == currentBeat - 1 && data.itemBought[COMBOCOUNTERHIT] && data.itemActive[COMBOCOUNTERHIT])
             {
                 CounterPunch();
                 return;
             }
+            */
 
             UpdateHitboxes();
             lastAttackBeat = currentBeat;
@@ -948,12 +952,13 @@ public class playerHandlerTutorial : MonoBehaviour
         attackType = QUICKATTACK;
         if (beatState == SUCCESS || beatState == BEAT)
         {
+            /*
             if (blockBeat == currentBeat - 1 && data.itemBought[COMBOCOUNTERHIT] && data.itemActive[COMBOCOUNTERHIT])
             {
                 CounterPunch();
                 return;
             }
-
+            */
             UpdateHitboxes();
             lastAttackBeat = currentBeat;
             lastAttackSlow = false;
@@ -1688,6 +1693,7 @@ public class playerHandlerTutorial : MonoBehaviour
             hitstunDirection = hitDirection;
 
             currentHP -= dmg;
+            if (currentHP < 1) currentHP = 1;
 
             GameObject tDmgNumber = Instantiate(damageNumberPlayer, transform.position + new Vector3(0, 0.7f), new Quaternion(0, 0, 0, 0));
             tDmgNumber.GetComponent<dmgNumberHandler>().Init(dmg);
@@ -1716,11 +1722,11 @@ public class playerHandlerTutorial : MonoBehaviour
 
             Instantiate(pPlayerkHit, transform.position, new Quaternion(0, 0, 0, 0));
 
-            if (currentHP <= 0) Die();
-            else
-            {
+            //if (currentHP <= 0) Die();
+            //else
+            //{
                 hitstun = true;
-            }
+            //}
         }
         
     }

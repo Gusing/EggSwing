@@ -54,7 +54,7 @@ public class enemyATutorialHandler : enemyHandler {
 
         parryTime = 2f;
 
-        damage.Add(0);
+        damage.Add(3);
 
         soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_attack");
         soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_death");
@@ -101,11 +101,13 @@ public class enemyATutorialHandler : enemyHandler {
             hitboxBody.offset = new Vector2(Mathf.Abs(hitboxBody.offset.x) * direction, hitboxBody.offset.y);
             if (player.transform.position.x < transform.position.x)
             {
+                print("left");
                 direction = LEFT;
                 localSpriteRenderer.flipX = false;
             }
             else
             {
+                print("right");
                 direction = RIGHT;
                 localSpriteRenderer.flipX = true;
             }
@@ -219,6 +221,8 @@ public class enemyATutorialHandler : enemyHandler {
     public void AllowDamage()
     {
         canTakeDamage = true;
+        rendererHPBar.enabled = true;
+        rendererHPFill.enabled = true;
     }
 
     public override int TakeDamage(int dmg, int attackID, bool specialHitstun = false, int attackType = 1)
@@ -266,8 +270,8 @@ public class enemyATutorialHandler : enemyHandler {
             fallState = 0;
             parryable = false;
             parried = false;
-            rendererHPBar.enabled = true;
-            rendererHPFill.enabled = true;
+            //rendererHPBar.enabled = true;
+            //rendererHPFill.enabled = true;
             if (player.transform.position.x < transform.position.x) hitstunDirection = LEFT;
             else hitstunDirection = RIGHT;
             invincible = true;
@@ -280,6 +284,8 @@ public class enemyATutorialHandler : enemyHandler {
 
     public override void Die(int dmg)
     {
+        GameObject.Find("Main Camera").GetComponent<mainHandlerTutorial>().CompletedTutorialStep();
+
         GameObject tempObject;
         mainHandlerTutorial.EnemyDead();
         player.GetComponent<playerHandlerTutorial>().enemyKilled = true;

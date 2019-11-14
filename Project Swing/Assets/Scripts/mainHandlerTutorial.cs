@@ -188,6 +188,8 @@ public class mainHandlerTutorial : MonoBehaviour {
     bool holdingRT;
     bool holdingLT;
 
+    public timerBox timerBox;
+
     // tutorial
     public GameObject enemyBoxLight;
     public GameObject enemyBoxHeavy;
@@ -206,6 +208,8 @@ public class mainHandlerTutorial : MonoBehaviour {
     public Text txtTutorial;
     public Text txtTutorial2;
     public beatIndicatorHandlerBTutorial beatIndicator;
+    public bool playerMoved;
+    bool playerRightSide;
 
     void Awake()
     {
@@ -241,6 +245,8 @@ public class mainHandlerTutorial : MonoBehaviour {
         enemies = new List<GameObject>();
 
         eventSystem = EventSystem.current;
+
+        timerBox.gameObject.SetActive(false);
 
         // load data
         data.Init();
@@ -1132,13 +1138,80 @@ public class mainHandlerTutorial : MonoBehaviour {
             player.GetComponent<playerHandlerTutorial>().disabledMove = false;
         }
 
-        /*
-        if (tutorialState == 0 && currentState == SUCCESS && tutorialTimer >= 6)
+        if (tutorialState == 16 && (player.transform.position.x > -0.75f || tutorialTimer > 3) && playerMoved)
         {
             tutorialState++;
-            beatIndicator.SetShowEveryOther();
+            tutorialTimer = 0;
+            txtTutorial.text = "Press D to dodge through objects!";
+            txtTutorial2.text = "Get to the right";
+            currentTutorialObject = Instantiate(objectWall, new Vector3(1.35f, -1.31f, 0), new Quaternion(0, 0, 0, 0));
+            currentTutorialObject = Instantiate(objectWall, new Vector3(4.85f, -1.31f, 0), new Quaternion(0, 0, 0, 0));
+            player.GetComponent<playerHandlerTutorial>().disabledDash = false;
         }
-        */
+
+        if (tutorialState == 17 && player.transform.position.x > 6.4f)
+        {
+            foreach (GameObject g in GameObject.FindGameObjectsWithTag("wall"))
+            {
+                g.GetComponent<wallHandler>().GoDown();
+            }
+            tutorialState++;
+            tutorialTimer = 0;
+            txtTutorial.text = "Use everything you've learned!";
+            txtTutorial2.text = "Light Attack (0/3)  Heavy Attack (0/3)  Parry (0/3)  Dodge Through (0/3)";
+            currentTutorialObject = Instantiate(enemyTutorial, new Vector3(-10, 0, 0), new Quaternion(0, 0, 0, 0));
+            currentTutorialObject.GetComponent<enemyATutorialHandler>().Init(false);
+            playerRightSide = true;
+        }
+
+        if (tutorialState == 18)
+        {
+            txtTutorial2.text = "Light Attack (" + lightCounter + "/3)  Heavy Attack (" + heavyCounter + "/3)  Parry (" + parryCounter + "/3)  Dodge Through (" + dashCounter + "/3)";
+
+            if (player.transform.position.x > currentTutorialObject.transform.position.x && !playerRightSide && dashCounter < 3)
+            {
+                playerRightSide = true;
+                dashCounter++;
+
+                if (parryCounter >= 3 && lightCounter >= 3 && heavyCounter >= 3 && dashCounter >= 3)
+                {
+                    tutorialState++;
+                }
+            }
+            if (player.transform.position.x < currentTutorialObject.transform.position.x && playerRightSide && dashCounter < 3)
+            {
+                playerRightSide = false;
+                dashCounter++;
+
+                if (parryCounter >= 3 && lightCounter >= 3 && heavyCounter >= 3 && dashCounter >= 3)
+                {
+                    tutorialState++;
+                }
+            }
+        }
+
+        if (tutorialState == 19)
+        {
+            tutorialState++;
+            tutorialTimer = 0;
+            txtTutorial.text = "Now Finish it!";
+            txtTutorial2.text = "";
+            currentTutorialObject.GetComponent<enemyATutorialHandler>().AllowDamage();
+        }
+
+        if (tutorialState == 21)
+        {
+            tutorialState++;
+            tutorialTimer = 0;
+            txtTutorial.text = "No go, make the battlefield your dance floor!";
+        }
+
+        if (tutorialState == 22 && tutorialTimer >= 4)
+        {
+            soundMusic.setCallback(null, 0);
+            soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            SceneManager.LoadScene("MenuScene");
+        }
     }
 
     public void PlayerInput(int type)
@@ -1165,7 +1238,6 @@ public class mainHandlerTutorial : MonoBehaviour {
                 heavyCounter = 0;
                 tutorialState++;
                 currentTutorialObject.GetComponent<enemyBoxHeavyHandler>().canDie = true;
-
             }
         }
 
@@ -1179,9 +1251,32 @@ public class mainHandlerTutorial : MonoBehaviour {
                 parryCounter = 0;
                 tutorialState++;
                 currentTutorialObject.GetComponent<enemyParryPracticeHandler>().Die(100);
-
             }
         }
+
+        if (tutorialState == 18)
+        {
+            if (type == 0 && lightCounter < 3)
+            {
+                lightCounter++;
+            }
+            if (type == 1 && heavyCounter < 3)
+            {
+                heavyCounter++;
+            }
+            if (type == 2 && parryCounter < 3)
+            {
+                parryCounter++;
+            }
+
+            txtTutorial2.text = "Light Attack (" + lightCounter + "/3)  Heavy Attack (" + heavyCounter + "/3)  Parry (" + parryCounter + "/3)  Dodge Through (" + dashCounter + "/3)";
+
+            if (parryCounter >= 3 && lightCounter >= 3 && heavyCounter >= 3 && dashCounter >= 3)
+            {
+                tutorialState++;
+            }
+        }
+
     }
 
     public void CompletedTutorialStep()

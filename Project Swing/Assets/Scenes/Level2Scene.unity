@@ -206,7 +206,7 @@ MonoBehaviour:
   SecondDisplay: {fileID: 0}
   txtRecordDisplay: {fileID: 0}
   txtRecordAnnouncement: {fileID: 0}
-  txtTimeLeft: {fileID: 1643678107}
+  txtTimeLeft: {fileID: 0}
   UIMarker: {fileID: 4072682925154051409, guid: 861e1dec572283f46834fa3bc3341327,
     type: 3}
   endlessRecord: 0
@@ -241,6 +241,7 @@ MonoBehaviour:
   spriteControlsOpen: {fileID: 0}
   spriteControlsClosed: {fileID: 0}
   imgControlsTraining: {fileID: 0}
+  timerBox: {fileID: 1643678107}
 --- !u!20 &25819224
 Camera:
   m_ObjectHideFlags: 0
@@ -1169,20 +1170,15 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 25819224}
-    - target: {fileID: 303937644554827046, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 25819222}
-    - target: {fileID: 303937643309945714, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 25819222}
     - target: {fileID: 4314144518124510493, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -5.0299683
+      objectReference: {fileID: 0}
+    - target: {fileID: 6303769567645556673, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 36.45999
       objectReference: {fileID: 0}
     - target: {fileID: 303937643309945712, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
@@ -1194,6 +1190,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 303937643309945714, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 25819222}
+    - target: {fileID: 303937644554827046, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 25819222}
     - target: {fileID: 262715493, guid: 024694b4cb46c694581f8476382507b3, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -1280,14 +1286,14 @@ SpriteMask:
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &1643678107 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1461367825695367083, guid: 024694b4cb46c694581f8476382507b3,
+  m_CorrespondingSourceObject: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
     type: 3}
   m_PrefabInstance: {fileID: 1643678100}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Script: {fileID: 11500000, guid: 158f9205190e1ef418b4043955c9c2d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1749889603

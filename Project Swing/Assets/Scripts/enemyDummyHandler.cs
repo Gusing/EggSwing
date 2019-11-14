@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class enemyDummyHandler : enemyHandler
 {
-    // Use this for initialization
     public override void Start()
     {
         base.Start();
@@ -26,8 +25,7 @@ public class enemyDummyHandler : enemyHandler
         soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_attack");
         soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_death");
     }
-
-    // Update is called once per frame
+    
     public override void Update()
     {
         base.UpdateAnimations();

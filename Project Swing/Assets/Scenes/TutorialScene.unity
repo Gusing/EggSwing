@@ -215,6 +215,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 152564264}
   m_CullTransparentMesh: 0
+--- !u!114 &163794989 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
+    type: 3}
+  m_PrefabInstance: {fileID: 1573195051}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 158f9205190e1ef418b4043955c9c2d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &236978695 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 303937643396106981, guid: 024694b4cb46c694581f8476382507b3,
@@ -504,6 +516,7 @@ MonoBehaviour:
   spriteControlsOpen: {fileID: 0}
   spriteControlsClosed: {fileID: 0}
   imgControlsTraining: {fileID: 0}
+  timerBox: {fileID: 163794989}
   enemyBoxLight: {fileID: 8723348879377983392, guid: 98cd683920763c640b7d13861cf6b74b,
     type: 3}
   enemyBoxHeavy: {fileID: 881514103494841168, guid: 3073844ef2db9fc4b932278d94f9bf50,
@@ -517,6 +530,7 @@ MonoBehaviour:
   txtTutorial: {fileID: 152564267}
   txtTutorial2: {fileID: 1536183297}
   beatIndicator: {fileID: 792279978}
+  playerMoved: 0
 --- !u!20 &602683335
 Camera:
   m_ObjectHideFlags: 0
@@ -863,7 +877,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 35.39}
-  m_SizeDelta: {x: 1298.3, y: 325.8}
+  m_SizeDelta: {x: 1981, y: 325.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1536183296
 MonoBehaviour:
@@ -902,7 +916,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 7e805a6d992d70e48a76e5a268149dcb, type: 3}
-    m_FontSize: 90
+    m_FontSize: 50
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 4
@@ -1050,6 +1064,11 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 602683335}
+    - target: {fileID: 6303769567645556673, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 36.45999
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 024694b4cb46c694581f8476382507b3, type: 3}
 --- !u!114 &1573195052 stripped
