@@ -6,6 +6,7 @@ public class enemyBoxHeavyHandler : enemyHandler
 {
     float fallTimer;
     bool falling = true;
+    public bool canDie;
 
     public override void Start()
     {
@@ -107,7 +108,9 @@ public class enemyBoxHeavyHandler : enemyHandler
         int finalDmg = dmg;
         if (immuneToSlow && (attackType == 1 || attackType == 6) && !specialHitstun) finalDmg = 0;
 
-        currentHP -= finalDmg;
+        if (canDie && finalDmg == 4) Die(4); 
+
+        //currentHP -= finalDmg;
         if (currentHP <= 0) Die(finalDmg);
         else if (finalDmg > 0)
         {
@@ -150,6 +153,9 @@ public class enemyBoxHeavyHandler : enemyHandler
             Instantiate(HPPickup, transform.position + new Vector3(Random.Range(-0.2f, 0.2f), 0), new Quaternion(0, 0, 0, 0));
         }
         */
+
+        GameObject.Find("Main Camera").GetComponent<mainHandlerTutorial>().CompletedTutorialStep();
+
         soundDeath.start();
         //rendererHPBar.enabled = false;
         //rendererHPFill.enabled = false;

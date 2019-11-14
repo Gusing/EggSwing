@@ -197,6 +197,12 @@ public class playerHandlerTutorial : MonoBehaviour
     readonly int BLOCK = 0, QUICKATTACK = 1, SLOWATTACK = 2, SUPERATTACK = 3, COUNTERATTACK = 4, HOLDATTACK = 5, RAPIDATTACK = 6;
 
     readonly int COMBOFLATTEN = 0, COMBOCHARGEPUNCH = 1, COMBORAPIDKICKS = 2, COMBOSUPER = 3, COMBOCOUNTERHIT = 4;
+    
+    public bool disabledLight;
+    public bool disabledHeavy;
+    public bool disabledMove;
+    public bool disabledParry;
+    public bool disabledDash;
 
     FMOD.Studio.EventInstance soundHitArmor;
     FMOD.Studio.EventInstance soundAttackSuper;
@@ -252,20 +258,20 @@ public class playerHandlerTutorial : MonoBehaviour
         allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack1B(hitboxAttack1B) });
         
         data.Init();
-        if (data.itemBought[COMBOFLATTEN] && data.itemActive[COMBOFLATTEN]) allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack2D(hitboxAttack2D), new Attack1C(hitboxAttack1C) });
-        if (data.itemBought[COMBOCHARGEPUNCH] && data.itemActive[COMBOCHARGEPUNCH]) allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack5A(hitboxAttack5A) });
-        if (data.itemBought[COMBORAPIDKICKS] && data.itemActive[COMBORAPIDKICKS]) allCombos.Add(new Attack[] { new Attack2A(hitboxAttack2A), new Attack2B(hitboxAttack2B), new Attack2C(hitboxAttack2C), new Attack6A(hitboxAttack6A), new Attack6B(hitboxAttack6B) });
+        //if (data.itemBought[COMBOFLATTEN] && data.itemActive[COMBOFLATTEN]) allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack2D(hitboxAttack2D), new Attack1C(hitboxAttack1C) });
+        //if (data.itemBought[COMBOCHARGEPUNCH] && data.itemActive[COMBOCHARGEPUNCH]) allCombos.Add(new Attack[] { new Attack1A(hitboxAttack1A), new Attack5A(hitboxAttack5A) });
+        //if (data.itemBought[COMBORAPIDKICKS] && data.itemActive[COMBORAPIDKICKS]) allCombos.Add(new Attack[] { new Attack2A(hitboxAttack2A), new Attack2B(hitboxAttack2B), new Attack2C(hitboxAttack2C), new Attack6A(hitboxAttack6A), new Attack6B(hitboxAttack6B) });
         
         currentCombos = new List<Attack[]>();
         RestockCombos();
 
         // activate SP bar if relevant
-        if (data.itemBought[COMBOCHARGEPUNCH] || data.itemBought[COMBORAPIDKICKS]) SPBarAvailable = true;
-        else
-        {
-            SPBarAvailable = false;
-            SPBar.SetActive(false);
-        }
+        //if (data.itemBought[COMBOCHARGEPUNCH] || data.itemBought[COMBORAPIDKICKS]) SPBarAvailable = true;
+        //else
+        //{
+        SPBarAvailable = false;
+        SPBar.SetActive(false);
+        //}
 
         lastCombo = new List<int>();
         lastCombo.Add(-1);
@@ -275,7 +281,8 @@ public class playerHandlerTutorial : MonoBehaviour
         maxHP = 15;
         currentHP = maxHP;
         maxSpecialCharges = 3;
-        if (data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER]) specialCharges = maxSpecialCharges;
+        //if (data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER]) specialCharges = maxSpecialCharges;
+        specialCharges = 0;
         specialChargeExtraTime = 50;
         streakDisappearDelay = 3;
         direction = 1;
@@ -355,7 +362,6 @@ public class playerHandlerTutorial : MonoBehaviour
                 renderersSpecialCharges[i].gameObject.GetComponentInChildren<RectTransform>().localPosition = new Vector3(0, -0.82f + 0.82f * (specialChargeTimer / specialChargeExtraTime));
             }
             else renderersSpecialCharges[i].enabled = false;
-
         }
 
         if (currentStreak > 0 && mainHandlerTutorial.currentGameMode != 1)
@@ -700,20 +706,21 @@ public class playerHandlerTutorial : MonoBehaviour
 
         if (!busy && mainHandlerTutorial.songStarted && mainHandlerTutorial.currentGameMode != 1 && !normalLevelFinished)
         {
-            if (Input.GetButtonDown("Heavy Attack"))
+            if (Input.GetButtonDown("Heavy Attack") && !disabledHeavy)
             {
                 attackID++;
                 attackIDStart = attackID;
                 Punch();
                 beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().PlayerInput();
             }
-            if (Input.GetButtonDown("Light Attack"))
+            if (Input.GetButtonDown("Light Attack") && !disabledLight)
             {
                 attackID++;
                 attackIDStart = attackID;
                 QuickPunch();
                 beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().PlayerInput();
             }
+            /*
             if (Input.GetButtonDown("Super") && data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER])
             {
                 attackID++;
@@ -721,11 +728,12 @@ public class playerHandlerTutorial : MonoBehaviour
                 SpecialPunch();
                 //beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
             }
-            if (Input.GetButtonDown("Dodge"))
+            */
+            if (Input.GetButtonDown("Dodge") && !disabledDash)
             {
                 Dodge();
             }
-            if (Input.GetButtonDown("Block"))
+            if (Input.GetButtonDown("Block") && !disabledParry)
             {
                 Parry();
                 //Block();
@@ -733,13 +741,13 @@ public class playerHandlerTutorial : MonoBehaviour
             }
         }
 
-        if (((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0) && !busy) && mainHandlerTutorial.currentGameMode != 1 && !normalLevelFinished)
+        if (((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0) && !busy) && mainHandlerTutorial.currentGameMode != 1 && !normalLevelFinished && !disabledMove)
         {
             accX = 26f;
             direction = 1;
             localRenderer.flipX = false;
         }
-        else if (((Input.GetButton("MoveLeft") || Input.GetAxisRaw("Move Axis") < 0) && !busy) && mainHandlerTutorial.currentGameMode != 1 && !normalLevelFinished)
+        else if (((Input.GetButton("MoveLeft") || Input.GetAxisRaw("Move Axis") < 0) && !busy) && mainHandlerTutorial.currentGameMode != 1 && !normalLevelFinished && !disabledMove)
         {
             accX = -26f;
             direction = -1;
@@ -1519,6 +1527,14 @@ public class playerHandlerTutorial : MonoBehaviour
         }
     }
 
+    public void DisableAll()
+    {
+        disabledLight = true;
+        disabledHeavy = true;
+        disabledMove = true;
+        disabledParry = true;
+        disabledDash = true;
+    }
     void RestockCombos()
     {
         currentCombos = new List<Attack[]>(allCombos);
@@ -1880,7 +1896,6 @@ public class playerHandlerTutorial : MonoBehaviour
             // parry enemy
             if (hitboxParry.IsTouching(other))
             {
-                print("gfjkops");
                 if (other.GetComponent<enemyHandler>().parryable)
                 {
                     beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().PlayerInput();
@@ -1888,6 +1903,7 @@ public class playerHandlerTutorial : MonoBehaviour
                     actionTimer = 0;
                     parryHitting = true;
                     other.GetComponent<enemyHandler>().GetParried();
+                    mainCamera.GetComponent<mainHandlerTutorial>().PlayerInput(2);
                     //other.GetComponent<enemyHandler>().TakeDamage(4, 100);
                 }
             }
@@ -1935,13 +1951,15 @@ public class playerHandlerTutorial : MonoBehaviour
                 {
                     tDmg = other.GetComponent<enemyHandler>().TakeDamage(tDmg, attackID, birdHitstun, attackType);
                     lastDmg = tDmg;
+                    if (lastAttackSlow) mainCamera.GetComponent<mainHandlerTutorial>().PlayerInput(1);
+                    else mainCamera.GetComponent<mainHandlerTutorial>().PlayerInput(0);
                     if (usingSuper) AddBonusScore("Super Hit", 30);
                     if (comboState >= 0)
                     {
                         if (tDmg > 0) currentCombos[0][comboState].soundAttackHit.start();
                         else soundEnemyBlock.start();
-                        if (!hitboxAttack3A.IsTouching(other) && data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER] && specialCharges < 3) specialChargeTimer += tDmg;
-                        print(specialChargeTimer);
+                        //if (!hitboxAttack3A.IsTouching(other) && data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER] && specialCharges < 3) specialChargeTimer += tDmg;
+                        //print(specialChargeTimer);
 
                         if (other.GetComponent<enemyHandler>().GetDefense() > 0 && tDmg > 0) soundHitArmor.start();
                     }

@@ -194,10 +194,17 @@ public class mainHandlerTutorial : MonoBehaviour {
     public GameObject objectWall;
     public GameObject parryPractice;
     public GameObject enemyTutorial;
+    GameObject currentTutorialObject;
+
+    int lightCounter;
+    int heavyCounter;
+    int dashCounter;
+    int parryCounter;
 
     int tutorialState;
     float tutorialTimer;
     public Text txtTutorial;
+    public Text txtTutorial2;
     public beatIndicatorHandlerBTutorial beatIndicator;
 
     void Awake()
@@ -270,6 +277,19 @@ public class mainHandlerTutorial : MonoBehaviour {
         totalEnemies = 0;
         songStarted = false;
 
+        // tutorial init
+        beatIndicator.gameObject.SetActive(false);
+        player.GetComponent<playerHandlerTutorial>().DisableAll();
+
+        levelUI = GameObject.Find("LevelUI").GetComponent<Canvas>();
+        playerHUD = GameObject.Find("playerHUD").GetComponent<Canvas>();
+        playerHUD.transform.Find("PlayerHP").position += new Vector3(-1000, 0, 0);
+        playerHUD.transform.Find("StreakCounter").position += new Vector3(-1000, 0, 0);
+        playerHUD.transform.Find("ScoreRank").position += new Vector3(-1000, 0, 0);
+        levelUI.transform.Find("ProgressBar").position += new Vector3(-1000, 0, 0);
+        levelUI.transform.Find("txtCurrency").position += new Vector3(-1000, 0, 0);
+        levelUI.transform.Find("CurrencyIcon").position += new Vector3(-1000, 0, 0);
+        
         if (level > 0) levelUI = GameObject.Find("LevelUI").GetComponent<Canvas>();
         playerHUD = GameObject.Find("playerHUD").GetComponent<Canvas>();
 
@@ -795,6 +815,8 @@ public class mainHandlerTutorial : MonoBehaviour {
         if (currentState == BEAT && !beatFrame) beatFrame = true;
         else beatFrame = false;
 
+        UpdateTutorial();
+
         // hide HUD
         if (Input.GetKeyDown(KeyCode.F1))
         {
@@ -1010,11 +1032,161 @@ public class mainHandlerTutorial : MonoBehaviour {
 
     void UpdateTutorial()
     {
-        if (tutorialState == 0 && currentState == BEAT)
+        tutorialTimer += Time.deltaTime;
+
+        if (tutorialState == 0 && tutorialTimer >= 3)
+        {
+            tutorialState++;
+            tutorialTimer = 0;
+            txtTutorial.text = "Fight to the beat!";
+        }
+
+        if (tutorialState == 1 && tutorialTimer >= 5)
+        {
+            tutorialState++;
+            tutorialTimer = 0;
+            txtTutorial.text = "Look at the indicator";
+            beatIndicator.gameObject.SetActive(true);
+        }
+
+        if (tutorialState == 2 && tutorialTimer >= 3)
+        {
+            tutorialState++;
+            tutorialTimer = 0;
+            txtTutorial.text = "Press A to do a (L) Light attack when the lines converge!";
+            txtTutorial2.text = "(0/5)";
+            currentTutorialObject = Instantiate(enemyBoxLight, player.transform.position + new Vector3(1.3f, 0, 0), new Quaternion(0, 0, 0, 0));
+            currentTutorialObject.GetComponent<enemyBoxLightHandler>().Init(false);
+            player.GetComponent<playerHandlerTutorial>().disabledLight = false;
+        }
+        
+        if (tutorialState == 4)
+        {
+            tutorialState++;
+            tutorialTimer = 0;
+            txtTutorial.text = "Now go for a combo!";
+            txtTutorial2.text = "";
+            currentTutorialObject.GetComponent<enemyBoxLightHandler>().canDie = true;
+        }
+        
+        if (tutorialState == 6)
+        {
+            tutorialState++;
+            tutorialTimer = 0;
+            txtTutorial.text = "Nice grooving!";
+        }
+
+        if (tutorialState == 7 && tutorialTimer >= 2)
+        {
+            tutorialState++;
+            tutorialTimer = 0;
+            txtTutorial.text = "Press X to do a (H) Heavy attack every other beat!";
+            txtTutorial2.text = "(0/5)";
+            currentTutorialObject = Instantiate(enemyBoxHeavy, player.transform.position + new Vector3(1.3f, 0, 0), new Quaternion(0, 0, 0, 0));
+            currentTutorialObject.GetComponent<enemyBoxHeavyHandler>().Init(false);
+            player.GetComponent<playerHandlerTutorial>().disabledHeavy = false;
+            beatIndicator.SetShowEveryOther(true);
+        }
+
+        if (tutorialState == 9)
+        {
+            tutorialState++;
+            tutorialTimer = 0;
+            txtTutorial.text = "Now go for a combo!";
+            txtTutorial2.text = "";
+            currentTutorialObject.GetComponent<enemyBoxHeavyHandler>().canDie = true;
+        }
+
+        if (tutorialState == 11)
+        {
+            tutorialState++;
+            tutorialTimer = 0;
+            txtTutorial.text = "Great moves!";
+            beatIndicator.SetShowEveryOther(false);
+        }
+
+        if (tutorialState == 12 && tutorialTimer >= 2)
+        {
+            tutorialState++;
+            tutorialTimer = 0;
+            txtTutorial.text = "Press LB to do a (P) Parry against the enemy attack!";
+            txtTutorial2.text = "(0/3)";
+            currentTutorialObject = Instantiate(parryPractice, player.transform.position + new Vector3(1.3f, 0, 0), new Quaternion(0, 0, 0, 0));
+            currentTutorialObject.GetComponent<enemyParryPracticeHandler>().Init(false);
+            player.GetComponent<playerHandlerTutorial>().disabledParry = false;
+        }
+
+        if (tutorialState == 14)
+        {
+            tutorialState++;
+            tutorialTimer = 0;
+            txtTutorial.text = "Fantastic defense!";
+            txtTutorial2.text = "";
+        }
+
+        if (tutorialState == 15 && tutorialTimer >= 2)
+        {
+            tutorialState++;
+            tutorialTimer = 0;
+            txtTutorial.text = "Move freely with LS/DP";
+            player.GetComponent<playerHandlerTutorial>().disabledMove = false;
+        }
+
+        /*
+        if (tutorialState == 0 && currentState == SUCCESS && tutorialTimer >= 6)
         {
             tutorialState++;
             beatIndicator.SetShowEveryOther();
         }
+        */
+    }
+
+    public void PlayerInput(int type)
+    {
+        if (type == 0 && tutorialState == 3)
+        {
+            lightCounter++;
+            txtTutorial2.text = "(" + lightCounter + " /5)";
+
+            if (lightCounter >= 5)
+            {
+                lightCounter = 0;
+                tutorialState++;
+            }
+        }
+
+        if (type == 1 && tutorialState == 8)
+        {
+            heavyCounter++;
+            txtTutorial2.text = "(" + heavyCounter + " /5)";
+
+            if (heavyCounter >= 5)
+            {
+                heavyCounter = 0;
+                tutorialState++;
+                currentTutorialObject.GetComponent<enemyBoxHeavyHandler>().canDie = true;
+
+            }
+        }
+
+        if (type == 2 && tutorialState == 13)
+        {
+            parryCounter++;
+            txtTutorial2.text = "(" + parryCounter + " /3)";
+
+            if (parryCounter >= 3)
+            {
+                parryCounter = 0;
+                tutorialState++;
+                currentTutorialObject.GetComponent<enemyParryPracticeHandler>().Die(100);
+
+            }
+        }
+    }
+
+    public void CompletedTutorialStep()
+    {
+        tutorialState++;
     }
 
     void SetBeat()

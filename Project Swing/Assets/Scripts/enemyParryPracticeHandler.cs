@@ -14,7 +14,10 @@ public class enemyParryPracticeHandler : enemyHandler {
     public Sprite spriteAttackPre;
     public Sprite spriteAttackActive;
     public Sprite spriteHitstun;
-    
+
+    float fallTimer;
+    bool falling = true;
+
     public override void Start()
     {
         for (int i = 0; i < hitboxAttacks.Count; i++)
@@ -35,6 +38,8 @@ public class enemyParryPracticeHandler : enemyHandler {
         direction = LEFT;
 
         parried = false;
+
+        falling = true;
 
         player = GameObject.Find("PlayerTutorial");
 
@@ -84,6 +89,15 @@ public class enemyParryPracticeHandler : enemyHandler {
 
     public override void Update()
     {
+        if (falling)
+        {
+            fallTimer += Time.deltaTime;
+            if (fallTimer >= 0.5f)
+            {
+                falling = false;
+            }
+        }
+        animator.SetBool("falling", falling);
         animator.SetBool("parried", parried);
         animator.SetBool("attacking", attacking);
         animator.SetBool("attackActive", attackActive);
@@ -127,7 +141,7 @@ public class enemyParryPracticeHandler : enemyHandler {
         if (attackHitboxActive) UpdateAttackHitbox();
         
         // check for attack
-        if (Vector2.Distance(transform.position, player.transform.position) < 1.8f && !attacking && !fallFromAbove && !hitstun && attackRecovery <= 0 && !parried)
+        if (Vector2.Distance(transform.position, player.transform.position) < 1.8f && !attacking && !fallFromAbove && !hitstun && attackRecovery <= 0 && !parried && !falling)
         {
             localSpriteRenderer.sprite = spriteIdle;
             UpdateHitboxes();
@@ -142,6 +156,26 @@ public class enemyParryPracticeHandler : enemyHandler {
         }
 
         base.UpdateMovement();
+    }
+
+    public override void Die(int dmg)
+    {
+        mainHandler.EnemyDead();
+        player.GetComponent<playerHandlerTutorial>().enemyKilled = true;
+      
+        soundDeath.start();
+        rendererHPBar.enabled = false;
+        rendererHPFill.enabled = false;
+        attacking = false;
+        parried = false;
+        attackActive = false;
+        for (int i = 0; i < hitboxAttacks.Count; i++)
+        {
+            hitboxAttacks[i].enabled = false;
+        }
+        hitboxBody.enabled = false;
+        GetComponent<SpriteRenderer>().sortingLayerName = "EnemiesDead";
+        dead = true;
     }
 
     void AttackA()

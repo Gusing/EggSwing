@@ -149,9 +149,9 @@ GameObject:
   - component: {fileID: 4627536998785070}
   - component: {fileID: 212722420887275764}
   - component: {fileID: 61714063571005678}
-  - component: {fileID: 114684949191481126}
   - component: {fileID: 50898442520606196}
   - component: {fileID: 483239405}
+  - component: {fileID: 2782308306312161746}
   m_Layer: 0
   m_Name: EnemyParryPractice
   m_TagString: enemy
@@ -252,46 +252,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.95, y: 1.58}
   m_EdgeRadius: 0
---- !u!114 &114684949191481126
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1386477621940742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bff409e7859e9f743bc862e680d46a33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dead: 0
-  currentHP: 0
-  maxHP: 0
-  parryable: 0
-  rendererHPBar: {fileID: 212215759497151352}
-  rendererHPFill: {fileID: 212720327578161122}
-  pYellowWarning: {fileID: 198766640297364512, guid: cd7ee2537b3a3154e9be53fa1eabfbe9,
-    type: 3}
-  pRedWarning: {fileID: 198933463995965036, guid: ad44cd4531ee0bc40b1573b0ad4595df,
-    type: 3}
-  currency: {fileID: 338368309248678210, guid: d6324fbbf6cdd7f4fb4131545d93f055, type: 3}
-  HPPickup: {fileID: 8659057177738005108, guid: 5609f170b5149924c8ab3db1deee0de2,
-    type: 3}
-  warningPoints:
-  - {fileID: 4567802542481522}
-  hitboxAttacks:
-  - {fileID: 61453437351561534}
-  hitboxAttackFall: {fileID: 5536400277811778534}
-  spriteIdle: {fileID: 21300000, guid: ebde0968a590b9342951ac1244094ec8, type: 3}
-  spriteStomp1: {fileID: 21300000, guid: 8fd4ada9f2e6a1f43b2ce1b1d062f7d1, type: 3}
-  spriteStomp2: {fileID: 21300000, guid: 190d0a37b40753746ab299a6c67b1f47, type: 3}
-  spriteDead: {fileID: 21300000, guid: ae0b079b1f26e1643a01961658f20e51, type: 3}
-  spriteDead2: {fileID: 21300000, guid: 0549d61652fdf4e428cd9062c98de876, type: 3}
-  spriteDead3: {fileID: 21300000, guid: e74f65b625ac9c948a9f70a04b2ec29e, type: 3}
-  spriteDead4: {fileID: 21300000, guid: edfd7be2f6642cc43a76aa6e341c2ef7, type: 3}
-  spriteAttackPre: {fileID: 21300000, guid: 86e9cac63e63b7046abb5ffa850636ef, type: 3}
-  spriteAttackActive: {fileID: 21300000, guid: 69b90d1d48d60f543b1d58855e85c061, type: 3}
-  spriteHitstun: {fileID: 21300000, guid: c910e764c09eeed469c41fe098769bfb, type: 3}
 --- !u!50 &50898442520606196
 Rigidbody2D:
   serializedVersion: 4
@@ -332,6 +292,46 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &2782308306312161746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1386477621940742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06bce6b43b56bf143834d6d4027cdb18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dead: 0
+  currentHP: 20
+  maxHP: 20
+  parryable: 0
+  rendererHPBar: {fileID: 212215759497151352}
+  rendererHPFill: {fileID: 212720327578161122}
+  pYellowWarning: {fileID: 198766640297364512, guid: cd7ee2537b3a3154e9be53fa1eabfbe9,
+    type: 3}
+  pRedWarning: {fileID: 198933463995965036, guid: ad44cd4531ee0bc40b1573b0ad4595df,
+    type: 3}
+  currency: {fileID: 338368309248678210, guid: d6324fbbf6cdd7f4fb4131545d93f055, type: 3}
+  HPPickup: {fileID: 8659057177738005108, guid: 5609f170b5149924c8ab3db1deee0de2,
+    type: 3}
+  warningPoints:
+  - {fileID: 4567802542481522}
+  hitboxAttacks:
+  - {fileID: 61453437351561534}
+  hitboxAttackFall: {fileID: 5536400277811778534}
+  spriteIdle: {fileID: 0}
+  spriteStomp1: {fileID: 0}
+  spriteStomp2: {fileID: 0}
+  spriteDead: {fileID: 0}
+  spriteDead2: {fileID: 0}
+  spriteDead3: {fileID: 0}
+  spriteDead4: {fileID: 0}
+  spriteAttackPre: {fileID: 0}
+  spriteAttackActive: {fileID: 0}
+  spriteHitstun: {fileID: 0}
 --- !u!1 &1535724378489824
 GameObject:
   m_ObjectHideFlags: 0

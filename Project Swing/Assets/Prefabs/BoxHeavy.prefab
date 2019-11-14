@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 881514103494841171}
   - component: {fileID: 881514103494841170}
   - component: {fileID: 881514103494841169}
-  - component: {fileID: 881514103494841164}
   - component: {fileID: 881514103494841165}
+  - component: {fileID: 39873776}
   m_Layer: 0
   m_Name: BoxHeavy
   m_TagString: enemy
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 881514103494841168}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.22, y: -2.78, z: 88.71441}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -72,7 +72,7 @@ SpriteRenderer:
   m_SortingLayerID: -1211973967
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 482bac47230147c4f83026e60eb694ab, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ada501092a185ba4c9fe0659c921ba3c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -109,7 +109,26 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &881514103494841164
+--- !u!95 &881514103494841165
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881514103494841168}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ec8aafea389b3434fb182269468e4b67, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &39873776
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,7 +137,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 881514103494841168}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89b698af914e3b9449948148996ff2f8, type: 3}
+  m_Script: {fileID: 11500000, guid: dd4870c3bf702574eb2fce5ea35aff69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dead: 0
@@ -134,22 +153,3 @@ MonoBehaviour:
   warningPoints: []
   hitboxAttacks: []
   hitboxAttackFall: {fileID: 0}
---- !u!95 &881514103494841165
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 881514103494841168}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 541ab4a2d1522324eab66d5e8642132f, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0

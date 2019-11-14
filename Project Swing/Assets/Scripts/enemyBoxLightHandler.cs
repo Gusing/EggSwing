@@ -6,6 +6,7 @@ public class enemyBoxLightHandler : enemyHandler
 {
     float fallTimer;
     bool falling = true;
+    public bool canDie;
 
     public override void Start()
     {
@@ -33,6 +34,7 @@ public class enemyBoxLightHandler : enemyHandler
         bigKnockbackLimit = 999;
 
         falling = true;
+        fallTimer = 0;
 
         currencyValue = 0;
 
@@ -50,7 +52,7 @@ public class enemyBoxLightHandler : enemyHandler
     {
         base.Init(fromAbove);
 
-        groundY = -2.12f;
+        groundY = -2.42f;
 
         transform.position = new Vector3(transform.position.x, groundY, Random.Range(0f, 0.1f));
 
@@ -104,7 +106,7 @@ public class enemyBoxLightHandler : enemyHandler
 
         int finalDmg = dmg;
 
-        currentHP -= finalDmg;
+        //currentHP -= finalDmg;
         if (currentHP <= 0) Die(finalDmg);
         else
         {
@@ -119,6 +121,8 @@ public class enemyBoxLightHandler : enemyHandler
             else hitstunDirection = RIGHT;
             invincible = true;
         }
+
+        if (canDie && finalDmg >= 3) Die(3);
 
         return finalDmg;
     }
@@ -147,6 +151,9 @@ public class enemyBoxLightHandler : enemyHandler
             Instantiate(HPPickup, transform.position + new Vector3(Random.Range(-0.2f, 0.2f), 0), new Quaternion(0, 0, 0, 0));
         }
         */
+
+        GameObject.Find("Main Camera").GetComponent<mainHandlerTutorial>().CompletedTutorialStep();
+
         soundDeath.start();
         //rendererHPBar.enabled = false;
         //rendererHPFill.enabled = false;
