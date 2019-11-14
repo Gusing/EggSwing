@@ -256,7 +256,7 @@ public class menuHandler : MonoBehaviour {
         */
 
         // update mode marker
-        rendererMarker.transform.position = new Vector3(-3f + 4.21f * selectedGameMode, rendererMarker.transform.position.y);
+        rendererMarker.transform.position = new Vector3(-2.6f + 4.21f * selectedGameMode, rendererMarker.transform.position.y);
     }
 
     public void PlayLevel(int num)
