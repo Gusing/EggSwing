@@ -189,6 +189,9 @@ public class mainHandler : MonoBehaviour {
     bool holdingRT;
     bool holdingLT;
 
+
+    public timerBox timerBox;
+
     void Awake()
     {
         currentBpm = bpm;
@@ -598,7 +601,7 @@ public class mainHandler : MonoBehaviour {
 
         hardLevelTimeLimits = new float[] {
             10,
-            80,
+            40,
             105,
             93,
             120
@@ -953,16 +956,33 @@ public class mainHandler : MonoBehaviour {
 
         // update time limit
         if (gameMode == HARD && !normalLevelFinished && !player.GetComponent<playerHandler>().dead)
-        { 
+        {
             currentTimeLimit -= Time.deltaTime;
-            if (currentTimeLimit.ToString().Length > 5) txtTimeLeft.text =  currentTimeLimit.ToString().Remove(5);
+
+            timerBox.UpdateText(currentTimeLimit);
+
+            //if (currentTimeLimit.ToString().Length > 5) txtTimeLeft.text =  currentTimeLimit.ToString().Remove(5);
             if (currentTimeLimit <= 30 && !clockStarted && beatFrame)
             {
                 clockStarted = true;
                 //soundClock.start();
                 soundMusic.setParameterValue("Clock", 1);
             }
-            if (currentTimeLimit < 20) txtTimeLeft.transform.localScale = new Vector3(0.5f + (1-(currentTimeLimit/20)) * 1, 0.5f + (1-(currentTimeLimit / 20)) * 1, 0);
+
+            if (currentTimeLimit <= 30)
+            {
+                timerBox.ShakeBox();
+                timerBox.FadeTextToRed();
+            }
+            if (currentTimeLimit < 20)
+            {
+                timerBox.FluctuateSize();
+                //txtTimeLeft.transform.localScale = new Vector3(0.5f + (1-(currentTimeLimit/20)) * 1, 0.5f + (1-(currentTimeLimit / 20)) * 1, 0);
+            }
+            if (currentTimeLimit < 10)
+            {
+                timerBox.FluctuatePosition();
+            }
 
             if (currentTimeLimit <= 0)
             {
@@ -1252,58 +1272,59 @@ public class mainHandler : MonoBehaviour {
 
     public void RestartLevel()
     {
-        soundUIClick.start();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        //soundUIClick.start();
 
-        AnalyticsEvent.LevelStart("Level_" + level + "_Mode_" + gameMode, level);
+        //AnalyticsEvent.LevelStart("Level_" + level + "_Mode_" + gameMode, level);
 
-        foreach (GameObject g in GameObject.FindGameObjectsWithTag("currency"))
-        {
-            Destroy(g);
-        }
-        foreach (GameObject g in GameObject.FindGameObjectsWithTag("HPPickup"))
-        {
-            Destroy(g);
-        }
+        //foreach (GameObject g in GameObject.FindGameObjectsWithTag("currency"))
+        //{
+        //    Destroy(g);
+        //}
+        //foreach (GameObject g in GameObject.FindGameObjectsWithTag("HPPickup"))
+        //{
+        //    Destroy(g);
+        //}
 
-        clockStarted = false;
-        currentSpawn = 0;
-        levelTimer = 0;
-        if (level == 3 && gameMode == NORMAL) levelTimer = 6.9f;
-        nextSpawn = 0;
-        prevTime = 0;
-        currentMaxStreak = 0;
-        if (gameMode == HARD) currentTimeLimit = hardLevelTimeLimits[level];
-        player.GetComponent<playerHandler>().Reset();
-        txtGameOver.enabled = false;
-        if (gameMode == HARD) txtTimeLeft.transform.localScale = new Vector3(0.5f, 0.5f);
-        gameOver = false;
-        songStarted = false;
-        btnRetry.gameObject.SetActive(false);
-        btnGameOver.gameObject.SetActive(false);
-        waitingForDeath = false;
-        enemiesDead = 0;
+        //clockStarted = false;
+        //currentSpawn = 0;
+        //levelTimer = 0;
+        //if (level == 3 && gameMode == NORMAL) levelTimer = 6.9f;
+        //nextSpawn = 0;
+        //prevTime = 0;
+        //currentMaxStreak = 0;
+        //if (gameMode == HARD) currentTimeLimit = hardLevelTimeLimits[level];
+        //player.GetComponent<playerHandler>().Reset();
+        //txtGameOver.enabled = false;
+        //if (gameMode == HARD) txtTimeLeft.transform.localScale = new Vector3(0.5f, 0.5f);
+        //gameOver = false;
+        //songStarted = false;
+        //btnRetry.gameObject.SetActive(false);
+        //btnGameOver.gameObject.SetActive(false);
+        //waitingForDeath = false;
+        //enemiesDead = 0;
 
-        if (level == 100)
-        {
-            txtRecordAnnouncement.enabled = false;
-            SecondCounter.enabled = true;
-            SecondDisplay.enabled = false;
-            txtRecordDisplay.text = "RECORD: " + endlessRecord;
-        }
+        //if (level == 100)
+        //{
+        //    txtRecordAnnouncement.enabled = false;
+        //    SecondCounter.enabled = true;
+        //    SecondDisplay.enabled = false;
+        //    txtRecordDisplay.text = "RECORD: " + endlessRecord;
+        //}
 
-        for (int i = 0; i < enemies.Count; i++)
-        {
-            enemies[i].GetComponent<enemyHandler>().Stop();
-            Destroy(enemies[i]);
-        }
-        enemies.Clear();
-        gameOverTimer = 0;
-        soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-        if (gameMode == BIRD) soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath.Insert(12, "/Bird") + "_bird");
-        else soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath);
-        soundMusic.setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
-        if (level == 3 && gameMode == NORMAL) soundMusic.setParameterValue("Loop", 1);
-        soundMusic.start();
+        //for (int i = 0; i < enemies.Count; i++)
+        //{
+        //    enemies[i].GetComponent<enemyHandler>().Stop();
+        //    Destroy(enemies[i]);
+        //}
+        //enemies.Clear();
+        //gameOverTimer = 0;
+        //soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        //if (gameMode == BIRD) soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath.Insert(12, "/Bird") + "_bird");
+        //else soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath);
+        //soundMusic.setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
+        //if (level == 3 && gameMode == NORMAL) soundMusic.setParameterValue("Loop", 1);
+        //soundMusic.start();
     }
 
     public void ChangeSong(bool next)
