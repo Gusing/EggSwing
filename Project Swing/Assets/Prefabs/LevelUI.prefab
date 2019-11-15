@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 7477774697257137825}
   - component: {fileID: 153360346053888935}
   m_Layer: 5
-  m_Name: Marker
+  m_Name: ProgressBarMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -384,7 +384,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &303937643309945715
 RectTransform:
   m_ObjectHideFlags: 0
@@ -745,7 +745,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &303937644554827047
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1059,7 +1059,7 @@ GameObject:
   - component: {fileID: 5517649746305766865}
   - component: {fileID: 1921131581602709135}
   m_Layer: 5
-  m_Name: Mask
+  m_Name: ProgressBarMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1213,7 +1213,7 @@ GameObject:
   - component: {fileID: 1781238018535768294}
   - component: {fileID: 8200025180201035766}
   m_Layer: 5
-  m_Name: Foreground
+  m_Name: ProgressBarForeground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1664,7 +1664,7 @@ GameObject:
   - component: {fileID: 6664190126394382717}
   - component: {fileID: 1570087388327092155}
   m_Layer: 5
-  m_Name: Fill
+  m_Name: ProgressBarFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1740,6 +1740,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 303937643396106981}
     m_Modifications:
+    - target: {fileID: 5220646699122805431, guid: b41944c4b6cf8394b970f75c6cc534e1,
+        type: 3}
+      propertyPath: m_Name
+      value: TimerBox
+      objectReference: {fileID: 0}
     - target: {fileID: 4477441230145129895, guid: b41944c4b6cf8394b970f75c6cc534e1,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1854,11 +1859,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5220646699122805431, guid: b41944c4b6cf8394b970f75c6cc534e1,
-        type: 3}
-      propertyPath: m_Name
-      value: TimerBox
       objectReference: {fileID: 0}
     - target: {fileID: -5596793616639869239, guid: b41944c4b6cf8394b970f75c6cc534e1,
         type: 3}

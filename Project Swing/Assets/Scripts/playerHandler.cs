@@ -6,12 +6,7 @@ using UnityEngine.UI;
 
 public class playerHandler : MonoBehaviour
 {
-    float velX;
-    float accX;
-    
-    public Animator animator;
-
-    [Header("Particle Systems")]
+    [Header("_____Particle Systems_____")]
     public ParticleSystem pAttackHit;
     public ParticleSystem pPlayerkHit;
     public ParticleSystem pSpecialAttack;
@@ -23,68 +18,89 @@ public class playerHandler : MonoBehaviour
     public ParticleSystem pHPPickupPick;
     public ParticleSystem pSuperCharged;
 
-    [Header("Animated Effects")]
+    [Header("_____Animated Effects_____")]
     public GameObject effectHitBlue;
     public GameObject effectHitRed;
     public GameObject effectHitSuper;
     public GameObject effectHitBird;
 
-    [Header("Object Prefabs")]
+    [Header("_____Object Prefabs_____")]
     public GameObject damageNumberEnemy;
     public GameObject damageNumberPlayer;
     public GameObject scoreBonusText;
 
-    [HideInInspector] public List<GameObject> birds;
+    [Header("_____Resources_____")]
+    public Sprite spriteSPBar1;
+    public Sprite spriteSPBar2;
+    public Sprite spriteSuperFull;
+    public Sprite spriteSuperCharging;
 
-    int comboState;
-    int currentBeat;
-    int lastAttackBeat;
-    bool lastAttackSlow;
-    bool switchBeat;
+    //-----------------------------------hitboxes
+    BoxCollider2D hitboxAttack1A;
+    BoxCollider2D hitboxAttack1B;
+    BoxCollider2D hitboxAttack1C;
 
-    [Header("Hitboxes")]
-    public BoxCollider2D hitboxAttack1A;
-    public BoxCollider2D hitboxAttack1B;
-    public BoxCollider2D hitboxAttack1C;
+    BoxCollider2D hitboxAttack2A;
+    BoxCollider2D hitboxAttack2B;
+    BoxCollider2D hitboxAttack2C;
+    BoxCollider2D hitboxAttack2D;
 
-    public BoxCollider2D hitboxAttack2A;
-    public BoxCollider2D hitboxAttack2B;
-    public BoxCollider2D hitboxAttack2C;
-    public BoxCollider2D hitboxAttack2D;
+    BoxCollider2D hitboxAttack3A;
 
-    public BoxCollider2D hitboxAttack3A;
+    BoxCollider2D hitboxAttack4A;
 
-    public BoxCollider2D hitboxAttack4A;
+    BoxCollider2D hitboxAttack5A;
 
-    public BoxCollider2D hitboxAttack5A;
+    BoxCollider2D hitboxAttack6A;
+    BoxCollider2D hitboxAttack6B;
 
-    public BoxCollider2D hitboxAttack6A;
-    public BoxCollider2D hitboxAttack6B;
+    BoxCollider2D hitboxAttackBird;
 
-    public BoxCollider2D hitboxAttackBird;
+    BoxCollider2D hitboxPickup;
 
-    public BoxCollider2D hitboxPickup;
-
-    public BoxCollider2D hitboxParry;
+    BoxCollider2D hitboxParry;
 
     BoxCollider2D hitboxBody;
+
+    //--------------------------------local objects
+    GameObject mainCamera;
+    GameObject beatIndicator;
+
     SpriteRenderer localRenderer;
 
-    float actionTimer;
-    bool busy;
+    Animator animator;
 
-    [HideInInspector] public bool punchingSuccess;
-    bool punchingFail;
-    [HideInInspector] public bool punchingActive;
+    SpriteRenderer rendererHPFill;
+    SpriteMask maskHPFill;
+    SpriteRenderer[] renderersSpecialCharges;
+    Image spriteScoreBg;
+    Text textStreak;
+    Text textCombo;
+    Text textCurrency;
+    Text textScore;
+    Text textMultiplier;
+    Text textRank;
+    SpriteMask maskSPFill;
+    SpriteRenderer rendererSPFill;
+    GameObject SPBar;
+    
+    //----------------------------------combat handling
     float punchSuccessTime = 0.32f;
     float quickPunchSuccessTime = 0.3f;
     float specialPunchSuccessTime = 0.7f;
     float rapidPunchSuccessTime = 0.2f;
     float punchFailTime = 0.5f;
-    int localBPM;
+
+    [HideInInspector] public bool punchingSuccess;
+    [HideInInspector] public bool punchingActive;
     [HideInInspector] public int attackType;
+    [HideInInspector] public bool enemyKilled;
+
+    [HideInInspector] public List<GameObject> birds;
+
+    bool punchingFail;
     bool usingSuper;
-    bool beatPassed;
+    
     bool holdBeatPassed;
     bool lastAttackHit;
     int lastHitBeat;
@@ -97,8 +113,10 @@ public class playerHandler : MonoBehaviour
     float birdPunchSuccessTime = 0.2f;
     bool birdHitstun;
     int birdInSequence;
-    bool birdLevelFinished;
-    bool normalLevelFinished;
+    bool dpadV1;
+    bool dpadV2;
+    bool dpadH1;
+    bool dpadH2;
 
     int attackID;
     int attackIDStart;
@@ -122,10 +140,33 @@ public class playerHandler : MonoBehaviour
     float counterTime = 0.4f;
     bool countering;
 
+    int comboState;
+    int currentBeat;
+    int lastAttackBeat;
+    bool lastAttackSlow;
+    bool switchBeat;
+
+    List<Attack[]> allCombos;
+    List<Attack[]> currentCombos;
+    List<int> lastCombo;
+
+    //----------------------------------player status
     int currentHP;
     int maxHP;
     int specialCharges;
     int maxSpecialCharges;
+    float currentSP;
+    float actionTimer;
+    bool busy;
+
+    float velX;
+    float accX;
+
+    [HideInInspector] public float maxSP = 20;
+    [HideInInspector] public bool dead;
+
+    [HideInInspector] public int direction;
+
     float specialChargeTimer;
     float specialChargeExtraTime;
     [HideInInspector] public int currentStreak;
@@ -134,70 +175,38 @@ public class playerHandler : MonoBehaviour
     [HideInInspector] public int streakLevel;
     [HideInInspector] public int currentCurrency;
     int startingCurrency;
-    float currentSP;
-    [HideInInspector] public float maxSP = 20;
     bool chargingSP;
     [HideInInspector] public int currentScore;
     float currentMultiplier;
     [HideInInspector] public int currentRank;
     List<Vector2> previousAttacks;
-    [HideInInspector] public bool enemyKilled;
     int lastDmg;
     int birdComboHeal;
     bool tookDamage;
-
-    [Header("Local Objects")]
-    public SpriteRenderer rendererHPFill;
-    public SpriteMask maskHPFill;
-    public SpriteRenderer[] renderersSpecialCharges;
-    public Image spriteScoreBg;
-    public Text textStreak;
-    public Text textCombo;
-    public Text textCurrency;
-    public Text textScore;
-    public Text textMultiplier;
-    public Text textRank;
-    public SpriteMask maskSPFill;
-    public SpriteRenderer rendererSPFill;
-    public GameObject SPBar;
-    public Sprite spriteSPBar1;
-    public Sprite spriteSPBar2;
-    public Sprite spriteSuperFull;
-    public Sprite spriteSuperCharging;
-    bool SPSprite;
-    float SPBarFlickerTimer;
-    float SPBarFlickerTime = 0.07f;
-    bool SPBarAvailable;
-
-    [HideInInspector] public bool dead;
     bool resetted;
-    bool dpadV1;
-    bool dpadV2;
-    bool dpadH1;
-    bool dpadH2;
-
-    [HideInInspector] public int direction;
 
     bool hitstun;
     int hitstunDirection;
     float hitstunTime = 0.32f;
 
+    //--------------------------------level progression
+    int localBPM;
+    bool beatPassed;
+    bool birdLevelFinished;
+    bool normalLevelFinished;
     int beatState;
-    readonly int FAIL = 0, SUCCESS = 1, BEAT = 2;
 
-    List<Attack[]> allCombos;
-    List<Attack[]> currentCombos;
-    List<int> lastCombo;
+    //------------------------------------HUD
+    bool SPSprite;
+    float SPBarFlickerTimer;
+    float SPBarFlickerTime = 0.07f;
+    bool SPBarAvailable;
 
-    GameObject mainCamera;
-    GameObject beatIndicator;
 
-    readonly int QUICK = 0, SLOW = 1, HOLD = 2, RAPID = 3;
-
-    readonly int BLOCK = 0, QUICKATTACK = 1, SLOWATTACK = 2, SUPERATTACK = 3, COUNTERATTACK = 4, HOLDATTACK = 5, RAPIDATTACK = 6;
-
-    readonly int COMBOFLATTEN = 0, COMBOCHARGEPUNCH = 1, COMBORAPIDKICKS = 2, COMBOSUPER = 3, COMBOCOUNTERHIT = 4;
-
+    //-----------------------------------save data
+    PlayerData data;
+    
+    //-----------------------------------audio
     FMOD.Studio.EventInstance soundHitArmor;
     FMOD.Studio.EventInstance soundAttackSuper;
     FMOD.Studio.EventInstance soundAttackSuperUnable;
@@ -213,16 +222,64 @@ public class playerHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundPickupCurrency;
     FMOD.Studio.EventInstance soundPickupHP;
 
-    PlayerData data;
+    // beat state
+    readonly int FAIL = 0, SUCCESS = 1, BEAT = 2;
 
-    [Header("Debug")]
-    public Text txtComboState;
-    public Text txtNumberCombos;
+    // attack type (combos)
+    readonly int QUICK = 0, SLOW = 1, HOLD = 2, RAPID = 3;
 
+    // attack type (update selection)
+    readonly int BLOCK = 0, QUICKATTACK = 1, SLOWATTACK = 2, SUPERATTACK = 3, COUNTERATTACK = 4, HOLDATTACK = 5, RAPIDATTACK = 6;
+
+    // combos
+    readonly int COMBOFLATTEN = 0, COMBOCHARGEPUNCH = 1, COMBORAPIDKICKS = 2, COMBOSUPER = 3, COMBOCOUNTERHIT = 4;
+    
     void Awake()
     {
         data = SaveSystem.LoadPlayer();
-    }
+
+        //txtVictory = GameObject.Find("txtVictory").GetComponent<Text>();
+
+        animator = GetComponent<Animator>();
+
+        rendererHPFill = GameObject.Find("HPFill").GetComponent<SpriteRenderer>();
+        maskHPFill = GameObject.Find("HPFillMask").GetComponent<SpriteMask>();
+        renderersSpecialCharges = new SpriteRenderer[3]
+        {
+            GameObject.Find("Charge1").GetComponent<SpriteRenderer>(),
+            GameObject.Find("Charge2").GetComponent<SpriteRenderer>(),
+            GameObject.Find("Charge3").GetComponent<SpriteRenderer>()
+        };
+        //spriteScoreBg = GameObject.Find("txtVictory").GetComponent<Text>();
+        textStreak = GameObject.Find("StreakCounter").GetComponent<Text>();
+        textCombo = GameObject.Find("ComboCounter").GetComponent<Text>();
+        textCurrency = GameObject.Find("txtCurrency").GetComponent<Text>();
+        textScore = GameObject.Find("ScoreCounter").GetComponent<Text>();
+        textMultiplier = GameObject.Find("MultiplierCounter").GetComponent<Text>();
+        textRank = GameObject.Find("RankDisplay").GetComponent<Text>();
+
+        maskSPFill = GameObject.Find("SPBarMask").GetComponent<SpriteMask>();
+        rendererSPFill = GameObject.Find("SPBarMask").GetComponent<SpriteRenderer>();
+        SPBar = GameObject.Find("SPBar");
+
+        hitboxAttack1A = transform.Find("AttackHitBox1A").GetComponent<BoxCollider2D>();
+        hitboxAttack2A = transform.Find("AttackHitBox2A").GetComponent<BoxCollider2D>();
+        hitboxAttack2B = transform.Find("AttackHitBox2B").GetComponent<BoxCollider2D>();
+        hitboxAttack2C = transform.Find("AttackHitBox2C").GetComponent<BoxCollider2D>();
+        hitboxAttack1B = transform.Find("AttackHitBox1B").GetComponent<BoxCollider2D>();
+        hitboxAttack1C = transform.Find("AttackHitBox1C").GetComponent<BoxCollider2D>();
+        hitboxAttack2D = transform.Find("AttackHitBox2D").GetComponent<BoxCollider2D>();
+        hitboxAttack3A = transform.Find("AttackHitBox3A").GetComponent<BoxCollider2D>();
+        hitboxAttack4A = transform.Find("AttackHitBox4A").GetComponent<BoxCollider2D>();
+        hitboxAttack5A = transform.Find("AttackHitBox5A").GetComponent<BoxCollider2D>();
+        hitboxAttack6A = transform.Find("AttackHitBox6A").GetComponent<BoxCollider2D>();
+        hitboxAttack6B = transform.Find("AttackHitBox6B").GetComponent<BoxCollider2D>();
+
+        hitboxAttackBird = transform.Find("AttackHitBoxBird").GetComponent<BoxCollider2D>();
+        hitboxPickup = transform.Find("PickupHitbox").GetComponent<BoxCollider2D>();
+        hitboxParry = transform.Find("ParryHitBox").GetComponent<BoxCollider2D>();
+
+}
 
     void Start()
     {
@@ -240,7 +297,7 @@ public class playerHandler : MonoBehaviour
         soundSPBarFull = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/BarFull");
         soundRankAnnouncer = FMODUnity.RuntimeManager.CreateInstance("event:/Announcer/Voice");
 
-        mainCamera = GameObject.Find("Main Camera");
+        mainCamera = GameObject.Find("GameManager");
         beatIndicator = GameObject.Find("BeatIndicatorB");
         if (mainHandler.currentGameMode == 1) beatIndicator.SetActive(false);
 

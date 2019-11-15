@@ -494,9 +494,7 @@ GameObject:
   m_Component:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
-  - component: {fileID: 519420030}
   - component: {fileID: 519420029}
-  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -517,83 +515,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ListenerNumber: 0
---- !u!114 &519420030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a100c1e9ec5d1c940884bf530c279115, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  level: 1
-  bpm: 100
-  offset: 0
-  leniency: 0.12
-  gameMode: 2
-  musicPath: event:/Music/SpaceBagle
-  soundClockPath: event:/Clock_Spacebagle
-  enemyA: {fileID: 1386477621940742, guid: 79bd281be1189e84aba46e67b9aa7e68, type: 3}
-  enemyB: {fileID: 1386477621940742, guid: c28fe41f88cbcca4b8341c862ce5d154, type: 3}
-  enemyC: {fileID: 1386477621940742, guid: 78419bdd45202f24bb79234551ef90f9, type: 3}
-  enemyD: {fileID: 1386477621940742, guid: f17819d1c6c6ff94e9d6fc045011eb23, type: 3}
-  enemyBird: {fileID: 8370553139761448980, guid: cfee2d09f6fddee4dab3c0b33913eab2,
-    type: 3}
-  currencyObject: {fileID: 338368309248678210, guid: d6324fbbf6cdd7f4fb4131545d93f055,
-    type: 3}
-  player: {fileID: 1415857241}
-  txtVictory: {fileID: 996373898}
-  txtGameOver: {fileID: 834923159}
-  gameOver: 0
-  btnRetry: {fileID: 947761879}
-  btnGameOver: {fileID: 1319720067}
-  maskProgressFill: {fileID: 303937643440660902}
-  rendererProgressMarker: {fileID: 739228893}
-  totalEnemies: 0
-  totalBirds: 0
-  SecondCounter: {fileID: 0}
-  SecondDisplay: {fileID: 0}
-  txtRecordDisplay: {fileID: 0}
-  txtRecordAnnouncement: {fileID: 0}
-  txtTimeLeft: {fileID: 0}
-  UIMarker: {fileID: 4072682925154051409, guid: 861e1dec572283f46834fa3bc3341327,
-    type: 3}
-  endlessRecord: 0
-  clearedLevel: 
-  clearedBirdLevel: 
-  clearedHardLevel: 
-  unlockedLevel: 
-  unlockedBirdLevel: 
-  unlockedHardLevel: 
-  streakRecord: 
-  comboRecord: 
-  timeRecord: []
-  streakLevelEndlessRecord: 0
-  scoreRecord: 
-  scoreBirdRecord: 
-  scoreHardRecord: 
-  rankRecord: 
-  rankBirdRecord: 
-  rankHardRecord: 
-  currency: 0
-  itemBought: 
-  itemActive: 
-  lastMode: 0
-  seenControls: 0
-  seenBirdTutorial: 0
-  txtSongName: {fileID: 0}
-  txtSongBPM: {fileID: 0}
-  spriteCombos: []
-  comboHolder: {fileID: 0}
-  comboBasicHeavy: {fileID: 0}
-  comboBasicLight: {fileID: 0}
-  spriteControlsOpen: {fileID: 0}
-  spriteControlsClosed: {fileID: 0}
-  imgControlsTraining: {fileID: 0}
-  timerBox: {fileID: 303937643440660903}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -651,18 +572,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &519420033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86bcb69c0102c8e48a427b18e91adf19, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &545647616
 GameObject:
   m_ObjectHideFlags: 0
@@ -1421,6 +1330,18 @@ Transform:
   m_Father: {fileID: 1078396382}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &973310641 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+    type: 3}
+  m_PrefabInstance: {fileID: 5507676937090035116}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a100c1e9ec5d1c940884bf530c279115, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &980113441
 GameObject:
   m_ObjectHideFlags: 0
@@ -1656,7 +1577,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4323905063157606, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4323905063157606, guid: 7d2bda69b99922f4a9a4f8085aaa5a1b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1842,7 +1763,7 @@ Transform:
   - {fileID: 545647617}
   - {fileID: 980113442}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1091258188
 GameObject:
@@ -2133,7 +2054,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &1285684210
 GameObject:
@@ -2483,7 +2404,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9b067a86f0718b4ab90c195de46162e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameModeSelected: 0
+  gameModeSelected: 1
   lastButtonName: 
 --- !u!4 &1550020923
 Transform:
@@ -2497,7 +2418,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1608068680
 GameObject:
@@ -2563,7 +2484,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1685484323 stripped
 SpriteRenderer:
@@ -2894,7 +2815,7 @@ PrefabInstance:
     - target: {fileID: 303937643396106981, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 303937643396106981, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
@@ -2974,18 +2895,53 @@ PrefabInstance:
     - target: {fileID: 6303769567645556673, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 36.45999
+      value: 36.45996
+      objectReference: {fileID: 0}
+    - target: {fileID: 6303769567645556673, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -249.35999
+      objectReference: {fileID: 0}
+    - target: {fileID: 303937644554827046, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 973310641}
+    - target: {fileID: 303937644554827046, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: QuitLevel
       objectReference: {fileID: 0}
     - target: {fileID: 303937643309945714, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 519420030}
-    - target: {fileID: 303937644554827046, guid: 024694b4cb46c694581f8476382507b3,
+      objectReference: {fileID: 973310641}
+    - target: {fileID: 303937643309945714, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 519420030}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: RestartLevel
+      objectReference: {fileID: 0}
+    - target: {fileID: 4953340227112521971, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Name
+      value: ProgressBarForeground
+      objectReference: {fileID: 0}
+    - target: {fileID: 2809093787524072086, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Name
+      value: ProgressBarMask
+      objectReference: {fileID: 0}
+    - target: {fileID: 7106404328082827602, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Name
+      value: ProgressBarFill
+      objectReference: {fileID: 0}
+    - target: {fileID: 241973790616035479, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Name
+      value: ProgressBarMarker
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 024694b4cb46c694581f8476382507b3, type: 3}
 --- !u!331 &303937643440660902 stripped
@@ -3056,7 +3012,7 @@ PrefabInstance:
     - target: {fileID: 4813939583015148578, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4813939583015148578, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
         type: 3}
@@ -3184,6 +3140,140 @@ SpriteRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 2141540809053295106}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5507676937090035116
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1824926462911765906, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: m_Name
+      value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099670002404772797, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.5040745
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099670002404772797, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.022151038
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099670002404772797, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -7.640625
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099670002404772797, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099670002404772797, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099670002404772797, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099670002404772797, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099670002404772797, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099670002404772797, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099670002404772797, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3099670002404772797, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1415857241}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: txtVictory
+      value: 
+      objectReference: {fileID: 996373898}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: txtGameOver
+      value: 
+      objectReference: {fileID: 834923159}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: btnRetry
+      value: 
+      objectReference: {fileID: 947761879}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: btnGameOver
+      value: 
+      objectReference: {fileID: 1319720067}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: maskProgressFill
+      value: 
+      objectReference: {fileID: 303937643440660902}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: rendererProgressMarker
+      value: 
+      objectReference: {fileID: 739228893}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: timerBox
+      value: 
+      objectReference: {fileID: 303937643440660903}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: level
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: bpm
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: musicPath
+      value: event:/Music/SpaceBagle
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: soundClockPath
+      value: event:/Clock_Spacebagle
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: gameMode
+      value: 2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 51a5541526bf8b142a5d2185271ecf3a, type: 3}
 --- !u!114 &6575546973905403040 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5114190486342037154, guid: ba4024dc994b0f0449c7fa5a6dffaecb,

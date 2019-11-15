@@ -284,7 +284,7 @@ public class enemyATutorialHandler : enemyHandler {
 
     public override void Die(int dmg)
     {
-        GameObject.Find("Main Camera").GetComponent<mainHandlerTutorial>().CompletedTutorialStep();
+        GameObject.Find("GameManager").GetComponent<mainHandlerTutorial>().CompletedTutorialStep();
 
         GameObject tempObject;
         mainHandlerTutorial.EnemyDead();

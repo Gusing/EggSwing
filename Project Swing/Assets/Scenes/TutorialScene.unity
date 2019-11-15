@@ -312,7 +312,7 @@ Transform:
   m_Children:
   - {fileID: 985819098}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &409972040 stripped
 MonoBehaviour:
@@ -396,7 +396,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &602683329
 GameObject:
@@ -409,8 +409,6 @@ GameObject:
   - component: {fileID: 602683336}
   - component: {fileID: 602683335}
   - component: {fileID: 602683330}
-  - component: {fileID: 602683331}
-  - component: {fileID: 602683332}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -431,106 +429,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ListenerNumber: 0
---- !u!114 &602683331
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 602683329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86bcb69c0102c8e48a427b18e91adf19, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &602683332
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 602683329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29c9ea258066e1c4e8ad5a865b7251a8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  level: -2
-  bpm: 100
-  offset: 0
-  leniency: 0.12
-  gameMode: 0
-  musicPath: event:/Music/SpaceBagle
-  soundClockPath: event:/Clock_Spacebagle
-  enemyA: {fileID: 1386477621940742, guid: 79bd281be1189e84aba46e67b9aa7e68, type: 3}
-  enemyB: {fileID: 1386477621940742, guid: c28fe41f88cbcca4b8341c862ce5d154, type: 3}
-  enemyC: {fileID: 1386477621940742, guid: 78419bdd45202f24bb79234551ef90f9, type: 3}
-  enemyD: {fileID: 1386477621940742, guid: f17819d1c6c6ff94e9d6fc045011eb23, type: 3}
-  enemyBird: {fileID: 8370553139761448980, guid: cfee2d09f6fddee4dab3c0b33913eab2,
-    type: 3}
-  player: {fileID: 1739782995301508}
-  txtVictory: {fileID: 1573195058}
-  txtGameOver: {fileID: 1573195057}
-  gameOver: 0
-  btnRetry: {fileID: 1573195056}
-  btnGameOver: {fileID: 1573195055}
-  maskProgressFill: {fileID: 0}
-  rendererProgressMarker: {fileID: 0}
-  totalEnemies: 0
-  totalBirds: 0
-  SecondCounter: {fileID: 1573195054}
-  SecondDisplay: {fileID: 1573195053}
-  txtRecordDisplay: {fileID: 0}
-  txtRecordAnnouncement: {fileID: 0}
-  txtTimeLeft: {fileID: 0}
-  UIMarker: {fileID: 0}
-  endlessRecord: 0
-  clearedLevel: 
-  clearedBirdLevel: 
-  clearedHardLevel: 
-  unlockedLevel: 
-  unlockedBirdLevel: 
-  unlockedHardLevel: 
-  streakRecord: 
-  comboRecord: 
-  timeRecord: []
-  streakLevelEndlessRecord: 0
-  scoreRecord: 
-  scoreBirdRecord: 
-  scoreHardRecord: 
-  rankRecord: 
-  rankBirdRecord: 
-  rankHardRecord: 
-  currency: 0
-  itemBought: 
-  itemActive: 
-  lastMode: 0
-  seenControls: 0
-  seenBirdTutorial: 0
-  txtSongName: {fileID: 0}
-  txtSongBPM: {fileID: 0}
-  spriteCombos: []
-  comboHolder: {fileID: 0}
-  comboBasicHeavy: {fileID: 0}
-  comboBasicLight: {fileID: 0}
-  spriteControlsOpen: {fileID: 0}
-  spriteControlsClosed: {fileID: 0}
-  imgControlsTraining: {fileID: 0}
-  timerBox: {fileID: 163794989}
-  enemyBoxLight: {fileID: 8723348879377983392, guid: 98cd683920763c640b7d13861cf6b74b,
-    type: 3}
-  enemyBoxHeavy: {fileID: 881514103494841168, guid: 3073844ef2db9fc4b932278d94f9bf50,
-    type: 3}
-  objectWall: {fileID: 2108046482808023772, guid: 70c9e6f5e53318d45b4b7c3d1c557426,
-    type: 3}
-  parryPractice: {fileID: 1386477621940742, guid: 10e19b30e5624264cba6fe9c6cc86091,
-    type: 3}
-  enemyTutorial: {fileID: 1386477621940742, guid: 39240a1cb8c7bdd44ac662e649f7973f,
-    type: 3}
-  txtTutorial: {fileID: 152564267}
-  txtTutorial2: {fileID: 1536183297}
-  beatIndicator: {fileID: 792279978}
-  playerMoved: 0
 --- !u!20 &602683335
 Camera:
   m_ObjectHideFlags: 0
@@ -717,7 +615,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!114 &940538140 stripped
 MonoBehaviour:
@@ -992,7 +890,7 @@ PrefabInstance:
     - target: {fileID: 303937643396106981, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 303937643396106981, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
@@ -1161,6 +1059,138 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 8935748466681093648}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1685221656
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1685221659}
+  - component: {fileID: 1685221658}
+  - component: {fileID: 1685221657}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1685221657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685221656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86bcb69c0102c8e48a427b18e91adf19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1685221658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685221656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29c9ea258066e1c4e8ad5a865b7251a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  level: -2
+  bpm: 100
+  offset: 0
+  leniency: 0.12
+  gameMode: 0
+  musicPath: event:/Music/SpaceBagle
+  soundClockPath: event:/Clock_Spacebagle
+  enemyA: {fileID: 1386477621940742, guid: 79bd281be1189e84aba46e67b9aa7e68, type: 3}
+  enemyB: {fileID: 1386477621940742, guid: c28fe41f88cbcca4b8341c862ce5d154, type: 3}
+  enemyC: {fileID: 1386477621940742, guid: 78419bdd45202f24bb79234551ef90f9, type: 3}
+  enemyD: {fileID: 1386477621940742, guid: f17819d1c6c6ff94e9d6fc045011eb23, type: 3}
+  enemyBird: {fileID: 8370553139761448980, guid: cfee2d09f6fddee4dab3c0b33913eab2,
+    type: 3}
+  player: {fileID: 1739782995301508}
+  txtVictory: {fileID: 1573195058}
+  txtGameOver: {fileID: 1573195057}
+  gameOver: 0
+  btnRetry: {fileID: 1573195056}
+  btnGameOver: {fileID: 1573195055}
+  maskProgressFill: {fileID: 0}
+  rendererProgressMarker: {fileID: 0}
+  totalEnemies: 0
+  totalBirds: 0
+  SecondCounter: {fileID: 1573195054}
+  SecondDisplay: {fileID: 1573195053}
+  txtRecordDisplay: {fileID: 0}
+  txtRecordAnnouncement: {fileID: 0}
+  txtTimeLeft: {fileID: 0}
+  UIMarker: {fileID: 0}
+  endlessRecord: 0
+  clearedLevel: 
+  clearedBirdLevel: 
+  clearedHardLevel: 
+  unlockedLevel: 
+  unlockedBirdLevel: 
+  unlockedHardLevel: 
+  streakRecord: 
+  comboRecord: 
+  timeRecord: []
+  streakLevelEndlessRecord: 0
+  scoreRecord: 
+  scoreBirdRecord: 
+  scoreHardRecord: 
+  rankRecord: 
+  rankBirdRecord: 
+  rankHardRecord: 
+  currency: 0
+  itemBought: 
+  itemActive: 
+  lastMode: 0
+  seenControls: 0
+  seenBirdTutorial: 0
+  txtSongName: {fileID: 0}
+  txtSongBPM: {fileID: 0}
+  spriteCombos: []
+  comboHolder: {fileID: 0}
+  comboBasicHeavy: {fileID: 0}
+  comboBasicLight: {fileID: 0}
+  spriteControlsOpen: {fileID: 0}
+  spriteControlsClosed: {fileID: 0}
+  imgControlsTraining: {fileID: 0}
+  timerBox: {fileID: 163794989}
+  enemyBoxLight: {fileID: 8723348879377983392, guid: 98cd683920763c640b7d13861cf6b74b,
+    type: 3}
+  enemyBoxHeavy: {fileID: 881514103494841168, guid: 3073844ef2db9fc4b932278d94f9bf50,
+    type: 3}
+  objectWall: {fileID: 2108046482808023772, guid: 70c9e6f5e53318d45b4b7c3d1c557426,
+    type: 3}
+  parryPractice: {fileID: 1386477621940742, guid: 10e19b30e5624264cba6fe9c6cc86091,
+    type: 3}
+  enemyTutorial: {fileID: 1386477621940742, guid: 39240a1cb8c7bdd44ac662e649f7973f,
+    type: 3}
+  txtTutorial: {fileID: 152564267}
+  txtTutorial2: {fileID: 1536183297}
+  beatIndicator: {fileID: 792279978}
+  playerMoved: 0
+--- !u!4 &1685221659
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685221656}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 146.34277, y: 480.76813, z: -34.591026}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1755086986 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 6207378075233845851, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
@@ -1223,7 +1253,7 @@ PrefabInstance:
     - target: {fileID: 2411458565846695058, guid: b5df1afbff4eeac4fbf15aa417ba5366,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2411458565846695058, guid: b5df1afbff4eeac4fbf15aa417ba5366,
         type: 3}
@@ -1357,7 +1387,7 @@ PrefabInstance:
     - target: {fileID: 4813939583015148578, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4813939583015148578, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
         type: 3}

@@ -152,7 +152,7 @@ public class enemyBoxLightHandler : enemyHandler
         }
         */
 
-        GameObject.Find("Main Camera").GetComponent<mainHandlerTutorial>().CompletedTutorialStep();
+        GameObject.Find("GameManager").GetComponent<mainHandlerTutorial>().CompletedTutorialStep();
 
         soundDeath.start();
         //rendererHPBar.enabled = false;

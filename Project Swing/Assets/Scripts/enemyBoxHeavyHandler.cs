@@ -154,7 +154,7 @@ public class enemyBoxHeavyHandler : enemyHandler
         }
         */
 
-        GameObject.Find("Main Camera").GetComponent<mainHandlerTutorial>().CompletedTutorialStep();
+        GameObject.Find("GameManager").GetComponent<mainHandlerTutorial>().CompletedTutorialStep();
 
         soundDeath.start();
         //rendererHPBar.enabled = false;

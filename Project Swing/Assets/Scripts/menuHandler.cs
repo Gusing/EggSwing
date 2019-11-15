@@ -273,7 +273,7 @@ public class menuHandler : MonoBehaviour {
 
         if (num > 0 && num < 100) SceneManager.LoadScene("Level" + num + "Scene");
         
-        if (num == 100) SceneManager.LoadScene("LevelEndless");
+        if (num == 100) SceneManager.LoadScene("LevelEndlessScene");
     }
 
     public void CycleMode(bool right)

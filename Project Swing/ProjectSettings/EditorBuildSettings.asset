@@ -24,7 +24,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Level3Scene.unity
     guid: 97b5447d9baf50c47a66695f31d3dad9
   - enabled: 1
-    path: Assets/Scenes/LevelEndless.unity
+    path: Assets/Scenes/LevelEndlessScene.unity
     guid: 42c5849e68a6909479822ea4ddcdec34
   - enabled: 1
     path: Assets/Scenes/Level4Scene.unity
@@ -38,4 +38,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/OptionsScene.unity
     guid: 1d7c773b6497b8442a814a93c74dbb6d
+  - enabled: 1
+    path: Assets/Scenes/TutorialScene.unity
+    guid: 5a9139123d81f1649a80d97a68cab7cb
   m_configObjects: {}

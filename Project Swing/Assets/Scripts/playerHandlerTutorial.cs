@@ -189,7 +189,7 @@ public class playerHandlerTutorial : MonoBehaviour
     List<Attack[]> currentCombos;
     List<int> lastCombo;
 
-    GameObject mainCamera;
+    mainHandlerTutorial gameManager;
     GameObject beatIndicator;
 
     readonly int QUICK = 0, SLOW = 1, HOLD = 2, RAPID = 3;
@@ -228,6 +228,10 @@ public class playerHandlerTutorial : MonoBehaviour
     void Awake()
     {
         data = SaveSystem.LoadPlayer();
+
+        gameManager = GameObject.Find("GameManager").GetComponent<mainHandlerTutorial>();
+
+        beatIndicator = GameObject.Find("BeatIndicatorB");
     }
 
     void Start()
@@ -245,9 +249,8 @@ public class playerHandlerTutorial : MonoBehaviour
         soundEnemyBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/HitArmor");
         soundSPBarFull = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/BarFull");
         soundRankAnnouncer = FMODUnity.RuntimeManager.CreateInstance("event:/Announcer/Voice");
-
-        mainCamera = GameObject.Find("Main Camera");
-        beatIndicator = GameObject.Find("BeatIndicatorB");
+        
+        
         if (mainHandler.currentGameMode == 1) beatIndicator.SetActive(false);
 
         allCombos = new List<Attack[]>();
@@ -743,14 +746,14 @@ public class playerHandlerTutorial : MonoBehaviour
 
         if (((Input.GetButton("MoveRight") || Input.GetAxisRaw("Move Axis") > 0) && !busy) && mainHandlerTutorial.currentGameMode != 1 && !normalLevelFinished && !disabledMove)
         {
-            mainCamera.GetComponent<mainHandlerTutorial>().playerMoved = true;
+            gameManager.playerMoved = true;
             accX = 26f;
             direction = 1;
             localRenderer.flipX = false;
         }
         else if (((Input.GetButton("MoveLeft") || Input.GetAxisRaw("Move Axis") < 0) && !busy) && mainHandlerTutorial.currentGameMode != 1 && !normalLevelFinished && !disabledMove)
         {
-            mainCamera.GetComponent<mainHandlerTutorial>().playerMoved = true;
+            gameManager.playerMoved = true;
             accX = -26f;
             direction = -1;
             localRenderer.flipX = true;
@@ -1178,7 +1181,7 @@ public class playerHandlerTutorial : MonoBehaviour
         if (beatState == SUCCESS || beatState == BEAT)
         {
             Instantiate(effectHitSuper, transform.position + new Vector3(0, 1.5f), new Quaternion(0, 0, 0, 0));
-            mainCamera.GetComponent<ScreenShake>().TriggerShake(0.8f, 0.5f, 1.2f);
+            gameManager.gameObject.GetComponent<ScreenShake>().TriggerShake(0.8f, 0.5f, 1.2f);
             soundAttackSuper.start();
             //Instantiate(pSpecialAttack, transform.position, new Quaternion(0, 0, 0, 0));
             UpdateHitboxes();
@@ -1358,7 +1361,7 @@ public class playerHandlerTutorial : MonoBehaviour
 
     void CounterPunch()
     {
-        mainCamera.GetComponent<ScreenShake>().TriggerShake(0.3f, 0.3f, 1.2f);
+        //mainCamera.GetComponent<ScreenShake>().TriggerShake(0.3f, 0.3f, 1.2f);
         //Instantiate(pCounter, hitboxAttack4A.transform.position, new Quaternion(0, 0, 0, 0));
         UpdateHitboxes();
         punchingSuccess = true;
@@ -1909,7 +1912,7 @@ public class playerHandlerTutorial : MonoBehaviour
                     actionTimer = 0;
                     parryHitting = true;
                     other.GetComponent<enemyHandler>().GetParried();
-                    mainCamera.GetComponent<mainHandlerTutorial>().PlayerInput(2);
+                    gameManager.PlayerInput(2);
                     //other.GetComponent<enemyHandler>().TakeDamage(4, 100);
                 }
             }
@@ -1957,8 +1960,8 @@ public class playerHandlerTutorial : MonoBehaviour
                 {
                     tDmg = other.GetComponent<enemyHandler>().TakeDamage(tDmg, attackID, birdHitstun, attackType);
                     lastDmg = tDmg;
-                    if (lastAttackSlow) mainCamera.GetComponent<mainHandlerTutorial>().PlayerInput(1);
-                    else mainCamera.GetComponent<mainHandlerTutorial>().PlayerInput(0);
+                    if (lastAttackSlow) gameManager.PlayerInput(1);
+                    else gameManager.PlayerInput(0);
                     if (usingSuper) AddBonusScore("Super Hit", 30);
                     if (comboState >= 0)
                     {
@@ -1978,7 +1981,7 @@ public class playerHandlerTutorial : MonoBehaviour
 
                 if (comboState == currentCombos[0].Length - 1 && tDmg > 0)
                 {
-                    mainCamera.GetComponent<ScreenShake>().TriggerShake(0.07f + 0.027f * tDmg, 0.2f + 0.08f * tDmg, 1.2f);
+                    gameManager.gameObject.GetComponent<ScreenShake>().TriggerShake(0.07f + 0.027f * tDmg, 0.2f + 0.08f * tDmg, 1.2f);
                     Instantiate(effectHitRed, tBox, new Quaternion(0, 0, 0, 0));
                 }
                 else if (tDmg < 8 && tDmg > 0 && !birdHitstun)

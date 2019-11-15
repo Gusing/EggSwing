@@ -518,108 +518,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &2141540808862620256
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2141540808862620262}
-  - component: {fileID: 2141540808862620257}
-  - component: {fileID: 889215}
-  m_Layer: 0
-  m_Name: BeatIndicator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &2141540808862620262
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2141540808862620256}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -429.85242, z: 0}
-  m_LocalScale: {x: 99.965675, y: 99.965675, z: 99.965675}
-  m_Children: []
-  m_Father: {fileID: 4813939583015148578}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &2141540808862620257
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2141540808862620256}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 4294967295
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1892743819
-  m_SortingLayer: 7
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 84414735c9512c3489f5a2fddd7137cd, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
---- !u!114 &889215
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2141540808862620256}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb46afb7d930f914fb4b20926c83aa90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  indicatorRing: {fileID: 2943476834918928342, guid: 9e49f23f50c3ca141a44f348423b074b,
-    type: 3}
-  spriteEmpty: {fileID: 21300000, guid: 84414735c9512c3489f5a2fddd7137cd, type: 3}
-  spriteGreat: {fileID: 21300000, guid: 03482dff7c8d66248b46c46a01e2adf0, type: 3}
-  spriteOk: {fileID: 21300000, guid: d596db4a5736fb1409e509390a85ab18, type: 3}
-  spriteBad: {fileID: 21300000, guid: f97c5f495d3c1d541af8721a0a561ee1, type: 3}
-  timeBeforeCollision: 0.4
-  startingScale: 2.5
-  greatLimit: 0.04
 --- !u!1 &2735564815547849569
 GameObject:
   m_ObjectHideFlags: 0
@@ -1009,7 +907,6 @@ RectTransform:
   - {fileID: 2141540808691987989}
   - {fileID: 2141540807537094591}
   - {fileID: 5114190486342037156}
-  - {fileID: 2141540808862620262}
   - {fileID: 5654704082702039515}
   - {fileID: 7727554948389775773}
   m_Father: {fileID: 0}
@@ -1746,7 +1643,7 @@ GameObject:
   - component: {fileID: 4833141866594811902}
   - component: {fileID: 3416327858612403832}
   m_Layer: 0
-  m_Name: BeatIndicatorB
+  m_Name: BeatIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1766,7 +1663,7 @@ Transform:
   - {fileID: 5193552642427776570}
   - {fileID: 2569273375341179824}
   m_Father: {fileID: 4813939583015148578}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4833141866594811902
 SpriteRenderer:
@@ -1834,6 +1731,8 @@ MonoBehaviour:
   spriteGreat: {fileID: 21300000, guid: c791592c736c12740b5fe37979c6ec7d, type: 3}
   spriteOk: {fileID: 21300000, guid: 75e52ee6e0da5294097c09e668448a96, type: 3}
   spriteBad: {fileID: 21300000, guid: dd1f47bad7c14eb48bd568011da27abf, type: 3}
+  spriteLineWhite: {fileID: 21300000, guid: 9e9bbe13b7f84a54eba676ee373c9ac4, type: 3}
+  spriteLineGray: {fileID: 21300000, guid: fd17f1063190acf4298b7df8d35f25ad, type: 3}
   rendererIcon: {fileID: 6207378075233845851}
   rendererFeedback: {fileID: 6282165740970172305}
   greatLimit: 0.04
@@ -1870,7 +1769,7 @@ Transform:
   - {fileID: 7299280346462623709}
   - {fileID: 4439352754697240664}
   m_Father: {fileID: 4813939583015148578}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8100203543791121170
 GameObject:

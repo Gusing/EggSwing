@@ -13,87 +13,92 @@ using UnityEngine.EventSystems;
 
 public class mainHandler : MonoBehaviour {
 
-    [Header("Level Data")]
+    [Header("_____Level Data_____")]
     public int level;
-    public static int staticLevel;
     public int bpm;
-    public static int currentBpm;
-    public float offset;
     public float leniency = 0.1f;
-    public static float currentLeniency;
-    float offBeatTime;
-    float preBeatTime;
     public int gameMode;
-    public static int currentGameMode;
     public string musicPath;
     public string soundClockPath;
 
-    readonly int NORMAL = 0, BIRD = 1, HARD = 2;
-
-    [Header("Object Prefabs")]
+    [Header("______Object Prefabs_____")]
     public GameObject enemyA;
     public GameObject enemyB;
     public GameObject enemyC;
     public GameObject enemyD;
     public GameObject enemyBird;
     public GameObject currencyObject;
+    public GameObject UIMarker;
 
-    List<GameObject> enemies;
+    [Header("______Resources_____")]
+    public Sprite[] spriteCombos;
+    public Sprite comboHolder;
+    public Sprite comboBasicHeavy;
+    public Sprite comboBasicLight;
+    public Sprite spriteControlsOpen;
+    public Sprite spriteControlsClosed;
 
-    public GameObject player;
+    //--------------------------------local objects
+    Camera levelCamera;
+    timerBox timerBox;
+    EventSystem eventSystem;
+    playerHandler player;
 
-    [Header("Local Objects")]
-    public Text txtVictory;
-    public Text txtGameOver;
-    float gameOverTimer;
-    [HideInInspector] public bool gameOver;
-    public static bool normalLevelFinished;
-    public static bool birdLevelFinished;
-
-    bool gotCool;
-
-    public Button btnRetry;
-    public Button btnGameOver;
-    public SpriteMask maskProgressFill;
-    public SpriteRenderer rendererProgressMarker;
-
+    // normal HUD
     Canvas levelUI;
     Canvas playerHUD;
-    public static bool HUDTurnedOff;
+    Text txtVictory;
+    Text txtGameOver;
+    Button btnRetry;
+    Button btnGameOver;
+    SpriteMask maskProgressFill;
+    SpriteRenderer rendererProgressMarker;
 
-    float beatTime;
-    float beatTimer;
-    float offsetTimer;
-    
-    float indicatorTimer;
-    bool indicatorReady;
+    // endless HUD
+    Text SecondCounter;
+    Text SecondDisplay;
+    Text txtRecordDisplay;
+    Text txtRecordAnnouncement;
 
+    // practice HUD
+    Text txtSongName;
+    Text txtSongBPM;
+    Image imgControlsTraining;
+
+    //------------------------------------level progression
+    public static int staticLevel;
+    public static int currentBpm;
+    public static float currentLeniency;
+    public static int currentGameMode;
+    public static bool normalLevelFinished;
+    public static bool birdLevelFinished;
     public static float levelTimer;
-    int currentSpawn;
-    float prevTime;
-    bool waitingForDeath;
     public static int enemiesDead;
-    [HideInInspector] public int totalEnemies;
-    [HideInInspector] public int totalBirds;
-    float[] songLengths;
-    float[] hardLevelTimeLimits;
-    float currentTimeLimit;
-    bool clockStarted;
-
-    float nextSpawn;
-
-    readonly int FAIL = 0, SUCCESS = 1, BEAT = 2, OFFBEAT = 3;
+    public static float currentBeatTimer;
     public static int currentState;
     public static bool beatFrame;
     public static bool offBeat;
     public static bool songStarted;
 
-    public Text SecondCounter;
-    public Text SecondDisplay;
-    public Text txtRecordDisplay;
-    public Text txtRecordAnnouncement;
-    public Text txtTimeLeft;
+    int currentSpawn;
+    float nextSpawn;
+    float prevTime;
+    bool waitingForDeath;
+    bool clockStarted;
     float victoryTimer;
+    float beatTimer;
+
+    float offBeatTime;
+    float preBeatTime;
+    float gameOverTimer;
+    bool gotCool;
+    [HideInInspector] public bool gameOver;
+    [HideInInspector] public int totalEnemies;
+    [HideInInspector] public int totalBirds;
+    
+
+    //----------------------------------level data
+    public static int[] currentRankLimits;
 
     EnemySpawn[] levelEndlessSpawn;
     EnemySpawn[] levelTrainingSpawn;
@@ -108,16 +113,35 @@ public class mainHandler : MonoBehaviour {
     EnemySpawn[] testSpawn;
     EnemySpawn[] currentLevelSpawn;
     float[] endWaitTimer;
-    public static int[] currentRankLimits;
     List<int[]> levelRankLimits;
     List<int[]> hardRankLimits;
+    public List<int[]> birdRankLimits;
+    float[] songLengths;
+    float[] hardLevelTimeLimits;
+    float currentTimeLimit;
+    int[] numBirds;
+    
+    List<GameObject> enemies;
+    
+    // practice mode data
+    List<string> practiceSongNames;
+    List<string> availablePracticeSongNames;
+    List<int> practiceSongBPM;
+    List<int> availablePracticeSongBPM;
+    int currentSong;
+    bool trainingControlsOpen;
+    bool holdingRT;
+    bool holdingLT;
 
-    EventSystem eventSystem;
+    //---------------------------------HUD
+    public static bool HUDTurnedOff;
     GameObject oldSelected;
-    public GameObject UIMarker;
     GameObject currentUIMarker;
     float UIMarkerColor;
     bool UIMarkerColorSwitch;
+
+    //---------------------------------save data
+    PlayerData data;
 
     [HideInInspector] public int endlessRecord;
     [HideInInspector] public bool[] clearedLevel;
@@ -143,63 +167,77 @@ public class mainHandler : MonoBehaviour {
     [HideInInspector] public int lastMode;
     [HideInInspector] public bool seenControls;
     [HideInInspector] public bool seenBirdTutorial;
-
-    int[] numBirds;
-    public List<int[]> birdRankLimits; 
-
+    
+    //---------------------------------audio
+    FMOD.Studio.EventInstance soundMusic;
     FMOD.Studio.EventInstance soundAmbCafe;
     FMOD.Studio.EventInstance soundAmbSea;
-
-    FMOD.Studio.EventInstance soundMusic;
-    FMOD.Studio.EVENT_CALLBACK callBack;
-
+    
     FMOD.Studio.EventInstance soundClock;
-
     FMOD.Studio.EventInstance soundUIClick;
 
     FMOD.Studio.EventInstance soundSinus;
 
-    float beatTimer2;
-    public static float currentBeatTimer;
-
-    // PRACTICE ROOM
-    public Text txtSongName;
-    public Text txtSongBPM;
-
+    FMOD.Studio.EVENT_CALLBACK callBack;
+    
     List<FMOD.Studio.EventInstance> soundPracticeSongs;
     List<FMOD.Studio.EventInstance> soundAvailableracticeSongs;
-    List<string> practiceSongNames;
-    List<string> availablePracticeSongNames;
-    List<int> practiceSongBPM;
-    List<int> availablePracticeSongBPM;
-    int currentSong;
-
-    public Sprite[] spriteCombos;
-    public Sprite comboHolder;
-    public Sprite comboBasicHeavy;
-    public Sprite comboBasicLight;
-
-    public Sprite spriteControlsOpen;
-    public Sprite spriteControlsClosed;
-    public Image imgControlsTraining;
-    bool trainingControlsOpen;
-
-    PlayerData data;
-
-    bool holdingRT;
-    bool holdingLT;
     
-    public timerBox timerBox;
+    // game modes
+    readonly int NORMAL = 0, BIRD = 1, HARD = 2;
+
+    // beat states
+    readonly int FAIL = 0, SUCCESS = 1, BEAT = 2, OFFBEAT = 3;
 
     void Awake()
     {
+        // set static variables
         currentBpm = bpm;
         currentLeniency = leniency;
         staticLevel = level;
-        if (level < 100 && level > 0) gameMode = sceneSelectionHandler.Instance.gameModeSelected;
-        else gameMode = NORMAL;
+
+        // load selected game mode (if available)
+        if (sceneSelectionHandler.Instance != null)
+        {
+            if (level < 100 && level > 0) gameMode = sceneSelectionHandler.Instance.gameModeSelected;
+            else gameMode = NORMAL;
+        }
         currentGameMode = gameMode;
+
+        // load save data
         data = SaveSystem.LoadPlayer();
+
+        // scene object references
+        levelCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        player = GameObject.Find("Player").GetComponent<playerHandler>();
+
+        txtVictory = GameObject.Find("txtVictory").GetComponent<Text>();
+        txtGameOver = GameObject.Find("txtGameOver").GetComponent<Text>();
+        btnRetry = GameObject.Find("btnRetry").GetComponent<Button>();
+        btnGameOver = GameObject.Find("btnBack").GetComponent<Button>();
+        maskProgressFill = GameObject.Find("ProgressBarMask").GetComponent<SpriteMask>();
+        rendererProgressMarker = GameObject.Find("ProgressBarMarker").GetComponent<SpriteRenderer>();
+        timerBox = GameObject.Find("TimerBox").GetComponent<timerBox>();
+
+        // endless mode object references
+        if (level == 100)
+        {
+            SecondCounter = GameObject.Find("SecondCounter").GetComponent<Text>();
+            SecondDisplay = GameObject.Find("SecondDisplay").GetComponent<Text>();
+            txtRecordDisplay = GameObject.Find("RecordDisplay").GetComponent<Text>();
+            txtRecordAnnouncement = GameObject.Find("RecordAnnouncement").GetComponent<Text>();
+        }
+
+        // practice mode object references
+        if (level == -1)
+        {
+            txtSongName = GameObject.Find("txtSongName").GetComponent<Text>();
+            txtSongBPM = GameObject.Find("txtBpm").GetComponent<Text>();
+            imgControlsTraining = GameObject.Find("imgControls").GetComponent<Image>();
+        }
+
+        if (level > 0) levelUI = GameObject.Find("LevelUI").GetComponent<Canvas>();
+        playerHUD = GameObject.Find("playerHUD").GetComponent<Canvas>();
     }
     
     void Start()
@@ -253,7 +291,7 @@ public class mainHandler : MonoBehaviour {
         seenControls = data.seenControls;
         seenBirdTutorial = data.seenBirdTutorial;
 
-        player.GetComponent<playerHandler>().Init(currency);
+        player.Init(currency);
         
         currentSpawn = 0;
         levelTimer = 0;
@@ -262,106 +300,13 @@ public class mainHandler : MonoBehaviour {
         totalEnemies = 0;
         songStarted = false;
 
-        if (level > 0) levelUI = GameObject.Find("LevelUI").GetComponent<Canvas>();
-        playerHUD = GameObject.Find("playerHUD").GetComponent<Canvas>();
-
+        btnRetry.gameObject.SetActive(false);
+        btnGameOver.gameObject.SetActive(false);
+        
         // load practice
         if (level == -1)
         {
-            soundPracticeSongs = new List<FMOD.Studio.EventInstance>();
-            soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/SpaceBagle"));
-            soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/Elextroswing"));
-            soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/PirateBoy"));
-            soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/DoomMusic"));
-            
-            for (int i = 0; i < soundPracticeSongs.Count; i++)
-            {
-                soundPracticeSongs[i].setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
-                soundPracticeSongs[i].setParameterValue("Practice", 1);
-            }
-
-            soundAvailableracticeSongs = new List<FMOD.Studio.EventInstance>();
-
-            practiceSongNames = new List<string> { "Moon", "Swing", "Pirate", "Hell" };
-
-            availablePracticeSongNames = new List<string>();
-
-            practiceSongBPM = new List<int> { 100, 128, 148, 108 };
-
-            availablePracticeSongBPM = new List<int>();
-            
-            for (int i = 1; i < data.unlockedLevel.Length; i++)
-            {
-                if (data.unlockedLevel[i] || data.unlockedBirdLevel[i])
-                {
-                    soundAvailableracticeSongs.Add(soundPracticeSongs[i - 1]);
-                    availablePracticeSongNames.Add(practiceSongNames[i - 1]);
-                    availablePracticeSongBPM.Add(practiceSongBPM[i - 1]);
-                }
-            }
-            
-            currentSong = 0;
-            soundAvailableracticeSongs[currentSong].start();
-            txtSongName.text = availablePracticeSongNames[currentSong];
-            bpm = availablePracticeSongBPM[currentSong];
-            txtSongBPM.text = "BPM: " + bpm;
-            currentBpm = bpm;
-            offBeatTime = 60 / ((float)bpm * 2);
-            preBeatTime = 60 / (float)bpm - leniency;
-            
-            GameObject tSprite;
-            GameObject tSprite2;
-            tSprite = new GameObject("ComboSprite" + -1);
-            SpriteRenderer tRenderer = tSprite.AddComponent<SpriteRenderer>();
-            tRenderer.sprite = comboBasicHeavy;
-            tSprite.transform.localScale = new Vector3(0.5f, 0.5f, 1);
-            tSprite.transform.position = new Vector3(-6.4f, 3.1f - 0.7f * 0);
-            tRenderer.sortingLayerName = "HUD";
-            tRenderer.sortingOrder = 1;
-            tSprite2 = new GameObject("ComboSprite" + -1 + "bg");
-            tRenderer = tSprite2.AddComponent<SpriteRenderer>();
-            tRenderer.sprite = comboHolder;
-            tRenderer.sortingLayerName = "HUD";
-            tSprite2.transform.parent = tSprite.transform;
-            tSprite2.transform.localPosition = new Vector3(0, -0.08f);
-            tSprite2.transform.localScale = new Vector3(1, 1, 1);
-            tSprite = new GameObject("ComboSprite" + -2);
-            tRenderer = tSprite.AddComponent<SpriteRenderer>();
-            tRenderer.sprite = comboBasicLight;
-            tSprite.transform.localScale = new Vector3(0.5f, 0.5f, 1);
-            tSprite.transform.position = new Vector3(-6.4f, 3.1f - 0.7f * 1);
-            tRenderer.sortingLayerName = "HUD";
-            tRenderer.sortingOrder = 1;
-            tSprite2 = new GameObject("ComboSprite" + -2 + "bg");
-            tRenderer = tSprite2.AddComponent<SpriteRenderer>();
-            tRenderer.sprite = comboHolder;
-            tRenderer.sortingLayerName = "HUD";
-            tSprite2.transform.parent = tSprite.transform;
-            tSprite2.transform.localPosition = new Vector3(0, -0.08f);
-            tSprite2.transform.localScale = new Vector3(1, 1, 1);
-
-            int j = 2;
-            for (int i = 0; i < data.itemBought.Length; i++)
-            {
-                if (data.itemActive[i] && data.itemBought[i])
-                {
-                    tSprite = new GameObject("ComboSprite" + i);
-                    tRenderer = tSprite.AddComponent<SpriteRenderer>();
-                    tRenderer.sprite = spriteCombos[i];
-                    tSprite.transform.localScale = new Vector3(0.5f, 0.5f, 1);
-                    tSprite.transform.position = new Vector3(-6.4f, 3.1f - 0.7f * (j));
-                    tRenderer.sortingLayerName = "HUD";
-                    tRenderer.sortingOrder = 1;
-                    tSprite2 = new GameObject("ComboSprite" + i + "bg");
-                    tRenderer = tSprite2.AddComponent<SpriteRenderer>();
-                    tRenderer.sprite = comboHolder;
-                    tRenderer.sortingLayerName = "HUD";
-                    tSprite2.transform.parent = tSprite.transform;
-                    tSprite2.transform.localPosition = new Vector3(0, -0.08f);
-                    tSprite2.transform.localScale = new Vector3(1, 1, 1);
-                    j++;
-                }
-            }
+            InitPracticeMode();
         }
 
         levelTrainingSpawn = new EnemySpawn[] { };
@@ -396,26 +341,6 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(0, new GameObject[] { enemyB, enemyB }, new float[] { -10, 10 }, new bool[] { false, false })
         };
         
-        /*
-        level2Spawn = new EnemySpawn[] {
-            new EnemySpawn(7, new GameObject[] { enemyA, enemyB }, new float[] { -8, 12 }, new bool[] { true, false }),
-            new EnemySpawn(8, new GameObject[] { enemyB, enemyA }, new float[] { -12, 7 }, new bool[] { false, true }, 0),
-            new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { 0 }, new bool[] { true }),
-            new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { -2 }, new bool[] { true }),
-            new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 2 }, new bool[] { true }),
-            new EnemySpawn(2, new GameObject[] { enemyA, enemyA }, new float[] { 10, 11 }, new bool[] { false, false }),
-            new EnemySpawn(2, new GameObject[] { enemyA, enemyA }, new float[] { -4, -11 }, new bool[] { true, false }, 2),
-            new EnemySpawn(0, new GameObject[] { enemyB }, new float[] { 0 }, new bool[] { true }, 0),
-            new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false }),
-            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false }),
-            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false }),
-            new EnemySpawn(1, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false }),
-            new EnemySpawn(3, new GameObject[] { enemyB }, new float[] { -10 }, new bool[] { false }, 0),
-            new EnemySpawn(0, new GameObject[] { enemyB, enemyA, enemyB, enemyA }, new float[] { -6, -10,  11, 7}, new bool[] { true, false, false, true }, 2),
-            new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { -11, 11}, new bool[] { false, false }),
-        };
-        */
-
         level2Spawn = new EnemySpawn[] {
             new EnemySpawn(7, new GameObject[] { enemyA, enemyB }, new float[] { -8, 12 }, new bool[] { true, false }),
             new EnemySpawn(8, new GameObject[] { enemyB, enemyA }, new float[] { -12, 7 }, new bool[] { false, true }, 0),
@@ -433,22 +358,7 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(0, new GameObject[] { enemyB, enemyA, enemyC, enemyA }, new float[] { -6, -10,  11, 7}, new bool[] { true, false, false, true }, 2),
             new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { -11, 11}, new bool[] { false, false }),
         };
-
-        /*
-        level3Spawn = new EnemySpawn[] {
-            new EnemySpawn(10, new GameObject[] { enemyB, enemyB }, new float[] { -11, 11 }, new bool[] { false, false }),
-            new EnemySpawn(12, new GameObject[] { enemyA, enemyA }, new float[] { -2, 2 }, new bool[] { true, true }),
-            new EnemySpawn(6, new GameObject[] { enemyA, enemyA }, new float[] { -6, 12 }, new bool[] { true, false }, 2),
-            new EnemySpawn(0, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { -10, -12, -14 }, new bool[] { false, false, false }),
-            new EnemySpawn(4, new GameObject[] { enemyA, enemyA, enemyA }, new float[] { 10, 12, 14 }, new bool[] { false, false, false }, 2),
-            new EnemySpawn(0, new GameObject[] { enemyB, enemyA, enemyB, enemyA, enemyA }, new float[] { -10, -11, -12, 8, 5 }, new bool[] { false, false, false, true, true }, 1),
-            new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { 9, -9 }, new bool[] { true, true }),
-            new EnemySpawn(3, new GameObject[] { enemyB, enemyB }, new float[] { -4, -7 }, new bool[] { true, true }),
-            new EnemySpawn(8, new GameObject[] { enemyB, enemyB }, new float[] { 4, 7 }, new bool[] { true, true }, 0),
-            new EnemySpawn(0, new GameObject[] { enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA }, new float[] { 10, 11, 12, 13, 14, 15, -10, -11, -12, -13, -14, -15, 0 }, new bool[] { false, false,false,false,false,false,false,false,false,false,false,false,true })
-        };
-        */
-
+        
         level3Spawn = new EnemySpawn[] {
             new EnemySpawn(10, new GameObject[] { enemyC, enemyC }, new float[] { -11, 11 }, new bool[] { false, false }, 1),
             new EnemySpawn(2, new GameObject[] { enemyA, enemyA }, new float[] { -2, 2 }, new bool[] { true, true }),
@@ -711,6 +621,104 @@ public class mainHandler : MonoBehaviour {
         AnalyticsEvent.LevelStart("Level_" + level + "_Mode_" + gameMode, level);
     }
 
+    void InitPracticeMode()
+    {
+        soundPracticeSongs = new List<FMOD.Studio.EventInstance>();
+        soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/SpaceBagle"));
+        soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/Elextroswing"));
+        soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/PirateBoy"));
+        soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/DoomMusic"));
+
+        for (int i = 0; i < soundPracticeSongs.Count; i++)
+        {
+            soundPracticeSongs[i].setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
+            soundPracticeSongs[i].setParameterValue("Practice", 1);
+        }
+
+        soundAvailableracticeSongs = new List<FMOD.Studio.EventInstance>();
+
+        practiceSongNames = new List<string> { "Moon", "Swing", "Pirate", "Hell" };
+
+        availablePracticeSongNames = new List<string>();
+
+        practiceSongBPM = new List<int> { 100, 128, 148, 108 };
+
+        availablePracticeSongBPM = new List<int>();
+
+        for (int i = 1; i < data.unlockedLevel.Length; i++)
+        {
+            if (data.unlockedLevel[i] || data.unlockedBirdLevel[i])
+            {
+                soundAvailableracticeSongs.Add(soundPracticeSongs[i - 1]);
+                availablePracticeSongNames.Add(practiceSongNames[i - 1]);
+                availablePracticeSongBPM.Add(practiceSongBPM[i - 1]);
+            }
+        }
+
+        currentSong = 0;
+        soundAvailableracticeSongs[currentSong].start();
+        txtSongName.text = availablePracticeSongNames[currentSong];
+        bpm = availablePracticeSongBPM[currentSong];
+        txtSongBPM.text = "BPM: " + bpm;
+        currentBpm = bpm;
+        offBeatTime = 60 / ((float)bpm * 2);
+        preBeatTime = 60 / (float)bpm - leniency;
+
+        GameObject tSprite;
+        GameObject tSprite2;
+        tSprite = new GameObject("ComboSprite" + -1);
+        SpriteRenderer tRenderer = tSprite.AddComponent<SpriteRenderer>();
+        tRenderer.sprite = comboBasicHeavy;
+        tSprite.transform.localScale = new Vector3(0.5f, 0.5f, 1);
+        tSprite.transform.position = new Vector3(-6.4f, 3.1f - 0.7f * 0);
+        tRenderer.sortingLayerName = "HUD";
+        tRenderer.sortingOrder = 1;
+        tSprite2 = new GameObject("ComboSprite" + -1 + "bg");
+        tRenderer = tSprite2.AddComponent<SpriteRenderer>();
+        tRenderer.sprite = comboHolder;
+        tRenderer.sortingLayerName = "HUD";
+        tSprite2.transform.parent = tSprite.transform;
+        tSprite2.transform.localPosition = new Vector3(0, -0.08f);
+        tSprite2.transform.localScale = new Vector3(1, 1, 1);
+        tSprite = new GameObject("ComboSprite" + -2);
+        tRenderer = tSprite.AddComponent<SpriteRenderer>();
+        tRenderer.sprite = comboBasicLight;
+        tSprite.transform.localScale = new Vector3(0.5f, 0.5f, 1);
+        tSprite.transform.position = new Vector3(-6.4f, 3.1f - 0.7f * 1);
+        tRenderer.sortingLayerName = "HUD";
+        tRenderer.sortingOrder = 1;
+        tSprite2 = new GameObject("ComboSprite" + -2 + "bg");
+        tRenderer = tSprite2.AddComponent<SpriteRenderer>();
+        tRenderer.sprite = comboHolder;
+        tRenderer.sortingLayerName = "HUD";
+        tSprite2.transform.parent = tSprite.transform;
+        tSprite2.transform.localPosition = new Vector3(0, -0.08f);
+        tSprite2.transform.localScale = new Vector3(1, 1, 1);
+
+        int j = 2;
+        for (int i = 0; i < data.itemBought.Length; i++)
+        {
+            if (data.itemActive[i] && data.itemBought[i])
+            {
+                tSprite = new GameObject("ComboSprite" + i);
+                tRenderer = tSprite.AddComponent<SpriteRenderer>();
+                tRenderer.sprite = spriteCombos[i];
+                tSprite.transform.localScale = new Vector3(0.5f, 0.5f, 1);
+                tSprite.transform.position = new Vector3(-6.4f, 3.1f - 0.7f * (j));
+                tRenderer.sortingLayerName = "HUD";
+                tRenderer.sortingOrder = 1;
+                tSprite2 = new GameObject("ComboSprite" + i + "bg");
+                tRenderer = tSprite2.AddComponent<SpriteRenderer>();
+                tRenderer.sprite = comboHolder;
+                tRenderer.sortingLayerName = "HUD";
+                tSprite2.transform.parent = tSprite.transform;
+                tSprite2.transform.localPosition = new Vector3(0, -0.08f);
+                tSprite2.transform.localScale = new Vector3(1, 1, 1);
+                j++;
+            }
+        }
+    }
+
     public FMOD.RESULT StudioEventCallback(FMOD.Studio.EVENT_CALLBACK_TYPE type, FMOD.Studio.EventInstance eventInstance, System.IntPtr parameters)
     {
         if (type == FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER)
@@ -726,10 +734,10 @@ public class mainHandler : MonoBehaviour {
             {
                 songStarted = false;
             }
-            if (name == "End" && gameMode == BIRD && !player.GetComponent<playerHandler>().dead && !birdLevelFinished)
+            if (name == "End" && gameMode == BIRD && !player.dead && !birdLevelFinished)
             {
                 birdLevelFinished = true;
-                int currAmount = 75 + player.GetComponent<playerHandler>().currentRank * 15;
+                int currAmount = 75 + player.currentRank * 15;
                 currAmount = Random.Range(currAmount - 20, currAmount + 20);
                 for (int i = 0; i < currAmount / 2; i++)
                 {
@@ -754,16 +762,16 @@ public class mainHandler : MonoBehaviour {
             if ((name.Contains("B") && name.Length == 2 && level >= 0) && gameMode != NORMAL)
             {
                 totalBirds++;
-                player.GetComponent<playerHandler>().birds.Add(Instantiate(enemyBird, new Vector3(0f, 0f), Quaternion.identity));
-                if (name == "B1") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(1, -totalBirds);
-                if (name == "B2") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(2, -totalBirds);
-                if (name == "B4") player.GetComponent<playerHandler>().birds[player.GetComponent<playerHandler>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(0, -totalBirds);
+                player.birds.Add(Instantiate(enemyBird, new Vector3(0f, 0f), Quaternion.identity));
+                if (name == "B1") player.birds[player.birds.Count - 1].GetComponent<enemyBirdHandler>().init(1, -totalBirds);
+                if (name == "B2") player.birds[player.birds.Count - 1].GetComponent<enemyBirdHandler>().init(2, -totalBirds);
+                if (name == "B4") player.birds[player.birds.Count - 1].GetComponent<enemyBirdHandler>().init(0, -totalBirds);
             }
         }
         if (type == FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT)
         {
             //FMOD.Studio.TIMELINE_BEAT_PROPERTIES beat = (FMOD.Studio.TIMELINE_BEAT_PROPERTIES)Marshal.PtrToStructure(parameters, typeof(FMOD.Studio.TIMELINE_BEAT_PROPERTIES));
-            beatTimer2 = 0;
+            beatTimer = 0;
             //soundSinus.start();
             currentBeatTimer = 0;
             if (songStarted)
@@ -779,20 +787,20 @@ public class mainHandler : MonoBehaviour {
     
     void Update()
     {
-        beatTimer2 += Time.deltaTime;
+        // update timers
+        beatTimer += Time.deltaTime;
         currentBeatTimer += Time.deltaTime;
         
-        if (beatTimer2 >= preBeatTime && currentState != SUCCESS && songStarted)
+        // update beat state
+        if (beatTimer >= preBeatTime && currentState != SUCCESS && songStarted)
         {
             currentState = SUCCESS;
-
         }
-        else if (beatTimer2 > 0.15f && beatTimer2 < preBeatTime && currentState != FAIL)
+        else if (beatTimer > 0.15f && beatTimer < preBeatTime && currentState != FAIL)
         {
             currentState = FAIL;
         }
-
-        if (beatTimer2 >= offBeatTime)
+        if (beatTimer >= offBeatTime)
         {
             offBeat = true;
         }
@@ -800,31 +808,9 @@ public class mainHandler : MonoBehaviour {
         if (currentState == BEAT && !beatFrame) beatFrame = true;
         else beatFrame = false;
 
-        // hide HUD
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            levelUI.renderMode = RenderMode.ScreenSpaceOverlay;
-            playerHUD.renderMode = RenderMode.ScreenSpaceOverlay;
-            foreach (Text t in levelUI.GetComponentsInChildren<Text>())
-            {
-                t.transform.position = new Vector3(-10000, 0);
-            }
-            foreach (Image t in levelUI.GetComponentsInChildren<Image>())
-            {
-                t.transform.position = new Vector3(-10000, 0);
-            }
-            foreach (Text t in playerHUD.GetComponentsInChildren<Text>())
-            {
-                t.transform.position = new Vector3(-10000, 0);
-            }
-            foreach (Image t in playerHUD.GetComponentsInChildren<Image>())
-            {
-                t.transform.position = new Vector3(-10000, 0);
-            }
-            HUDTurnedOff = true;
-        }
-        
-        if (player.GetComponent<playerHandler>().dead)
+        // update game over
+        #region player dies
+        if (player.dead)
         {
             if (gameOverTimer == 0)
             {
@@ -851,6 +837,7 @@ public class mainHandler : MonoBehaviour {
                 SecondCounter.enabled = false;
             }
         }
+
         if (gameOverTimer >= 2f && !gameOver)
         {
             if (level == 100)
@@ -864,7 +851,7 @@ public class mainHandler : MonoBehaviour {
                     txtRecordAnnouncement.enabled = true;
                 }
                 if (currentMaxStreak > streakLevelEndlessRecord) streakLevelEndlessRecord = currentMaxStreak;
-                currency = player.GetComponent<playerHandler>().currentCurrency;
+                currency = player.currentCurrency;
                 SaveSystem.SavePlayer(this);
             }
             gameOver = true;
@@ -913,8 +900,12 @@ public class mainHandler : MonoBehaviour {
 
             oldSelected = eventSystem.currentSelectedGameObject;
         }
+        #endregion
 
-        // update progress bar
+        // update HUD
+        #region HUD
+
+        // progress bar
         if (level > 0 && level < 100 && currentGameMode != BIRD)
         {
             maskProgressFill.transform.localPosition = new Vector3(-4.66f * (1 - ((float)enemiesDead / (float)totalEnemies)), 0);
@@ -926,79 +917,45 @@ public class mainHandler : MonoBehaviour {
             rendererProgressMarker.transform.localPosition = new Vector3(-2.22f + 4.44f * Mathf.Clamp((levelTimer / songLengths[level]), 0, 1), 0);
         }
 
-        // update streak parameter
-        if (player.GetComponent<playerHandler>().streakLevel > 2)
+        if (level == 100 && !player.dead)
         {
-            soundMusic.setParameterValue("Cool", 1);
-            soundMusic.setParameterValue("CoolFail", 0);
-            gotCool = true;
+            SecondCounter.text = "TIME: " + Mathf.Round(levelTimer).ToString();
         }
-        else
-        {
-            if (gotCool)
-            {
-                soundMusic.setParameterValue("CoolFail", 1);
-                gotCool = false;
-            }
-            soundMusic.setParameterValue("Cool", 0);
-        }
+        #endregion
 
-        if (player.GetComponent<playerHandler>().currentStreak > currentMaxStreak) currentMaxStreak = player.GetComponent<playerHandler>().currentStreak;
-        
-        if (player.GetComponent<playerHandler>().streakLevel >= 3) GetComponent<Camera>().orthographicSize = 5.35f + (beatTimer2 / 0.6f) * 0.05f;
-        else GetComponent<Camera>().orthographicSize = 5.4f;
+        // check inputs
+        #region inputs
+
+        // hide HUD
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            levelUI.renderMode = RenderMode.ScreenSpaceOverlay;
+            playerHUD.renderMode = RenderMode.ScreenSpaceOverlay;
+            foreach (Text t in levelUI.GetComponentsInChildren<Text>())
+            {
+                t.transform.position = new Vector3(-10000, 0);
+            }
+            foreach (Image t in levelUI.GetComponentsInChildren<Image>())
+            {
+                t.transform.position = new Vector3(-10000, 0);
+            }
+            foreach (Text t in playerHUD.GetComponentsInChildren<Text>())
+            {
+                t.transform.position = new Vector3(-10000, 0);
+            }
+            foreach (Image t in playerHUD.GetComponentsInChildren<Image>())
+            {
+                t.transform.position = new Vector3(-10000, 0);
+            }
+            HUDTurnedOff = true;
+        }
 
         if (Input.GetButtonDown("Cancel"))
         {
             QuitLevel();
         }
 
-        // update time limit
-        if (gameMode == HARD && !normalLevelFinished && !player.GetComponent<playerHandler>().dead)
-        {
-            currentTimeLimit -= Time.deltaTime;
-
-            timerBox.UpdateText(currentTimeLimit);
-
-            //if (currentTimeLimit.ToString().Length > 5) txtTimeLeft.text =  currentTimeLimit.ToString().Remove(5);
-            if (currentTimeLimit <= 30 && !clockStarted && beatFrame)
-            {
-                clockStarted = true;
-                //soundClock.start();
-                soundMusic.setParameterValue("Clock", 1);
-            }
-
-            if (currentTimeLimit <= 30)
-            {
-                timerBox.ShakeBox();
-                timerBox.FadeTextToRed();
-            }
-            if (currentTimeLimit < 20)
-            {
-                timerBox.FluctuateSize();
-                //txtTimeLeft.transform.localScale = new Vector3(0.5f + (1-(currentTimeLimit/20)) * 1, 0.5f + (1-(currentTimeLimit / 20)) * 1, 0);
-            }
-            if (currentTimeLimit < 10)
-            {
-                timerBox.FluctuatePosition();
-            }
-
-            if (currentTimeLimit <= 0)
-            {
-                player.GetComponent<playerHandler>().TakeDamage(999, 0, true);
-                currentTimeLimit = 0;
-                txtTimeLeft.text = currentTimeLimit.ToString();
-            }
-        }
-        
-        ProgressLevel();
-
-        if (level == 100 && !player.GetComponent<playerHandler>().dead)
-        {
-            SecondCounter.text = "TIME: " + Mathf.Round(levelTimer).ToString();
-        }
-
-        // check practice input
+        // practice input
         if (level == -1)
         {
             if (Input.GetAxis("NavigateRight") > 0.5f && !holdingRT)
@@ -1024,75 +981,75 @@ public class mainHandler : MonoBehaviour {
                 ToggleTrainingControls();
             }
         }
+        #endregion
+
+        // update streak parameter in song
+        if (player.streakLevel > 2)
+        {
+            soundMusic.setParameterValue("Cool", 1);
+            soundMusic.setParameterValue("CoolFail", 0);
+            gotCool = true;
+        }
+        else
+        {
+            if (gotCool)
+            {
+                soundMusic.setParameterValue("CoolFail", 1);
+                gotCool = false;
+            }
+            soundMusic.setParameterValue("Cool", 0);
+        }
+
+        // update max streak
+        if (player.currentStreak > currentMaxStreak) currentMaxStreak = player.currentStreak;
         
+        // update camera zoom
+        if (player.streakLevel >= 3) levelCamera.orthographicSize = 5.35f + (beatTimer / 0.6f) * 0.05f;
+        else levelCamera.orthographicSize = 5.4f;
+        
+        // update time limit
+        if (gameMode == HARD && !normalLevelFinished && !player.dead)
+        {
+            currentTimeLimit -= Time.deltaTime;
 
+            timerBox.UpdateText(currentTimeLimit);
+            
+            if (currentTimeLimit <= 30 && !clockStarted && beatFrame)
+            {
+                clockStarted = true;
+                //soundClock.start();
+                soundMusic.setParameterValue("Clock", 1);
+            }
+
+            if (currentTimeLimit <= 30)
+            {
+                timerBox.ShakeBox();
+                timerBox.FadeTextToRed();
+            }
+            if (currentTimeLimit < 20)
+            {
+                timerBox.FluctuateSize();
+            }
+            if (currentTimeLimit < 10)
+            {
+                timerBox.FluctuatePosition();
+            }
+
+            if (currentTimeLimit <= 0)
+            {
+                player.TakeDamage(999, 0, true);
+                currentTimeLimit = 0;
+            }
+        }
+        
+        // progress level
+        ProgressLevel();
 	}
-
-    void SetReady()
-    {
-        //rendererIndicator.sprite = spriteIndicatorOrange;
-    }
-
-    void SetBeat()
-    {
-        //rendererIndicator.sprite = spriteIndicatorGreen;
-
-        indicatorTimer += Time.deltaTime;
-
-        if (indicatorTimer >= 0.1f)
-        {
-            indicatorTimer = 0;
-            //rendererIndicator.sprite = spriteIndicatorEmpty;
-        }
-    }
-
-    public void ToggleTrainingControls()
-    {
-        if (trainingControlsOpen) imgControlsTraining.sprite = spriteControlsClosed;
-        else imgControlsTraining.sprite = spriteControlsOpen;
-        trainingControlsOpen = !trainingControlsOpen;
-    }
-
-    public void StartLevel(int lvl)
-    {
-        level = lvl;
-        currentSpawn = 0;
-        levelTimer = 0;
-    }
-
-    public void QuitLevel()
-    {
-        songStarted = false;
-        normalLevelFinished = false;
-        birdLevelFinished = false;
-        lastMode = currentGameMode;
-        if (gameMode == BIRD) seenBirdTutorial = true;
-        seenControls = true;
-        SaveSystem.SavePlayer(this);
-        for (int i = 0; i < enemies.Count; i++)
-        {
-            enemies[i].GetComponent<enemyHandler>().Stop();
-        }
-        // send analytics
-        if (victoryTimer == 0) AnalyticsEvent.LevelQuit("level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
-        enemiesDead = 0;
-        soundClock.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-        if (level == 2) soundAmbCafe.setParameterValue("End", 1);
-        if (level == 3) soundAmbSea.setParameterValue("End", 1);
-        soundMusic.setCallback(null, 0);
-        soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-        if (level == -1) soundAvailableracticeSongs[currentSong].stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-        SceneManager.LoadScene("MenuScene");
-    }
-
-    public static void EnemyDead()
-    {
-        enemiesDead++;
-    }
 
     void ProgressLevel()
     {
-        if (!player.GetComponent<playerHandler>().dead) levelTimer += Time.deltaTime;
+        // update timer
+        if (!player.dead) levelTimer += Time.deltaTime;
 
         // normal/hard mode
         if (level > 0 && level < 100 && gameMode == NORMAL || gameMode == HARD)
@@ -1122,8 +1079,8 @@ public class mainHandler : MonoBehaviour {
                     {
                         if (currentMaxStreak > streakRecord[level]) streakRecord[level] = currentMaxStreak;
                         clearedLevel[level] = true;
-                        if (player.GetComponent<playerHandler>().currentScore > scoreRecord[level]) scoreRecord[level] = player.GetComponent<playerHandler>().currentScore;
-                        if (player.GetComponent<playerHandler>().currentRank > rankRecord[level]) rankRecord[level] = player.GetComponent<playerHandler>().currentRank;
+                        if (player.currentScore > scoreRecord[level]) scoreRecord[level] = player.currentScore;
+                        if (player.currentRank > rankRecord[level]) rankRecord[level] = player.currentRank;
 
                         if (clearedLevel[1]) { unlockedLevel[2] = true; unlockedLevel[3] = true; }
                         if (clearedLevel[2] && clearedLevel[3]) unlockedLevel[4] = true;
@@ -1134,19 +1091,19 @@ public class mainHandler : MonoBehaviour {
                     {
                         if (currentTimeLimit > timeRecord[level]) timeRecord[level] = Mathf.Round(currentTimeLimit * 100f) / 100f;
                         clearedHardLevel[level] = true;
-                        if (player.GetComponent<playerHandler>().currentScore > scoreHardRecord[level]) scoreHardRecord[level] = player.GetComponent<playerHandler>().currentScore;
-                        if (player.GetComponent<playerHandler>().currentRank > rankHardRecord[level]) rankHardRecord[level] = player.GetComponent<playerHandler>().currentRank;
-                    
+                        if (player.currentScore > scoreHardRecord[level]) scoreHardRecord[level] = player.currentScore;
+                        if (player.currentRank > rankHardRecord[level]) rankHardRecord[level] = player.currentRank;
+
                         if (clearedHardLevel[1]) unlockedHardLevel[2] = true;
                         if (clearedHardLevel[2]) unlockedHardLevel[3] = true;
                         if (clearedHardLevel[3]) unlockedHardLevel[4] = true;
                     }
-                
-                    currency = player.GetComponent<playerHandler>().currentCurrency;
+
+                    currency = player.currentCurrency;
                     SaveSystem.SavePlayer(this);
 
                     // send analytics
-                    AnalyticsEvent.LevelComplete("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) }, { "rank", player.GetComponent<playerHandler>().currentRank } } );
+                    AnalyticsEvent.LevelComplete("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) }, { "rank", player.currentRank } });
 
                     print("save, level 1 clear: " + clearedLevel[1] + ", unlocked hell: " + unlockedLevel[4] + ", streak record: " + streakRecord[1]);
                     QuitLevel();
@@ -1154,6 +1111,7 @@ public class mainHandler : MonoBehaviour {
             }
             else if (levelTimer > prevTime + currentLevelSpawn[currentSpawn].spawnTime && !waitingForDeath)
             {
+                // next spawn after time
                 for (int i = 0; i < currentLevelSpawn[currentSpawn].enemies.Length; i++)
                 {
                     enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(currentLevelSpawn[currentSpawn].xPos[i], 0), Quaternion.identity));
@@ -1168,9 +1126,9 @@ public class mainHandler : MonoBehaviour {
             }
             else if (waitingForDeath)
             {
+                // next spawn with kill requirement
                 if (enemies.Count - enemiesDead <= currentLevelSpawn[currentSpawn].nextWaveReq)
                 {
-                    print("dead req met");
                     prevTime = levelTimer;
                     currentSpawn++;
                     waitingForDeath = false;
@@ -1181,6 +1139,7 @@ public class mainHandler : MonoBehaviour {
         // bird mode
         if (level > 0 && gameMode == BIRD)
         {
+            // end of level
             if (birdLevelFinished)
             {
                 victoryTimer += Time.deltaTime;
@@ -1188,23 +1147,22 @@ public class mainHandler : MonoBehaviour {
                 txtVictory.text = "Level Cleared";
                 print("Number of birds: " + totalBirds);
             }
-
-            if (victoryTimer > 2 )
+            if (victoryTimer > 2)
             {
                 if (currentMaxStreak > comboRecord[level]) comboRecord[level] = currentMaxStreak;
                 clearedBirdLevel[level] = true;
-                if (player.GetComponent<playerHandler>().currentScore > scoreBirdRecord[level]) scoreBirdRecord[level] = player.GetComponent<playerHandler>().currentScore;
-                if (player.GetComponent<playerHandler>().currentRank > rankBirdRecord[level]) rankBirdRecord[level] = player.GetComponent<playerHandler>().currentRank;
+                if (player.currentScore > scoreBirdRecord[level]) scoreBirdRecord[level] = player.currentScore;
+                if (player.currentRank > rankBirdRecord[level]) rankBirdRecord[level] = player.currentRank;
 
                 if (clearedBirdLevel[1]) { unlockedBirdLevel[2] = true; unlockedBirdLevel[3] = true; }
                 if (clearedBirdLevel[2] && clearedBirdLevel[3]) unlockedBirdLevel[4] = true;
 
                 if ((clearedLevel[2] || clearedLevel[3]) && (clearedBirdLevel[2] || clearedBirdLevel[3])) unlockedHardLevel[1] = true;
-                currency = player.GetComponent<playerHandler>().currentCurrency;
+                currency = player.currentCurrency;
                 SaveSystem.SavePlayer(this);
 
                 // send analytics
-                AnalyticsEvent.LevelComplete("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", comboRecord[level] }, { "rank", player.GetComponent<playerHandler>().currentRank } });
+                AnalyticsEvent.LevelComplete("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", comboRecord[level] }, { "rank", player.currentRank } });
 
                 print("save, level 1 clear: " + clearedLevel[1] + ", unlocked hell: " + unlockedLevel[4] + ", streak record: " + streakRecord[1]);
                 QuitLevel();
@@ -1218,6 +1176,7 @@ public class mainHandler : MonoBehaviour {
             {
                 if (levelTimer >= nextSpawn)
                 {
+                    // generate new spawn
                     nextSpawn = levelTimer;
                     nextSpawn += 18 - (Mathf.Clamp(14 * (levelTimer / 300), 0, 16));
                     int tDistance = 0;
@@ -1238,12 +1197,13 @@ public class mainHandler : MonoBehaviour {
                             enemies[enemies.Count - 1].GetComponent<enemyHandler>().Init(tAbove);
                             tDistance++;
                         }
-                        
+
                     }
                 }
             }
             else if (levelTimer > prevTime + currentLevelSpawn[currentSpawn].spawnTime && !waitingForDeath)
             {
+                // next spawn after time
                 for (int i = 0; i < currentLevelSpawn[currentSpawn].enemies.Length; i++)
                 {
                     enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(currentLevelSpawn[currentSpawn].xPos[i], 0), Quaternion.identity));
@@ -1258,6 +1218,7 @@ public class mainHandler : MonoBehaviour {
             }
             else if (waitingForDeath)
             {
+                // next spawn after kill requirement
                 if (enemies.Count - enemiesDead <= currentLevelSpawn[currentSpawn].nextWaveReq)
                 {
                     print("dead req met");
@@ -1269,8 +1230,41 @@ public class mainHandler : MonoBehaviour {
         }
     }
 
+    public void ToggleTrainingControls()
+    {
+        if (trainingControlsOpen) imgControlsTraining.sprite = spriteControlsClosed;
+        else imgControlsTraining.sprite = spriteControlsOpen;
+        trainingControlsOpen = !trainingControlsOpen;
+    }
+
+    public void QuitLevel()
+    {
+        songStarted = false;
+        normalLevelFinished = false;
+        birdLevelFinished = false;
+        lastMode = currentGameMode;
+        if (gameMode == BIRD) seenBirdTutorial = true;
+        seenControls = true;
+        SaveSystem.SavePlayer(this);
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            enemies[i].GetComponent<enemyHandler>().Stop();
+        }
+        // send analytics
+        if (victoryTimer == 0) AnalyticsEvent.LevelQuit("level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
+        enemiesDead = 0;
+        soundClock.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        if (level == 2) soundAmbCafe.setParameterValue("End", 1);
+        if (level == 3) soundAmbSea.setParameterValue("End", 1);
+        soundMusic.setCallback(null, 0);
+        soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        if (level == -1) soundAvailableracticeSongs[currentSong].stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        SceneManager.LoadScene("MenuScene");
+    }
+    
     public void RestartLevel()
     {
+        print("restart level");
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         //soundUIClick.start();
 
@@ -1293,7 +1287,7 @@ public class mainHandler : MonoBehaviour {
         //prevTime = 0;
         //currentMaxStreak = 0;
         //if (gameMode == HARD) currentTimeLimit = hardLevelTimeLimits[level];
-        //player.GetComponent<playerHandler>().Reset();
+        //player.Reset();
         //txtGameOver.enabled = false;
         //if (gameMode == HARD) txtTimeLeft.transform.localScale = new Vector3(0.5f, 0.5f);
         //gameOver = false;
@@ -1324,6 +1318,19 @@ public class mainHandler : MonoBehaviour {
         //soundMusic.setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
         //if (level == 3 && gameMode == NORMAL) soundMusic.setParameterValue("Loop", 1);
         //soundMusic.start();
+    }
+
+    void OnApplicationQuit()
+    {
+        print("stopped running");
+        soundMusic.setCallback(null, 0);
+        soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        if (level == -1) soundAvailableracticeSongs[currentSong].stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+    }
+
+    public static void EnemyDead()
+    {
+        enemiesDead++;
     }
 
     public void ChangeSong(bool next)

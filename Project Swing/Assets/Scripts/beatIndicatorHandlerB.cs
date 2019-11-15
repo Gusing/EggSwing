@@ -10,6 +10,9 @@ public class beatIndicatorHandlerB : MonoBehaviour
     public Sprite spriteOk;
     public Sprite spriteBad;
 
+    public Sprite spriteLineWhite;
+    public Sprite spriteLineGray;
+
     public SpriteRenderer rendererIcon;
     public SpriteRenderer rendererFeedback;
 
@@ -223,13 +226,13 @@ public class beatIndicatorHandlerB : MonoBehaviour
         {
             if (mainHandler.currentState == 2)
             {
-                lines[lines.Count - 7].GetComponent<beatLineHandler>().Kill();
-                lines[lines.Count - 8].GetComponent<beatLineHandler>().Kill();
+                lines[lines.Count - 7].GetComponent<SpriteRenderer>().sprite = spriteLineGray;
+                lines[lines.Count - 8].GetComponent<SpriteRenderer>().sprite = spriteLineGray;
             }
             else
             {
-                lines[lines.Count - 5].GetComponent<beatLineHandler>().Kill();
-                lines[lines.Count - 6].GetComponent<beatLineHandler>().Kill();
+                lines[lines.Count - 5].GetComponent<SpriteRenderer>().sprite = spriteLineGray;
+                lines[lines.Count - 6].GetComponent<SpriteRenderer>().sprite = spriteLineGray;
             }
         }
     }
@@ -246,7 +249,7 @@ public class beatIndicatorHandlerB : MonoBehaviour
 
     public void Restart()
     {
-        print("restart");
+        print("restart beat indicator");
         stopped = false;
     }
 }

@@ -42,6 +42,8 @@ public class mainHandlerTutorial : MonoBehaviour {
     public GameObject player;
 
     [Header("Local Objects")]
+    Camera mainCamera;
+
     public Text txtVictory;
     public Text txtGameOver;
     float gameOverTimer;
@@ -219,6 +221,7 @@ public class mainHandlerTutorial : MonoBehaviour {
         gameMode = NORMAL;
         currentGameMode = gameMode;
         data = SaveSystem.LoadPlayer();
+        mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
     }
     
     void Start()
@@ -247,6 +250,8 @@ public class mainHandlerTutorial : MonoBehaviour {
         eventSystem = EventSystem.current;
 
         timerBox.gameObject.SetActive(false);
+        btnRetry.gameObject.SetActive(false);
+        btnGameOver.gameObject.SetActive(false);
 
         // load data
         data.Init();
@@ -970,8 +975,8 @@ public class mainHandlerTutorial : MonoBehaviour {
 
         if (player.GetComponent<playerHandlerTutorial>().currentStreak > currentMaxStreak) currentMaxStreak = player.GetComponent<playerHandlerTutorial>().currentStreak;
         
-        if (player.GetComponent<playerHandlerTutorial>().streakLevel >= 3) GetComponent<Camera>().orthographicSize = 5.35f + (beatTimer2 / 0.6f) * 0.05f;
-        else GetComponent<Camera>().orthographicSize = 5.4f;
+        if (player.GetComponent<playerHandlerTutorial>().streakLevel >= 3) mainCamera.orthographicSize = 5.35f + (beatTimer2 / 0.6f) * 0.05f;
+        else mainCamera.orthographicSize = 5.4f;
 
         if (Input.GetButtonDown("Cancel"))
         {
