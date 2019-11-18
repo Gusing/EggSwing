@@ -231,7 +231,7 @@ public class playerHandlerTutorial : MonoBehaviour
 
         gameManager = GameObject.Find("GameManager").GetComponent<mainHandlerTutorial>();
 
-        beatIndicator = GameObject.Find("BeatIndicatorB");
+        beatIndicator = GameObject.Find("BeatIndicator");
     }
 
     void Start()

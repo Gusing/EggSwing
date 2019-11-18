@@ -76,7 +76,6 @@ public class playerHandler : MonoBehaviour
     Image spriteScoreBg;
     Text textStreak;
     Text textCombo;
-    Text textCurrency;
     Text textScore;
     Text textMultiplier;
     Text textRank;
@@ -253,13 +252,12 @@ public class playerHandler : MonoBehaviour
         //spriteScoreBg = GameObject.Find("txtVictory").GetComponent<Text>();
         textStreak = GameObject.Find("StreakCounter").GetComponent<Text>();
         textCombo = GameObject.Find("ComboCounter").GetComponent<Text>();
-        textCurrency = GameObject.Find("txtCurrency").GetComponent<Text>();
         textScore = GameObject.Find("ScoreCounter").GetComponent<Text>();
         textMultiplier = GameObject.Find("MultiplierCounter").GetComponent<Text>();
         textRank = GameObject.Find("RankDisplay").GetComponent<Text>();
 
         maskSPFill = GameObject.Find("SPBarMask").GetComponent<SpriteMask>();
-        rendererSPFill = GameObject.Find("SPBarMask").GetComponent<SpriteRenderer>();
+        rendererSPFill = GameObject.Find("SPBarFill").GetComponent<SpriteRenderer>();
         SPBar = GameObject.Find("SPBar");
 
         hitboxAttack1A = transform.Find("AttackHitBox1A").GetComponent<BoxCollider2D>();
@@ -298,7 +296,7 @@ public class playerHandler : MonoBehaviour
         soundRankAnnouncer = FMODUnity.RuntimeManager.CreateInstance("event:/Announcer/Voice");
 
         mainCamera = GameObject.Find("GameManager");
-        beatIndicator = GameObject.Find("BeatIndicatorB");
+        beatIndicator = GameObject.Find("BeatIndicator");
         if (mainHandler.currentGameMode == 1) beatIndicator.SetActive(false);
 
         allCombos = new List<Attack[]>();
@@ -424,8 +422,6 @@ public class playerHandler : MonoBehaviour
         {
             textCombo.text = "Combo: " + currentStreak;
         }
-
-        if (mainHandler.staticLevel > 0) textCurrency.text = currentCurrency.ToString();
 
         // return if dead
         if (dead)
@@ -2044,7 +2040,6 @@ public class playerHandler : MonoBehaviour
                         if (tDmg > 0) currentCombos[0][comboState].soundAttackHit.start();
                         else soundEnemyBlock.start();
                         if (!hitboxAttack3A.IsTouching(other) && data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER] && specialCharges < 3) specialChargeTimer += tDmg;
-                        print(specialChargeTimer);
 
                         if (other.GetComponent<enemyHandler>().GetDefense() > 0 && tDmg > 0) soundHitArmor.start();
                     }

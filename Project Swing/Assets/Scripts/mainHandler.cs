@@ -11,6 +11,8 @@ using UnityEngine.Analytics;
 using UnityEngine.EventSystems;
 
 
+
+
 public class mainHandler : MonoBehaviour {
 
     [Header("_____Level Data_____")]
@@ -49,11 +51,12 @@ public class mainHandler : MonoBehaviour {
     Canvas playerHUD;
     Text txtVictory;
     Text txtGameOver;
+    Text txtCurrency;
     Button btnRetry;
     Button btnGameOver;
     SpriteMask maskProgressFill;
     SpriteRenderer rendererProgressMarker;
-
+    
     // endless HUD
     Text SecondCounter;
     Text SecondDisplay;
@@ -87,11 +90,13 @@ public class mainHandler : MonoBehaviour {
     bool clockStarted;
     float victoryTimer;
     float beatTimer;
+    int initialCurrency;
 
     float offBeatTime;
     float preBeatTime;
     float gameOverTimer;
     bool gotCool;
+    bool currencyCounting;
     [HideInInspector] public bool gameOver;
     [HideInInspector] public int totalEnemies;
     [HideInInspector] public int totalBirds;
@@ -218,6 +223,7 @@ public class mainHandler : MonoBehaviour {
         maskProgressFill = GameObject.Find("ProgressBarMask").GetComponent<SpriteMask>();
         rendererProgressMarker = GameObject.Find("ProgressBarMarker").GetComponent<SpriteRenderer>();
         timerBox = GameObject.Find("TimerBox").GetComponent<timerBox>();
+        txtCurrency = GameObject.Find("txtCurrency").GetComponent<Text>();
 
         // endless mode object references
         if (level == 100)
@@ -299,9 +305,11 @@ public class mainHandler : MonoBehaviour {
         victoryTimer = 0;
         totalEnemies = 0;
         songStarted = false;
+        initialCurrency = player.currentCurrency;
 
         btnRetry.gameObject.SetActive(false);
         btnGameOver.gameObject.SetActive(false);
+        txtCurrency.transform.parent.gameObject.SetActive(false);
         
         // load practice
         if (level == -1)
@@ -309,9 +317,10 @@ public class mainHandler : MonoBehaviour {
             InitPracticeMode();
         }
 
-        levelTrainingSpawn = new EnemySpawn[] { };
-
         // spawn data
+        #region level spawns
+        levelTrainingSpawn = new EnemySpawn[] { };
+        
         levelEndlessSpawn = new EnemySpawn[] {
             new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }, new bool[] { false }),
             new EnemySpawn(4, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }, new bool[] { false }),
@@ -507,6 +516,7 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
             new EnemySpawn(0.5f, new GameObject[] { enemyA, enemyA }, new float[] { 11, -11, }, new bool[] { false, false } ),
         };
+        #endregion
 
         hardLevelTimeLimits = new float[] {
             10,
@@ -827,8 +837,11 @@ public class mainHandler : MonoBehaviour {
             gameOverTimer += Time.deltaTime;
         }
 
-        if (gameOverTimer >= 1.5f)
+        if (gameOverTimer >= 1.5f && !currencyCounting && !gameOver)
         {
+            currencyCounting = true;
+            txtCurrency.transform.parent.gameObject.SetActive(true);
+            txtCurrency.text = initialCurrency.ToString();
             txtGameOver.enabled = true;
             if (level == 100)
             {
@@ -838,8 +851,17 @@ public class mainHandler : MonoBehaviour {
             }
         }
 
-        if (gameOverTimer >= 2f && !gameOver)
+        if (gameOverTimer >= 1.5f && currencyCounting)
         {
+            
+            txtCurrency.text = Mathf.RoundToInt((initialCurrency + (((float)player.currentCurrency - (float)initialCurrency) * (((float)gameOverTimer - 1.5f) / 1f)))).ToString();
+            txtCurrency.transform.parent.localScale = new Vector3(1.5f + (0.5f * (((float)gameOverTimer - 1.5f) / 1f)), 1.5f + (0.5f * (((float)gameOverTimer - 1.5f) / 1f)), 1);
+        }
+
+        if (gameOverTimer >= 2.5f && !gameOver)
+        {
+            currencyCounting = false;
+            txtCurrency.text = player.currentCurrency.ToString();
             if (level == 100)
             {
                 // send analytics
@@ -851,11 +873,10 @@ public class mainHandler : MonoBehaviour {
                     txtRecordAnnouncement.enabled = true;
                 }
                 if (currentMaxStreak > streakLevelEndlessRecord) streakLevelEndlessRecord = currentMaxStreak;
-                currency = player.currentCurrency;
-                SaveSystem.SavePlayer(this);
             }
+            currency = player.currentCurrency;
+            SaveSystem.SavePlayer(this);
             gameOver = true;
-            print("buttons");
             btnRetry.gameObject.SetActive(true);
             btnGameOver.gameObject.SetActive(true);
             btnRetry.Select();
@@ -890,8 +911,6 @@ public class mainHandler : MonoBehaviour {
             {
                 if (eventSystem.currentSelectedGameObject != oldSelected)
                 {
-                    print(eventSystem.currentSelectedGameObject.transform.position.y);
-
                     Destroy(currentUIMarker);
                     currentUIMarker = Instantiate(UIMarker, eventSystem.currentSelectedGameObject.transform);
                     currentUIMarker.GetComponent<RectTransform>().sizeDelta = new Vector2(eventSystem.currentSelectedGameObject.GetComponent<RectTransform>().sizeDelta.x, eventSystem.currentSelectedGameObject.GetComponent<RectTransform>().sizeDelta.y);
@@ -1065,6 +1084,18 @@ public class mainHandler : MonoBehaviour {
 
                 if (tAllDead && victoryTimer == 0)
                 {
+                    int currAmount = 20 + player.currentRank * 5;
+                    currAmount = Random.Range(currAmount - 10, currAmount + 10);
+                    for (int i = 0; i < currAmount / 2; i++)
+                    {
+                        GameObject tempObject = Instantiate(currencyObject, new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(0.3f, 1.4f), 0), new Quaternion(0, 0, 0, 0));
+                        tempObject.GetComponent<currencyHandler>().Init(true, 0);
+                    }
+                    for (int i = 0; i < currAmount / 2; i++)
+                    {
+                        GameObject tempObject = Instantiate(currencyObject, transform.position + new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(0.3f, 1.4f), 0), new Quaternion(0, 0, 0, 0));
+                        tempObject.GetComponent<currencyHandler>().Init(false, 0);
+                    }
                     normalLevelFinished = true;
                     victoryTimer = levelTimer;
                     txtVictory.enabled = true;

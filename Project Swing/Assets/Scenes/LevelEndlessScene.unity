@@ -683,6 +683,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelUI
       objectReference: {fileID: 0}
+    - target: {fileID: 303937643167976242, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 303937643309945714, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1202294389}
+    - target: {fileID: 303937643309945714, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: RestartLevel
+      objectReference: {fileID: 0}
+    - target: {fileID: 303937643258123311, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 303937644554827046, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1202294389}
+    - target: {fileID: 303937644554827046, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: QuitLevel
+      objectReference: {fileID: 0}
     - target: {fileID: 303937643396106981, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -788,42 +818,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1567838613, guid: 024694b4cb46c694581f8476382507b3, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8810241549056610394, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8810241549056610394, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_Text
-      value: 'time: 1000
-
-'
-      objectReference: {fileID: 0}
-    - target: {fileID: 303937644554827046, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 303937643309945714, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 303937643167976242, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 303937643258123311, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2516233379524250001, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -857,6 +851,22 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -785.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1567838613, guid: 024694b4cb46c694581f8476382507b3, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810241549056610394, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810241549056610394, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Text
+      value: 'time: 1000
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 817457315920000759, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
@@ -1244,6 +1254,31 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: level
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: bpm
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: leniency
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: musicPath
+      value: event:/Endless_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: soundClockPath
+      value: event:/Clock_Spacebagle
+      objectReference: {fileID: 0}
     - target: {fileID: 3099670002404772797, guid: 51a5541526bf8b142a5d2185271ecf3a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1299,33 +1334,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
-        type: 3}
-      propertyPath: level
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
-        type: 3}
-      propertyPath: bpm
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
-        type: 3}
-      propertyPath: leniency
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
-        type: 3}
-      propertyPath: musicPath
-      value: event:/Endless_2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
-        type: 3}
-      propertyPath: soundClockPath
-      value: event:/Clock_Spacebagle
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 51a5541526bf8b142a5d2185271ecf3a, type: 3}
+--- !u!114 &1202294389 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1202294388}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a100c1e9ec5d1c940884bf530c279115, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1379400212
 GameObject:
   m_ObjectHideFlags: 0

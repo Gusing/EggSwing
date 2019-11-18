@@ -773,6 +773,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: level
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: bpm
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: musicPath
+      value: event:/Music/SpaceBagle
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+        type: 3}
+      propertyPath: soundClockPath
+      value: event:/Clock_Spacebagle
+      objectReference: {fileID: 0}
     - target: {fileID: 3099670002404772797, guid: 51a5541526bf8b142a5d2185271ecf3a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -828,28 +848,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
-        type: 3}
-      propertyPath: level
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
-        type: 3}
-      propertyPath: bpm
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
-        type: 3}
-      propertyPath: musicPath
-      value: event:/Music/SpaceBagle
-      objectReference: {fileID: 0}
-    - target: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
-        type: 3}
-      propertyPath: soundClockPath
-      value: event:/Clock_Spacebagle
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 51a5541526bf8b142a5d2185271ecf3a, type: 3}
+--- !u!114 &1844376067 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4905378112181820986, guid: 51a5541526bf8b142a5d2185271ecf3a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1844376066}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a100c1e9ec5d1c940884bf530c279115, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3736454773493243833
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -977,7 +989,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1844376067}
     - target: {fileID: 3736454772340419726, guid: 726a94703c75d9840b0bc70d5a2cfe66,
         type: 3}
       propertyPath: m_Colors.m_PressedColor.r
@@ -1007,6 +1019,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Colors.m_SelectedColor.b
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3736454772340419726, guid: 726a94703c75d9840b0bc70d5a2cfe66,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: QuitLevel
       objectReference: {fileID: 0}
     - target: {fileID: 5150827616785238890, guid: 726a94703c75d9840b0bc70d5a2cfe66,
         type: 3}

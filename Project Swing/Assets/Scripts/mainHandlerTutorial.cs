@@ -298,8 +298,7 @@ public class mainHandlerTutorial : MonoBehaviour {
         playerHUD.transform.Find("StreakCounter").position += new Vector3(-1000, 0, 0);
         playerHUD.transform.Find("ScoreRank").position += new Vector3(-1000, 0, 0);
         levelUI.transform.Find("ProgressBar").position += new Vector3(-1000, 0, 0);
-        levelUI.transform.Find("txtCurrency").position += new Vector3(-1000, 0, 0);
-        levelUI.transform.Find("CurrencyIcon").position += new Vector3(-1000, 0, 0);
+        levelUI.transform.Find("Currency").position += new Vector3(-1000, 0, 0);
         
         if (level > 0) levelUI = GameObject.Find("LevelUI").GetComponent<Canvas>();
         playerHUD = GameObject.Find("playerHUD").GetComponent<Canvas>();
