@@ -200,8 +200,7 @@ public class playerHandler : MonoBehaviour
     float SPBarFlickerTimer;
     float SPBarFlickerTime = 0.07f;
     bool SPBarAvailable;
-
-
+    
     //-----------------------------------save data
     PlayerData data;
     
@@ -249,7 +248,7 @@ public class playerHandler : MonoBehaviour
             GameObject.Find("Charge2").GetComponent<SpriteRenderer>(),
             GameObject.Find("Charge3").GetComponent<SpriteRenderer>()
         };
-        //spriteScoreBg = GameObject.Find("txtVictory").GetComponent<Text>();
+        spriteScoreBg = GameObject.Find("ScoreBackground").GetComponent<Image>();
         textStreak = GameObject.Find("StreakCounter").GetComponent<Text>();
         textCombo = GameObject.Find("ComboCounter").GetComponent<Text>();
         textScore = GameObject.Find("ScoreCounter").GetComponent<Text>();
@@ -315,12 +314,15 @@ public class playerHandler : MonoBehaviour
         RestockCombos();
 
         // activate SP bar if relevant
+        SPBarAvailable = true;
+        /*
         if (data.itemBought[COMBOCHARGEPUNCH] || data.itemBought[COMBORAPIDKICKS]) SPBarAvailable = true;
         else
         {
             SPBarAvailable = false;
             SPBar.SetActive(false);
         }
+        */
 
         lastCombo = new List<int>();
         lastCombo.Add(-1);
@@ -1692,22 +1694,27 @@ public class playerHandler : MonoBehaviour
 
     void Dodge()
     {
-        accX = 0;
-        velX = 0;
-        dodgeSucces = true;
-        busy = true;
-        if (Input.GetButton("MoveRight"))
+        if (!chargingSP)
         {
-            direction = 1;
-            localRenderer.flipX = false;
+            accX = 0;
+            velX = 0;
+            dodgeSucces = true;
+            busy = true;
+            if (Input.GetButton("MoveRight"))
+            {
+                direction = 1;
+                localRenderer.flipX = false;
+            }
+            if (Input.GetButton("MoveLeft"))
+            {
+                direction = -1;
+                localRenderer.flipX = true;
+            }
+            currentSP -= 5;
+            soundDodge.start();
+            SuccessfulDodge();
         }
-        if (Input.GetButton("MoveLeft"))
-        {
-            direction = -1;
-            localRenderer.flipX = true;
-        }
-        soundDodge.start();
-        SuccessfulDodge();
+        else soundAttackSuperUnable.start();
     }
 
     void SuccessfulDodge()
@@ -1862,10 +1869,6 @@ public class playerHandler : MonoBehaviour
     public void SetBeatState(int state)
     {
         beatState = state;
-    }
-
-    void OnCollisionEnter2D(Collision2D col)
-    {
     }
     
     void UpdateStreak(int dmg)
@@ -2034,6 +2037,7 @@ public class playerHandler : MonoBehaviour
                 {
                     tDmg = other.GetComponent<enemyHandler>().TakeDamage(tDmg, attackID, birdHitstun, attackType);
                     lastDmg = tDmg;
+                    if (chargingSP) currentSP += ((float)tDmg / 2f);
                     if (usingSuper) AddBonusScore("Super Hit", 30);
                     if (comboState >= 0)
                     {

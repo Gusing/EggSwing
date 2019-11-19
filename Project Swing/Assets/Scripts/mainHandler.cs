@@ -215,16 +215,7 @@ public class mainHandler : MonoBehaviour {
         // scene object references
         levelCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         player = GameObject.Find("Player").GetComponent<playerHandler>();
-
-        txtVictory = GameObject.Find("txtVictory").GetComponent<Text>();
-        txtGameOver = GameObject.Find("txtGameOver").GetComponent<Text>();
-        btnRetry = GameObject.Find("btnRetry").GetComponent<Button>();
-        btnGameOver = GameObject.Find("btnBack").GetComponent<Button>();
-        maskProgressFill = GameObject.Find("ProgressBarMask").GetComponent<SpriteMask>();
-        rendererProgressMarker = GameObject.Find("ProgressBarMarker").GetComponent<SpriteRenderer>();
-        timerBox = GameObject.Find("TimerBox").GetComponent<timerBox>();
-        txtCurrency = GameObject.Find("txtCurrency").GetComponent<Text>();
-
+        
         // endless mode object references
         if (level == 100)
         {
@@ -240,6 +231,17 @@ public class mainHandler : MonoBehaviour {
             txtSongName = GameObject.Find("txtSongName").GetComponent<Text>();
             txtSongBPM = GameObject.Find("txtBpm").GetComponent<Text>();
             imgControlsTraining = GameObject.Find("imgControls").GetComponent<Image>();
+        }
+        else
+        {
+            txtCurrency = GameObject.Find("txtCurrency").GetComponent<Text>();
+            timerBox = GameObject.Find("TimerBox").GetComponent<timerBox>();
+            maskProgressFill = GameObject.Find("ProgressBarMask").GetComponent<SpriteMask>();
+            rendererProgressMarker = GameObject.Find("ProgressBarMarker").GetComponent<SpriteRenderer>();
+            txtVictory = GameObject.Find("txtVictory").GetComponent<Text>();
+            txtGameOver = GameObject.Find("txtGameOver").GetComponent<Text>();
+            btnRetry = GameObject.Find("btnRetry").GetComponent<Button>();
+            btnGameOver = GameObject.Find("btnBack").GetComponent<Button>();
         }
 
         if (level > 0) levelUI = GameObject.Find("LevelUI").GetComponent<Canvas>();
@@ -306,15 +308,18 @@ public class mainHandler : MonoBehaviour {
         totalEnemies = 0;
         songStarted = false;
         initialCurrency = player.currentCurrency;
-
-        btnRetry.gameObject.SetActive(false);
-        btnGameOver.gameObject.SetActive(false);
-        txtCurrency.transform.parent.gameObject.SetActive(false);
         
         // load practice
         if (level == -1)
         {
             InitPracticeMode();
+        }
+        else
+        {
+            btnRetry.gameObject.SetActive(false);
+            btnGameOver.gameObject.SetActive(false);
+            txtCurrency.transform.parent.gameObject.SetActive(false);
+            if (gameMode == HARD) currentTimeLimit = hardLevelTimeLimits[level];
         }
 
         // spawn data
@@ -525,9 +530,7 @@ public class mainHandler : MonoBehaviour {
             93,
             120
         };
-
-        if (gameMode == HARD) currentTimeLimit = hardLevelTimeLimits[level];
-
+        
         testSpawn = new EnemySpawn[] {
             new EnemySpawn(1, new GameObject[] { enemyD }, new float[] { 0 }, new bool[] { true }),
 
@@ -1027,7 +1030,7 @@ public class mainHandler : MonoBehaviour {
         else levelCamera.orthographicSize = 5.4f;
         
         // update time limit
-        if (gameMode == HARD && !normalLevelFinished && !player.dead)
+        if (gameMode == HARD && !normalLevelFinished && !player.dead && level != -1)
         {
             currentTimeLimit -= Time.deltaTime;
 
@@ -1135,8 +1138,7 @@ public class mainHandler : MonoBehaviour {
 
                     // send analytics
                     AnalyticsEvent.LevelComplete("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) }, { "rank", player.currentRank } });
-
-                    print("save, level 1 clear: " + clearedLevel[1] + ", unlocked hell: " + unlockedLevel[4] + ", streak record: " + streakRecord[1]);
+                    
                     QuitLevel();
                 }
             }

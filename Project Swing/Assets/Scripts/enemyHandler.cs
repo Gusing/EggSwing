@@ -316,6 +316,7 @@ public class enemyHandler : MonoBehaviour
     {
         GameObject tempObject;
         mainHandler.EnemyDead();
+        localSpriteRenderer.flipX = Random.value > 0.5f;
         player.GetComponent<playerHandler>().enemyKilled = true;
         int numCurrency = Random.Range(currencyValue, currencyValue + 4) + (player.GetComponent<playerHandler>().currentStreak / 10);
         for (int i = 0; i < numCurrency; i++)

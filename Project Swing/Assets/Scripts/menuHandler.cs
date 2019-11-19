@@ -31,6 +31,7 @@ public class menuHandler : MonoBehaviour {
     public Text txtEndlessRecord;
     public Button btnHard;
     public SpriteRenderer spriteLockHard;
+    Text txtCurrency;
 
     public SpriteRenderer rendererBirdTutorial;
     bool birdTutorialVisible;
@@ -56,6 +57,8 @@ public class menuHandler : MonoBehaviour {
     void Awake()
     {
         data = SaveSystem.LoadPlayer();
+
+        txtCurrency = GameObject.Find("txtCurrency").GetComponent<Text>();
     }
     
     void Start()
@@ -150,6 +153,8 @@ public class menuHandler : MonoBehaviour {
         }
 
         ChangeMode(data.lastMode);
+
+        txtCurrency.text = data.currency.ToString();
 
         oldSelected = eventSystem.currentSelectedGameObject;
         

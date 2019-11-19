@@ -213,6 +213,8 @@ public class mainHandlerTutorial : MonoBehaviour {
     public bool playerMoved;
     bool playerRightSide;
 
+    bool everyOtherBeat;
+
     void Awake()
     {
         currentBpm = bpm;
@@ -227,8 +229,13 @@ public class mainHandlerTutorial : MonoBehaviour {
     void Start()
     {
         // set music
-        if (gameMode == BIRD && level < 100) soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath.Insert(12, "/Bird") + "_bird");
-        else soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath);
+        //if (gameMode == BIRD && level < 100) soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath.Insert(12, "/Bird") + "_bird");
+        //else soundMusic = FMODUnity.RuntimeManager.CreateInstance(musicPath);
+
+        soundMusic = FMODUnity.RuntimeManager.CreateInstance("event:/Music/Tutorial");
+        bpm = 120;
+        songStarted = true;
+
         offBeatTime = 60 / ((float)bpm * 2);
         preBeatTime = 60 / (float)bpm - leniency;
         
@@ -286,7 +293,6 @@ public class mainHandlerTutorial : MonoBehaviour {
         enemiesDead = 0;
         victoryTimer = 0;
         totalEnemies = 0;
-        songStarted = false;
 
         // tutorial init
         beatIndicator.gameObject.SetActive(false);
@@ -302,6 +308,9 @@ public class mainHandlerTutorial : MonoBehaviour {
         
         if (level > 0) levelUI = GameObject.Find("LevelUI").GetComponent<Canvas>();
         playerHUD = GameObject.Find("playerHUD").GetComponent<Canvas>();
+
+        tutorialState = -1;
+        everyOtherBeat = false;
 
         // load practice
         if (level == -1)
@@ -793,6 +802,7 @@ public class mainHandlerTutorial : MonoBehaviour {
             currentBeatTimer = 0;
             if (songStarted)
             {
+                everyOtherBeat = !everyOtherBeat;
                 offBeat = false;
                 currentState = BEAT;
                 //rendererIndicator.sprite = spriteIndicatorGreen;
@@ -1044,18 +1054,24 @@ public class mainHandlerTutorial : MonoBehaviour {
     {
         tutorialTimer += Time.deltaTime;
 
+        if (tutorialState == -1)
+        {
+            tutorialState++;
+            txtTutorial.text = "Welcome!";
+        }
+
         if (tutorialState == 0 && tutorialTimer >= 3)
         {
             tutorialState++;
             tutorialTimer = 0;
-            txtTutorial.text = "Fight to the beat!";
+            txtTutorial.text = "Here you must fight to the beat!";
         }
 
-        if (tutorialState == 1 && tutorialTimer >= 5)
+        if (tutorialState == 1 && tutorialTimer >= 5 && currentState == BEAT)
         {
             tutorialState++;
             tutorialTimer = 0;
-            txtTutorial.text = "Look at the indicator";
+            txtTutorial.text = "Look at the indicator below";
             beatIndicator.gameObject.SetActive(true);
         }
 
@@ -1065,9 +1081,10 @@ public class mainHandlerTutorial : MonoBehaviour {
             tutorialTimer = 0;
             txtTutorial.text = "Press A to do a (L) Light attack when the lines converge!";
             txtTutorial2.text = "(0/5)";
-            currentTutorialObject = Instantiate(enemyBoxLight, player.transform.position + new Vector3(1.3f, 0, 0), new Quaternion(0, 0, 0, 0));
+            currentTutorialObject = Instantiate(enemyBoxLight, player.transform.position + new Vector3(1.7f, 0, 0), new Quaternion(0, 0, 0, 0));
             currentTutorialObject.GetComponent<enemyBoxLightHandler>().Init(false);
             player.GetComponent<playerHandlerTutorial>().disabledLight = false;
+            soundMusic.setParameterValue("Tutorial", 1);
         }
         
         if (tutorialState == 4)
@@ -1084,9 +1101,10 @@ public class mainHandlerTutorial : MonoBehaviour {
             tutorialState++;
             tutorialTimer = 0;
             txtTutorial.text = "Nice grooving!";
+            soundMusic.setParameterValue("Tutorial", 0);
         }
 
-        if (tutorialState == 7 && tutorialTimer >= 2)
+        if (tutorialState == 7 && tutorialTimer >= 3.5f)
         {
             tutorialState++;
             tutorialTimer = 0;
@@ -1096,6 +1114,7 @@ public class mainHandlerTutorial : MonoBehaviour {
             currentTutorialObject.GetComponent<enemyBoxHeavyHandler>().Init(false);
             player.GetComponent<playerHandlerTutorial>().disabledHeavy = false;
             beatIndicator.SetShowEveryOther(true);
+            soundMusic.setParameterValue("Tutorial", 2);
         }
 
         if (tutorialState == 9)
@@ -1113,9 +1132,10 @@ public class mainHandlerTutorial : MonoBehaviour {
             tutorialTimer = 0;
             txtTutorial.text = "Great moves!";
             beatIndicator.SetShowEveryOther(false);
+            soundMusic.setParameterValue("Tutorial", 0);
         }
 
-        if (tutorialState == 12 && tutorialTimer >= 2)
+        if (tutorialState == 12 && tutorialTimer >= 3.5f)
         {
             tutorialState++;
             tutorialTimer = 0;
@@ -1124,6 +1144,7 @@ public class mainHandlerTutorial : MonoBehaviour {
             currentTutorialObject = Instantiate(parryPractice, player.transform.position + new Vector3(1.3f, 0, 0), new Quaternion(0, 0, 0, 0));
             currentTutorialObject.GetComponent<enemyParryPracticeHandler>().Init(false);
             player.GetComponent<playerHandlerTutorial>().disabledParry = false;
+            soundMusic.setParameterValue("Tutorial", 3);
         }
 
         if (tutorialState == 14)
@@ -1132,6 +1153,7 @@ public class mainHandlerTutorial : MonoBehaviour {
             tutorialTimer = 0;
             txtTutorial.text = "Fantastic defense!";
             txtTutorial2.text = "";
+            soundMusic.setParameterValue("Tutorial", 0);
         }
 
         if (tutorialState == 15 && tutorialTimer >= 2)
@@ -1166,6 +1188,7 @@ public class mainHandlerTutorial : MonoBehaviour {
             currentTutorialObject = Instantiate(enemyTutorial, new Vector3(-10, 0, 0), new Quaternion(0, 0, 0, 0));
             currentTutorialObject.GetComponent<enemyATutorialHandler>().Init(false);
             playerRightSide = true;
+            soundMusic.setParameterValue("Tutorial", 4);
         }
 
         if (tutorialState == 18)
@@ -1201,13 +1224,16 @@ public class mainHandlerTutorial : MonoBehaviour {
             txtTutorial.text = "Now Finish it!";
             txtTutorial2.text = "";
             currentTutorialObject.GetComponent<enemyATutorialHandler>().AllowDamage();
+            soundMusic.setParameterValue("Tutorial", 5);
         }
 
         if (tutorialState == 21)
         {
             tutorialState++;
             tutorialTimer = 0;
-            txtTutorial.text = "No go, make the battlefield your dance floor!";
+            txtTutorial.text = "Now go, make the battlefield your dance floor!";
+            soundMusic.setParameterValue("Tutorial", 0);
+            normalLevelFinished = true;
         }
 
         if (tutorialState == 22 && tutorialTimer >= 4)
