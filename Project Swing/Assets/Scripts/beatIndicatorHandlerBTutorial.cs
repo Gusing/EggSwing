@@ -35,7 +35,7 @@ public class beatIndicatorHandlerBTutorial : MonoBehaviour
 
     bool showEveryOther;
     bool showEveryOtherSpawn;
-    bool otherBeat;
+    public bool otherBeat;
     
     List<GameObject> lines;
 

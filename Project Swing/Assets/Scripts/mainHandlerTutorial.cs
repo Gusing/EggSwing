@@ -200,6 +200,10 @@ public class mainHandlerTutorial : MonoBehaviour {
     public GameObject enemyTutorial;
     GameObject currentTutorialObject;
 
+    public GameObject tutorialLightSignal;
+    public GameObject tutorialHeavySignal;
+    GameObject currentTutorialIndicator;
+
     int lightCounter;
     int heavyCounter;
     int dashCounter;
@@ -213,7 +217,18 @@ public class mainHandlerTutorial : MonoBehaviour {
     public bool playerMoved;
     bool playerRightSide;
 
+    bool heavyReady;
+
     bool everyOtherBeat;
+
+    Image imgLineSignal;
+    Image imgLineMarker;
+    bool lineMarkerMoving;
+    float lineMarkerTimer;
+
+    public Sprite spriteLineLight;
+    public Sprite spriteLineHeavy;
+    public Sprite spriteLineParry;
 
     void Awake()
     {
@@ -224,6 +239,9 @@ public class mainHandlerTutorial : MonoBehaviour {
         currentGameMode = gameMode;
         data = SaveSystem.LoadPlayer();
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+
+        imgLineSignal = GameObject.Find("imgLineSignal").GetComponent<Image>();
+        imgLineMarker = GameObject.Find("imgLineMarker").GetComponent<Image>();
     }
     
     void Start()
@@ -238,6 +256,9 @@ public class mainHandlerTutorial : MonoBehaviour {
 
         offBeatTime = 60 / ((float)bpm * 2);
         preBeatTime = 60 / (float)bpm - leniency;
+
+        imgLineMarker.enabled = false;
+        imgLineSignal.enabled = false;
         
         callBack = new FMOD.Studio.EVENT_CALLBACK(StudioEventCallback);
         soundMusic.setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
@@ -793,6 +814,10 @@ public class mainHandlerTutorial : MonoBehaviour {
                 if (name == "B2") player.GetComponent<playerHandlerTutorial>().birds[player.GetComponent<playerHandlerTutorial>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(2, -totalBirds);
                 if (name == "B4") player.GetComponent<playerHandlerTutorial>().birds[player.GetComponent<playerHandlerTutorial>().birds.Count - 1].GetComponent<enemyBirdHandler>().init(0, -totalBirds);
             }
+            if (name == "Heavy" && tutorialState == 7)
+            {
+                heavyReady = true;
+            }
         }
         if (type == FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT)
         {
@@ -1054,6 +1079,21 @@ public class mainHandlerTutorial : MonoBehaviour {
     {
         tutorialTimer += Time.deltaTime;
 
+        if (lineMarkerMoving)
+        {
+            lineMarkerTimer += Time.deltaTime;
+            print(-253 + 506 * (lineMarkerTimer / 1f));
+            imgLineMarker.GetComponent<RectTransform>().localPosition = new Vector2(Mathf.Clamp(-253 + 506 * (lineMarkerTimer / 1f), -253, 253), 111);
+
+
+            if ((tutorialState == 5 || tutorialState == 10) && player.GetComponent<playerHandlerTutorial>().comboState == -1)
+            {
+                lineMarkerMoving = false;
+                lineMarkerTimer = 0;
+                imgLineMarker.GetComponent<RectTransform>().localPosition = new Vector2(-253, 111);
+            }
+        }
+
         if (tutorialState == -1)
         {
             tutorialState++;
@@ -1075,6 +1115,11 @@ public class mainHandlerTutorial : MonoBehaviour {
             beatIndicator.gameObject.SetActive(true);
         }
 
+        if (tutorialState == 2 && tutorialTimer >= 2.4f)
+        {
+            soundMusic.setParameterValue("Tutorial", 1);
+        }
+
         if (tutorialState == 2 && tutorialTimer >= 3)
         {
             tutorialState++;
@@ -1085,6 +1130,7 @@ public class mainHandlerTutorial : MonoBehaviour {
             currentTutorialObject.GetComponent<enemyBoxLightHandler>().Init(false);
             player.GetComponent<playerHandlerTutorial>().disabledLight = false;
             soundMusic.setParameterValue("Tutorial", 1);
+            currentTutorialIndicator = Instantiate(tutorialLightSignal, new Vector3(0, 1.50f, 0), new Quaternion(0, 0, 0, 0));
         }
         
         if (tutorialState == 4)
@@ -1094,6 +1140,16 @@ public class mainHandlerTutorial : MonoBehaviour {
             txtTutorial.text = "Now go for a combo!";
             txtTutorial2.text = "";
             currentTutorialObject.GetComponent<enemyBoxLightHandler>().canDie = true;
+            Destroy(currentTutorialIndicator);
+            
+            imgLineMarker.enabled = true;
+            imgLineSignal.enabled = true;
+            imgLineSignal.sprite = spriteLineLight;
+        }
+
+        if (tutorialState == 5 && tutorialTimer >= 0.3f)
+        {
+            player.GetComponent<playerHandlerTutorial>().canCombo = true;
         }
         
         if (tutorialState == 6)
@@ -1102,19 +1158,34 @@ public class mainHandlerTutorial : MonoBehaviour {
             tutorialTimer = 0;
             txtTutorial.text = "Nice grooving!";
             soundMusic.setParameterValue("Tutorial", 0);
+            player.GetComponent<playerHandlerTutorial>().canCombo = false;
+            imgLineMarker.enabled = false;
+            imgLineSignal.enabled = false;
+            lineMarkerMoving = false;
+            lineMarkerTimer = 0;
+            imgLineMarker.GetComponent<RectTransform>().localPosition = new Vector2(-253, 111);
         }
 
-        if (tutorialState == 7 && tutorialTimer >= 3.5f)
+        if (tutorialState == 7 && heavyReady)
         {
-            tutorialState++;
+            tutorialState = -7;
+            soundMusic.setParameterValue("Tutorial", 2);
+            tutorialTimer = 0;
+        }
+
+        if (tutorialState == -7 && tutorialTimer >= 0.7f)
+        {
+            tutorialState = 8;
             tutorialTimer = 0;
             txtTutorial.text = "Press X to do a (H) Heavy attack every other beat!";
             txtTutorial2.text = "(0/5)";
             currentTutorialObject = Instantiate(enemyBoxHeavy, player.transform.position + new Vector3(1.3f, 0, 0), new Quaternion(0, 0, 0, 0));
             currentTutorialObject.GetComponent<enemyBoxHeavyHandler>().Init(false);
             player.GetComponent<playerHandlerTutorial>().disabledHeavy = false;
+            player.GetComponent<playerHandlerTutorial>().restrictedHeavy = true;
             beatIndicator.SetShowEveryOther(true);
             soundMusic.setParameterValue("Tutorial", 2);
+            currentTutorialIndicator = Instantiate(tutorialHeavySignal, new Vector3(0, 1.50f, 0), new Quaternion(0, 0, 0, 0));
         }
 
         if (tutorialState == 9)
@@ -1124,6 +1195,16 @@ public class mainHandlerTutorial : MonoBehaviour {
             txtTutorial.text = "Now go for a combo!";
             txtTutorial2.text = "";
             currentTutorialObject.GetComponent<enemyBoxHeavyHandler>().canDie = true;
+            Destroy(currentTutorialIndicator);
+
+            imgLineMarker.enabled = true;
+            imgLineSignal.enabled = true;
+            imgLineSignal.sprite = spriteLineHeavy;
+        }
+
+        if (tutorialState == 10 && tutorialTimer >= 0.45f)
+        {
+            player.GetComponent<playerHandlerTutorial>().canCombo = true;
         }
 
         if (tutorialState == 11)
@@ -1133,6 +1214,13 @@ public class mainHandlerTutorial : MonoBehaviour {
             txtTutorial.text = "Great moves!";
             beatIndicator.SetShowEveryOther(false);
             soundMusic.setParameterValue("Tutorial", 0);
+            player.GetComponent<playerHandlerTutorial>().canCombo = false;
+            player.GetComponent<playerHandlerTutorial>().restrictedHeavy = false;
+            imgLineMarker.enabled = false;
+            imgLineSignal.enabled = false;
+            lineMarkerMoving = false;
+            lineMarkerTimer = 0;
+            imgLineMarker.GetComponent<RectTransform>().localPosition = new Vector2(-253, 111);
         }
 
         if (tutorialState == 12 && tutorialTimer >= 3.5f)
@@ -1145,6 +1233,9 @@ public class mainHandlerTutorial : MonoBehaviour {
             currentTutorialObject.GetComponent<enemyParryPracticeHandler>().Init(false);
             player.GetComponent<playerHandlerTutorial>().disabledParry = false;
             soundMusic.setParameterValue("Tutorial", 3);
+            imgLineMarker.enabled = true;
+            imgLineSignal.enabled = true;
+            imgLineSignal.sprite = spriteLineParry;
         }
 
         if (tutorialState == 14)
@@ -1154,6 +1245,11 @@ public class mainHandlerTutorial : MonoBehaviour {
             txtTutorial.text = "Fantastic defense!";
             txtTutorial2.text = "";
             soundMusic.setParameterValue("Tutorial", 0);
+            imgLineMarker.enabled = false;
+            imgLineSignal.enabled = false;
+            lineMarkerMoving = false;
+            lineMarkerTimer = 0;
+            imgLineMarker.GetComponent<RectTransform>().localPosition = new Vector2(-253, 111);
         }
 
         if (tutorialState == 15 && tutorialTimer >= 2)
@@ -1189,6 +1285,7 @@ public class mainHandlerTutorial : MonoBehaviour {
             currentTutorialObject.GetComponent<enemyATutorialHandler>().Init(false);
             playerRightSide = true;
             soundMusic.setParameterValue("Tutorial", 4);
+            player.GetComponent<playerHandlerTutorial>().canCombo = true;
         }
 
         if (tutorialState == 18)
@@ -1244,69 +1341,91 @@ public class mainHandlerTutorial : MonoBehaviour {
         }
     }
 
-    public void PlayerInput(int type)
+    public void ParryIncoming(bool attack)
     {
-        if (type == 0 && tutorialState == 3)
+        if (attack) lineMarkerMoving = true;
+        else
         {
-            lightCounter++;
-            txtTutorial2.text = "(" + lightCounter + " /5)";
+            lineMarkerMoving = false;
+            lineMarkerTimer = 0;
+            imgLineMarker.GetComponent<RectTransform>().localPosition = new Vector2(-253, 111);
 
-            if (lightCounter >= 5)
-            {
-                lightCounter = 0;
-                tutorialState++;
-            }
         }
+    }
 
-        if (type == 1 && tutorialState == 8)
+    public void PlayerInput(int type, bool inputOnly = false)
+    {
+        if (tutorialState == 5) lineMarkerMoving = true;
+
+        if (tutorialState == 10 && player.GetComponent<playerHandlerTutorial>().lastAttackSlow) lineMarkerMoving = true;
+
+        if (inputOnly)
         {
-            heavyCounter++;
-            txtTutorial2.text = "(" + heavyCounter + " /5)";
 
-            if (heavyCounter >= 5)
-            {
-                heavyCounter = 0;
-                tutorialState++;
-                currentTutorialObject.GetComponent<enemyBoxHeavyHandler>().canDie = true;
-            }
         }
-
-        if (type == 2 && tutorialState == 13)
+        else
         {
-            parryCounter++;
-            txtTutorial2.text = "(" + parryCounter + " /3)";
-
-            if (parryCounter >= 3)
-            {
-                parryCounter = 0;
-                tutorialState++;
-                currentTutorialObject.GetComponent<enemyParryPracticeHandler>().Die(100);
-            }
-        }
-
-        if (tutorialState == 18)
-        {
-            if (type == 0 && lightCounter < 3)
+            if (type == 0 && tutorialState == 3)
             {
                 lightCounter++;
+                txtTutorial2.text = "(" + lightCounter + " /5)";
+
+                if (lightCounter >= 5)
+                {
+                    lightCounter = 0;
+                    tutorialState++;
+                }
             }
-            if (type == 1 && heavyCounter < 3)
+
+            if (type == 1 && tutorialState == 8)
             {
                 heavyCounter++;
+                txtTutorial2.text = "(" + heavyCounter + " /5)";
+
+                if (heavyCounter >= 5)
+                {
+                    heavyCounter = 0;
+                    tutorialState++;
+                    currentTutorialObject.GetComponent<enemyBoxHeavyHandler>().canDie = true;
+                }
             }
-            if (type == 2 && parryCounter < 3)
+
+            if (type == 2 && tutorialState == 13)
             {
                 parryCounter++;
+                txtTutorial2.text = "(" + parryCounter + " /3)";
+
+                if (parryCounter >= 3)
+                {
+                    parryCounter = 0;
+                    tutorialState++;
+                    currentTutorialObject.GetComponent<enemyParryPracticeHandler>().Die(100);
+                }
             }
 
-            txtTutorial2.text = "Light Attack (" + lightCounter + "/3)  Heavy Attack (" + heavyCounter + "/3)  Parry (" + parryCounter + "/3)  Dodge Through (" + dashCounter + "/3)";
-
-            if (parryCounter >= 3 && lightCounter >= 3 && heavyCounter >= 3 && dashCounter >= 3)
+            if (tutorialState == 18)
             {
-                tutorialState++;
+                if (type == 0 && lightCounter < 3)
+                {
+                    lightCounter++;
+                }
+                if (type == 1 && heavyCounter < 3)
+                {
+                    heavyCounter++;
+                }
+                if (type == 2 && parryCounter < 3)
+                {
+                    parryCounter++;
+                }
+
+                txtTutorial2.text = "Light Attack (" + lightCounter + "/3)  Heavy Attack (" + heavyCounter + "/3)  Parry (" + parryCounter + "/3)  Dodge Through (" + dashCounter + "/3)";
+
+                if (parryCounter >= 3 && lightCounter >= 3 && heavyCounter >= 3 && dashCounter >= 3)
+                {
+                    tutorialState++;
+                }
             }
         }
-
     }
 
     public void CompletedTutorialStep()
@@ -1604,6 +1723,14 @@ public class mainHandlerTutorial : MonoBehaviour {
         soundMusic.setCallback(callBack, FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_MARKER | FMOD.Studio.EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
         if (level == 3 && gameMode == NORMAL) soundMusic.setParameterValue("Loop", 1);
         soundMusic.start();
+    }
+
+    void OnApplicationQuit()
+    {
+        print("stopped running");
+        soundMusic.setCallback(null, 0);
+        soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        if (level == -1) soundAvailableracticeSongs[currentSong].stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 
     public void ChangeSong(bool next)
