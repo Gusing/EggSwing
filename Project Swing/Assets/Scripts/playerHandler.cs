@@ -78,7 +78,7 @@ public class playerHandler : MonoBehaviour
     Text textCombo;
     Text textScore;
     Text textMultiplier;
-    Text textRank;
+    public Text textRank;
     SpriteMask maskSPFill;
     SpriteRenderer rendererSPFill;
     GameObject SPBar;

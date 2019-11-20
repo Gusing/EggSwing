@@ -51,7 +51,7 @@ public class mainHandler : MonoBehaviour {
     Canvas playerHUD;
     Text txtVictory;
     Text txtGameOver;
-    Text txtCurrency;
+    public Text txtCurrency;
     Button btnRetry;
     Button btnGameOver;
     SpriteMask maskProgressFill;
@@ -90,7 +90,8 @@ public class mainHandler : MonoBehaviour {
     bool clockStarted;
     float victoryTimer;
     float beatTimer;
-    int initialCurrency;
+
+    [HideInInspector] public int initialCurrency;
 
     float offBeatTime;
     float preBeatTime;
@@ -144,6 +145,8 @@ public class mainHandler : MonoBehaviour {
     GameObject currentUIMarker;
     float UIMarkerColor;
     bool UIMarkerColorSwitch;
+
+    [HideInInspector] public bool moveResultScreen;
 
     //---------------------------------save data
     PlayerData data;
@@ -541,7 +544,7 @@ public class mainHandler : MonoBehaviour {
         // load spawn
         if (gameMode == NORMAL)
         {
-            if (level == 1) currentLevelSpawn = level1Spawn;
+            if (level == 1) currentLevelSpawn = testSpawn;
             if (level == 2) currentLevelSpawn = level2Spawn;
             if (level == 3) currentLevelSpawn = level3Spawn;
             if (level == 4) currentLevelSpawn = level4Spawn;
@@ -843,8 +846,9 @@ public class mainHandler : MonoBehaviour {
         if (gameOverTimer >= 1.5f && !currencyCounting && !gameOver)
         {
             currencyCounting = true;
+            moveResultScreen = true;
             txtCurrency.transform.parent.gameObject.SetActive(true);
-            txtCurrency.text = initialCurrency.ToString();
+            //txtCurrency.text = initialCurrency.ToString();
             txtGameOver.enabled = true;
             if (level == 100)
             {
@@ -854,12 +858,12 @@ public class mainHandler : MonoBehaviour {
             }
         }
 
-        if (gameOverTimer >= 1.5f && currencyCounting)
-        {
+        //if (gameOverTimer >= 1.5f && currencyCounting)
+        //{
             
-            txtCurrency.text = Mathf.RoundToInt((initialCurrency + (((float)player.currentCurrency - (float)initialCurrency) * (((float)gameOverTimer - 1.5f) / 1f)))).ToString();
-            txtCurrency.transform.parent.localScale = new Vector3(1.5f + (0.5f * (((float)gameOverTimer - 1.5f) / 1f)), 1.5f + (0.5f * (((float)gameOverTimer - 1.5f) / 1f)), 1);
-        }
+        //    txtCurrency.text = Mathf.RoundToInt((initialCurrency + (((float)player.currentCurrency - (float)initialCurrency) * (((float)gameOverTimer - 1.5f) / 1f)))).ToString();
+        //    txtCurrency.transform.parent.localScale = new Vector3(1.5f + (0.5f * (((float)gameOverTimer - 1.5f) / 1f)), 1.5f + (0.5f * (((float)gameOverTimer - 1.5f) / 1f)), 1);
+        //}
 
         if (gameOverTimer >= 2.5f && !gameOver)
         {
@@ -1080,6 +1084,7 @@ public class mainHandler : MonoBehaviour {
             if (currentLevelSpawn.Length == currentSpawn)
             {
                 bool tAllDead = true;
+
                 for (int i = 0; i < enemies.Count; i++)
                 {
                     if (!enemies[i].GetComponent<enemyHandler>().dead) tAllDead = false;
@@ -1087,6 +1092,8 @@ public class mainHandler : MonoBehaviour {
 
                 if (tAllDead && victoryTimer == 0)
                 {
+                    StartCoroutine(ShowResultScreen());
+
                     int currAmount = 20 + player.currentRank * 5;
                     currAmount = Random.Range(currAmount - 10, currAmount + 10);
                     for (int i = 0; i < currAmount / 2; i++)
@@ -1104,8 +1111,12 @@ public class mainHandler : MonoBehaviour {
                     txtVictory.enabled = true;
                     soundMusic.setParameterValue("Win", 1);
                     soundClock.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-                }
 
+                    
+                }
+                
+                
+                
                 // save data
                 if (victoryTimer > 0 && levelTimer > (victoryTimer + endWaitTimer[level - 1]))
                 {
@@ -1138,8 +1149,10 @@ public class mainHandler : MonoBehaviour {
 
                     // send analytics
                     AnalyticsEvent.LevelComplete("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) }, { "rank", player.currentRank } });
+
                     
-                    QuitLevel();
+
+                    //QuitLevel();
                 }
             }
             else if (levelTimer > prevTime + currentLevelSpawn[currentSpawn].spawnTime && !waitingForDeath)
@@ -1166,6 +1179,14 @@ public class mainHandler : MonoBehaviour {
                     currentSpawn++;
                     waitingForDeath = false;
                 }
+            }
+
+
+            if (currencyCounting)
+            { 
+
+                txtCurrency.text = Mathf.RoundToInt((initialCurrency + (((float)player.currentCurrency - (float)initialCurrency) * (((float)gameOverTimer - 1.5f) / 1f)))).ToString();
+                txtCurrency.transform.parent.localScale = new Vector3(1.5f + (0.5f * (((float)gameOverTimer - 1.5f) / 1f)), 1.5f + (0.5f * (((float)gameOverTimer - 1.5f) / 1f)), 1);
             }
         }
 
@@ -1198,7 +1219,12 @@ public class mainHandler : MonoBehaviour {
                 AnalyticsEvent.LevelComplete("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", comboRecord[level] }, { "rank", player.currentRank } });
 
                 print("save, level 1 clear: " + clearedLevel[1] + ", unlocked hell: " + unlockedLevel[4] + ", streak record: " + streakRecord[1]);
-                QuitLevel();
+
+                btnRetry.gameObject.SetActive(true);
+                btnGameOver.gameObject.SetActive(true);
+                btnRetry.Select();
+
+                // QuitLevel();
             }
         }
 
@@ -1419,5 +1445,44 @@ public class mainHandler : MonoBehaviour {
         //print("score for P: " + tPScore);
 
         return new int[] { (int)(tPScore * 0.25f), (int)(tPScore * 0.5f), (int)(tPScore * 0.7f), (int)(tPScore * 0.8f), tPScore };
+    }
+
+    public bool GetFinishedNormalLevel()
+    {
+        return normalLevelFinished;
+    }
+
+    public bool GetFinishedBirdLevel()
+    {
+        return birdLevelFinished;
+    }
+
+    public IEnumerator ShowResultScreen()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        moveResultScreen = true;
+
+        btnRetry.gameObject.SetActive(true);
+        btnGameOver.gameObject.SetActive(true);
+        btnRetry.Select();
+
+        txtCurrency.transform.parent.gameObject.SetActive(true);
+        txtCurrency.text = initialCurrency.ToString();
+
+        txtCurrency.transform.parent.gameObject.SetActive(true);
+        txtCurrency.text = initialCurrency.ToString();
+
+        currencyCounting = true;
+
+        StartCoroutine(StopCountingCurrency());
+    }
+
+    public IEnumerator StopCountingCurrency()
+    {
+        yield return new WaitForSeconds(1f);
+
+        currencyCounting = false;
+
     }
 }
