@@ -814,6 +814,8 @@ public class mainHandlerTutorial : MonoBehaviour {
     
     void Update()
     {
+
+        print(normalLevelFinished);
         beatTimer2 += Time.deltaTime;
         currentBeatTimer += Time.deltaTime;
         

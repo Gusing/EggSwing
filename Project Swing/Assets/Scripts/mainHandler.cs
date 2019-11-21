@@ -30,7 +30,7 @@ public class mainHandler : MonoBehaviour {
     public GameObject enemyD;
     public GameObject enemyBird;
     public GameObject currencyObject;
-    public GameObject UIMarker;
+    
 
     [Header("______Resources_____")]
     public Sprite[] spriteCombos;
@@ -49,13 +49,11 @@ public class mainHandler : MonoBehaviour {
     // normal HUD
     Canvas levelUI;
     Canvas playerHUD;
-    Text txtVictory;
-    Text txtGameOver;
-    public Text txtCurrency;
-    Button btnRetry;
-    Button btnGameOver;
+ 
     SpriteMask maskProgressFill;
     SpriteRenderer rendererProgressMarker;
+
+    ResultScreen resultScreen;
     
     // endless HUD
     Text SecondCounter;
@@ -95,7 +93,7 @@ public class mainHandler : MonoBehaviour {
 
     float offBeatTime;
     float preBeatTime;
-    float gameOverTimer;
+    //float gameOverTimer;
     bool gotCool;
     bool currencyCounting;
     [HideInInspector] public bool gameOver;
@@ -199,6 +197,7 @@ public class mainHandler : MonoBehaviour {
 
     void Awake()
     {
+        normalLevelFinished = false;
         // set static variables
         currentBpm = bpm;
         currentLeniency = leniency;
@@ -215,10 +214,12 @@ public class mainHandler : MonoBehaviour {
         // load save data
         data = SaveSystem.LoadPlayer();
 
+
         // scene object references
         levelCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         player = GameObject.Find("Player").GetComponent<playerHandler>();
-        
+        resultScreen = GameObject.FindObjectOfType<ResultScreen>();
+
         // endless mode object references
         if (level == 100)
         {
@@ -237,14 +238,14 @@ public class mainHandler : MonoBehaviour {
         }
         else
         {
-            txtCurrency = GameObject.Find("txtCurrency").GetComponent<Text>();
+            //txtCurrency = GameObject.Find("txtCurrency").GetComponent<Text>();
             timerBox = GameObject.Find("TimerBox").GetComponent<timerBox>();
             maskProgressFill = GameObject.Find("ProgressBarMask").GetComponent<SpriteMask>();
             rendererProgressMarker = GameObject.Find("ProgressBarMarker").GetComponent<SpriteRenderer>();
-            txtVictory = GameObject.Find("txtVictory").GetComponent<Text>();
-            txtGameOver = GameObject.Find("txtGameOver").GetComponent<Text>();
-            btnRetry = GameObject.Find("btnRetry").GetComponent<Button>();
-            btnGameOver = GameObject.Find("btnBack").GetComponent<Button>();
+            //txtVictory = GameObject.Find("txtVictory").GetComponent<Text>();
+            //txtGameOver = GameObject.Find("txtGameOver").GetComponent<Text>();
+            //btnRetry = GameObject.Find("btnRetry").GetComponent<Button>();
+            //btnGameOver = GameObject.Find("btnBack").GetComponent<Button>();
         }
 
         if (level > 0) levelUI = GameObject.Find("LevelUI").GetComponent<Canvas>();
@@ -319,9 +320,9 @@ public class mainHandler : MonoBehaviour {
         }
         else
         {
-            btnRetry.gameObject.SetActive(false);
-            btnGameOver.gameObject.SetActive(false);
-            txtCurrency.transform.parent.gameObject.SetActive(false);
+            //btnRetry.gameObject.SetActive(false);
+            //btnGameOver.gameObject.SetActive(false);
+            //txtCurrency.transform.parent.gameObject.SetActive(false);
             if (gameMode == HARD) currentTimeLimit = hardLevelTimeLimits[level];
         }
 
@@ -803,6 +804,8 @@ public class mainHandler : MonoBehaviour {
     
     void Update()
     {
+        print(normalLevelFinished);
+
         // update timers
         beatTimer += Time.deltaTime;
         currentBeatTimer += Time.deltaTime;
@@ -828,8 +831,22 @@ public class mainHandler : MonoBehaviour {
         #region player dies
         if (player.dead)
         {
-            if (gameOverTimer == 0)
+            if (!gameOver)
             {
+                if (level == 100)
+                {
+                    // send analytics
+                    AnalyticsEvent.LevelComplete("level_100" + "_Mode_" + gameMode, 100, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_survived", Mathf.Round(levelTimer) } });
+
+                    if (Mathf.Round(levelTimer) > endlessRecord)
+                    {
+                        endlessRecord = (int)Mathf.Round(levelTimer);
+                        txtRecordAnnouncement.enabled = true;
+                    }
+                    if (currentMaxStreak > streakLevelEndlessRecord) streakLevelEndlessRecord = currentMaxStreak;
+                }
+                StartCoroutine(ShowResultScreen(1.5f, false));
+
                 for (int i = 0; i < enemies.Count; i++)
                 {
                     enemies[i].GetComponent<enemyHandler>().StopFall();
@@ -839,92 +856,9 @@ public class mainHandler : MonoBehaviour {
                 soundMusic.setParameterValue("Die", 1);
                 //soundClock.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
                 if (level != 100) AnalyticsEvent.LevelFail("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
+                gameOver = true;
             }
-            gameOverTimer += Time.deltaTime;
-        }
-
-        if (gameOverTimer >= 1.5f && !currencyCounting && !gameOver)
-        {
-            currencyCounting = true;
-            moveResultScreen = true;
-            txtCurrency.transform.parent.gameObject.SetActive(true);
-            //txtCurrency.text = initialCurrency.ToString();
-            txtGameOver.enabled = true;
-            if (level == 100)
-            {
-                SecondDisplay.text = "You survived for " + Mathf.Round(levelTimer) + " seconds";
-                SecondDisplay.enabled = true;
-                SecondCounter.enabled = false;
-            }
-        }
-
-        //if (gameOverTimer >= 1.5f && currencyCounting)
-        //{
-            
-        //    txtCurrency.text = Mathf.RoundToInt((initialCurrency + (((float)player.currentCurrency - (float)initialCurrency) * (((float)gameOverTimer - 1.5f) / 1f)))).ToString();
-        //    txtCurrency.transform.parent.localScale = new Vector3(1.5f + (0.5f * (((float)gameOverTimer - 1.5f) / 1f)), 1.5f + (0.5f * (((float)gameOverTimer - 1.5f) / 1f)), 1);
-        //}
-
-        if (gameOverTimer >= 2.5f && !gameOver)
-        {
-            currencyCounting = false;
-            txtCurrency.text = player.currentCurrency.ToString();
-            if (level == 100)
-            {
-                // send analytics
-                AnalyticsEvent.LevelComplete("level_100" + "_Mode_" + gameMode, 100, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_survived", Mathf.Round(levelTimer) } });
-
-                if (Mathf.Round(levelTimer) > endlessRecord)
-                {
-                    endlessRecord = (int)Mathf.Round(levelTimer);
-                    txtRecordAnnouncement.enabled = true;
-                }
-                if (currentMaxStreak > streakLevelEndlessRecord) streakLevelEndlessRecord = currentMaxStreak;
-            }
-            currency = player.currentCurrency;
-            SaveSystem.SavePlayer(this);
-            gameOver = true;
-            btnRetry.gameObject.SetActive(true);
-            btnGameOver.gameObject.SetActive(true);
-            btnRetry.Select();
-        }
-
-        if (gameOverTimer >= 2f && gameOver)
-        {
-            // update marker
-            if (!UIMarkerColorSwitch)
-            {
-                if (UIMarkerColor < 1)
-                {
-                    UIMarkerColor += 2f * Time.deltaTime;
-                }
-                else UIMarkerColorSwitch = true;
-            }
-            if (UIMarkerColorSwitch)
-            {
-                if (UIMarkerColor > 0.4)
-                {
-                    UIMarkerColor -= 2f * Time.deltaTime;
-                }
-                else UIMarkerColorSwitch = false;
-            }
-
-            if (currentUIMarker != null)
-            {
-                currentUIMarker.GetComponent<Image>().color = new Color(UIMarkerColor * 0.5f, UIMarkerColor, UIMarkerColor * 0.5f);
-            }
-
-            if (eventSystem.currentSelectedGameObject != null)
-            {
-                if (eventSystem.currentSelectedGameObject != oldSelected)
-                {
-                    Destroy(currentUIMarker);
-                    currentUIMarker = Instantiate(UIMarker, eventSystem.currentSelectedGameObject.transform);
-                    currentUIMarker.GetComponent<RectTransform>().sizeDelta = new Vector2(eventSystem.currentSelectedGameObject.GetComponent<RectTransform>().sizeDelta.x, eventSystem.currentSelectedGameObject.GetComponent<RectTransform>().sizeDelta.y);
-                }
-            }
-
-            oldSelected = eventSystem.currentSelectedGameObject;
+     
         }
         #endregion
 
@@ -978,7 +912,7 @@ public class mainHandler : MonoBehaviour {
 
         if (Input.GetButtonDown("Cancel"))
         {
-            QuitLevel();
+            QuitLevel("MenuScene");
         }
 
         // practice input
@@ -1092,34 +1026,6 @@ public class mainHandler : MonoBehaviour {
 
                 if (tAllDead && victoryTimer == 0)
                 {
-                    StartCoroutine(ShowResultScreen());
-
-                    int currAmount = 20 + player.currentRank * 5;
-                    currAmount = Random.Range(currAmount - 10, currAmount + 10);
-                    for (int i = 0; i < currAmount / 2; i++)
-                    {
-                        GameObject tempObject = Instantiate(currencyObject, new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(0.3f, 1.4f), 0), new Quaternion(0, 0, 0, 0));
-                        tempObject.GetComponent<currencyHandler>().Init(true, 0);
-                    }
-                    for (int i = 0; i < currAmount / 2; i++)
-                    {
-                        GameObject tempObject = Instantiate(currencyObject, transform.position + new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(0.3f, 1.4f), 0), new Quaternion(0, 0, 0, 0));
-                        tempObject.GetComponent<currencyHandler>().Init(false, 0);
-                    }
-                    normalLevelFinished = true;
-                    victoryTimer = levelTimer;
-                    txtVictory.enabled = true;
-                    soundMusic.setParameterValue("Win", 1);
-                    soundClock.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-
-                    
-                }
-                
-                
-                
-                // save data
-                if (victoryTimer > 0 && levelTimer > (victoryTimer + endWaitTimer[level - 1]))
-                {
                     if (gameMode == NORMAL)
                     {
                         if (currentMaxStreak > streakRecord[level]) streakRecord[level] = currentMaxStreak;
@@ -1144,16 +1050,34 @@ public class mainHandler : MonoBehaviour {
                         if (clearedHardLevel[3]) unlockedHardLevel[4] = true;
                     }
 
-                    currency = player.currentCurrency;
-                    SaveSystem.SavePlayer(this);
 
-                    // send analytics
+                    int currAmount = 20 + player.currentRank * 5;
+                    currAmount = Random.Range(currAmount - 10, currAmount + 10);
+                    for (int i = 0; i < currAmount / 2; i++)
+                    {
+                        GameObject tempObject = Instantiate(currencyObject, new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(0.3f, 1.4f), 0), new Quaternion(0, 0, 0, 0));
+                        tempObject.GetComponent<currencyHandler>().Init(true, 0);
+                    }
+                    for (int i = 0; i < currAmount / 2; i++)
+                    {
+                        GameObject tempObject = Instantiate(currencyObject, transform.position + new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(0.3f, 1.4f), 0), new Quaternion(0, 0, 0, 0));
+                        tempObject.GetComponent<currencyHandler>().Init(false, 0);
+                    }
+                    normalLevelFinished = true;
+                    victoryTimer = levelTimer;
+                    soundMusic.setParameterValue("Win", 1);
+                    soundClock.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+
                     AnalyticsEvent.LevelComplete("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) }, { "rank", player.currentRank } });
 
-                    
 
-                    //QuitLevel();
+                    StartCoroutine(ShowResultScreen(2f, true));
+         
                 }
+                
+                
+                
+                
             }
             else if (levelTimer > prevTime + currentLevelSpawn[currentSpawn].spawnTime && !waitingForDeath)
             {
@@ -1180,29 +1104,16 @@ public class mainHandler : MonoBehaviour {
                     waitingForDeath = false;
                 }
             }
-
-
-            if (currencyCounting)
-            { 
-
-                txtCurrency.text = Mathf.RoundToInt((initialCurrency + (((float)player.currentCurrency - (float)initialCurrency) * (((float)gameOverTimer - 1.5f) / 1f)))).ToString();
-                txtCurrency.transform.parent.localScale = new Vector3(1.5f + (0.5f * (((float)gameOverTimer - 1.5f) / 1f)), 1.5f + (0.5f * (((float)gameOverTimer - 1.5f) / 1f)), 1);
-            }
         }
 
         // bird mode
         if (level > 0 && gameMode == BIRD)
         {
-            // end of level
-            if (birdLevelFinished)
+            
+            if (victoryTimer == 0 && birdLevelFinished)
             {
-                victoryTimer += Time.deltaTime;
-                txtVictory.enabled = true;
-                txtVictory.text = "Level Cleared";
-                print("Number of birds: " + totalBirds);
-            }
-            if (victoryTimer > 2)
-            {
+                StartCoroutine(ShowResultScreen(1.5f, true));
+
                 if (currentMaxStreak > comboRecord[level]) comboRecord[level] = currentMaxStreak;
                 clearedBirdLevel[level] = true;
                 if (player.currentScore > scoreBirdRecord[level]) scoreBirdRecord[level] = player.currentScore;
@@ -1212,19 +1123,22 @@ public class mainHandler : MonoBehaviour {
                 if (clearedBirdLevel[2] && clearedBirdLevel[3]) unlockedBirdLevel[4] = true;
 
                 if ((clearedLevel[2] || clearedLevel[3]) && (clearedBirdLevel[2] || clearedBirdLevel[3])) unlockedHardLevel[1] = true;
-                currency = player.currentCurrency;
-                SaveSystem.SavePlayer(this);
+
 
                 // send analytics
                 AnalyticsEvent.LevelComplete("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", comboRecord[level] }, { "rank", player.currentRank } });
 
                 print("save, level 1 clear: " + clearedLevel[1] + ", unlocked hell: " + unlockedLevel[4] + ", streak record: " + streakRecord[1]);
+            }
 
-                btnRetry.gameObject.SetActive(true);
-                btnGameOver.gameObject.SetActive(true);
-                btnRetry.Select();
+            // end of level
+            if (birdLevelFinished)
+            {
 
-                // QuitLevel();
+                victoryTimer += Time.deltaTime;
+                //txtVictory.enabled = true;
+                //txtVictory.text = "Level Cleared";
+                print("Number of birds: " + totalBirds);
             }
         }
 
@@ -1296,7 +1210,7 @@ public class mainHandler : MonoBehaviour {
         trainingControlsOpen = !trainingControlsOpen;
     }
 
-    public void QuitLevel()
+    public void QuitLevel(string scene)
     {
         songStarted = false;
         normalLevelFinished = false;
@@ -1318,14 +1232,20 @@ public class mainHandler : MonoBehaviour {
         soundMusic.setCallback(null, 0);
         soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         if (level == -1) soundAvailableracticeSongs[currentSong].stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-        SceneManager.LoadScene("MenuScene");
+        SceneManager.LoadScene(scene);
+
     }
     
     public void RestartLevel()
     {
+        soundMusic.setCallback(null, 0);
+        soundClock.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        if (level == 2) soundAmbCafe.setParameterValue("End", 1);
+        if (level == 3) soundAmbSea.setParameterValue("End", 1);
+        soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         print("restart level");
+        soundUIClick.start();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        //soundUIClick.start();
 
         //AnalyticsEvent.LevelStart("Level_" + level + "_Mode_" + gameMode, level);
 
@@ -1428,6 +1348,14 @@ public class mainHandler : MonoBehaviour {
         else return enemyD;
     }
 
+    public void EnterShop()
+    {
+        soundUIClick.start();
+
+        QuitLevel("ShopScene");
+    }
+
+
     int[] CalculateRankLimits(int nBirds)
     {
         int tPScore = 0;
@@ -1457,32 +1385,12 @@ public class mainHandler : MonoBehaviour {
         return birdLevelFinished;
     }
 
-    public IEnumerator ShowResultScreen()
+    public IEnumerator ShowResultScreen(float waitTime, bool victory)
     {
-        yield return new WaitForSeconds(1.5f);
-
-        moveResultScreen = true;
-
-        btnRetry.gameObject.SetActive(true);
-        btnGameOver.gameObject.SetActive(true);
-        btnRetry.Select();
-
-        txtCurrency.transform.parent.gameObject.SetActive(true);
-        txtCurrency.text = initialCurrency.ToString();
-
-        txtCurrency.transform.parent.gameObject.SetActive(true);
-        txtCurrency.text = initialCurrency.ToString();
-
-        currencyCounting = true;
-
-        StartCoroutine(StopCountingCurrency());
+        yield return new WaitForSeconds(waitTime);
+        currency = player.currentCurrency;
+        SaveSystem.SavePlayer(this);
+        resultScreen.ShowResultScreen(victory);
     }
 
-    public IEnumerator StopCountingCurrency()
-    {
-        yield return new WaitForSeconds(1f);
-
-        currencyCounting = false;
-
-    }
 }

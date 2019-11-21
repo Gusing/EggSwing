@@ -74,6 +74,9 @@ public class shopHandler : MonoBehaviour
 
     void Start()
     {
+        menuMusicPlayerHandler.Instance.checkStarted();
+        menuMusicPlayerHandler.Instance.swapShop(true);
+
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
         soundUIStart = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_Start");
         soundShopCannotAfford = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_super_fail");
@@ -256,6 +259,8 @@ public class shopHandler : MonoBehaviour
         SaveSystem.SavePlayerShop(this);
 
         soundUIClick.start();
+
+        if(menuMusicPlayerHandler.Instance != null)
         menuMusicPlayerHandler.Instance.swapShop(false);
         SceneManager.LoadScene("MenuScene");
     }
