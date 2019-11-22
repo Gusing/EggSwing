@@ -108,6 +108,7 @@ public class playerHandler : MonoBehaviour
     float bonusDisplayTimer;
 
     bool birdHitReady;
+    bool birdHitPerfectReady;
     bool birdHitting;
     float birdPunchSuccessTime = 0.2f;
     bool birdHitstun;
@@ -579,11 +580,13 @@ public class playerHandler : MonoBehaviour
         birdHitReady = false;
         for (int i = 0; i < birds.Count; i++)
         {
+            bool removed = false;
             if (birds[i] == null)
             {
                 //Destroy(birds[i]);
                 birds.RemoveAt(i);
                 i--;
+                removed = true;
             }
             else if (birds[i].GetComponent<enemyBirdHandler>().readyToBeHit)
             {
@@ -594,6 +597,11 @@ public class playerHandler : MonoBehaviour
             {
                 birds[i].GetComponent<enemyBirdHandler>().setOffset(birdInSequence);
                 birdInSequence++;
+            }
+
+            if (!removed && birds[i].GetComponent<enemyBirdHandler>().perfectTiming)
+            {
+                birdHitPerfectReady = true;
             }
         }
 
@@ -754,11 +762,14 @@ public class playerHandler : MonoBehaviour
         {
 
             // AUTOPLAY  
-            /*
-            attackID++;
-            attackIDStart = attackID;
-            BirdPunch();
-            */
+
+            if (birdHitPerfectReady)
+            {
+                attackID++;
+                attackIDStart = attackID;
+                BirdPunch();
+            }
+
             /////////////
 
             if ((Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Heavy Attack") || Input.GetButtonDown("Alternate Bird") || dpadV2 || dpadH2 || Input.GetButtonDown("Super") || Input.GetButtonDown("Other Action")))
@@ -1489,6 +1500,7 @@ public class playerHandler : MonoBehaviour
         velX = 0;
         hitboxAttackBird.enabled = false;
         birdHitReady = false;
+        birdHitPerfectReady = false;
         for (int i = 0; i < birds.Count; i++)
         {
             if (birds[i].GetComponent<enemyBirdHandler>().readyToBeHit)

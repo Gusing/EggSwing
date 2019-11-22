@@ -1038,7 +1038,7 @@ RectTransform:
   m_Children:
   - {fileID: 664132426538779324}
   m_Father: {fileID: 7103838901863670623}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1711,7 +1711,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7103838901863670623}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2377,8 +2377,8 @@ RectTransform:
   - {fileID: 5874460864962739806}
   - {fileID: 303937643258123309}
   - {fileID: 4549259509554442209}
-  - {fileID: 5808073489818359012}
   - {fileID: 6868125564780522450}
+  - {fileID: 5808073489818359012}
   - {fileID: 1067246671613574728}
   - {fileID: 3765848459395308772}
   - {fileID: 8340261683730540518}
@@ -3354,16 +3354,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 8321674621063953108, guid: b41944c4b6cf8394b970f75c6cc534e1,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0.6500015
-      objectReference: {fileID: 0}
-    - target: {fileID: 6521722033125854777, guid: b41944c4b6cf8394b970f75c6cc534e1,
-        type: 3}
-      propertyPath: m_Name
-      value: txtTimeLeft
-      objectReference: {fileID: 0}
     - target: {fileID: -5596793616639869239, guid: b41944c4b6cf8394b970f75c6cc534e1,
         type: 3}
       propertyPath: sizeMagnitude
@@ -3378,6 +3368,16 @@ PrefabInstance:
         type: 3}
       propertyPath: shakeAmount
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8321674621063953108, guid: b41944c4b6cf8394b970f75c6cc534e1,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.6500015
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521722033125854777, guid: b41944c4b6cf8394b970f75c6cc534e1,
+        type: 3}
+      propertyPath: m_Name
+      value: txtTimeLeft
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b41944c4b6cf8394b970f75c6cc534e1, type: 3}

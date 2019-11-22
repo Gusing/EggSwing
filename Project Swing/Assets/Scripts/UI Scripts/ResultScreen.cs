@@ -21,6 +21,7 @@ public class ResultScreen : MonoBehaviour
     RectTransform thisRect;
 
     bool countingCurrency;
+    bool visible;
 
     public GameObject UIMarker;
     GameObject oldSelected;
@@ -35,8 +36,8 @@ public class ResultScreen : MonoBehaviour
     void Awake()
     {
         thisRect = GetComponent<RectTransform>();
-        mH = GameObject.FindObjectOfType<mainHandler>();
-        pH = GameObject.FindObjectOfType<playerHandler>();
+        mH = FindObjectOfType<mainHandler>();
+        pH = FindObjectOfType<playerHandler>();
         txtCurrency = GameObject.Find("txtCurrency").GetComponent<Text>();
 
         MovePosition(new Vector3(100000, 100000, 0));
@@ -47,38 +48,42 @@ public class ResultScreen : MonoBehaviour
     void Start()
     {
         eventSystem = EventSystem.current;
+
+        scoreText.text = "<mspace=0.65em>" + pH.currentScore.ToString() + "</mspace>";
+
+        visible = false;
     }
 
 
     // Update is called once per frame
     void Update()
     {
+        if (!visible) return;
+
         UpdateSelectedButton();
-
-
-        //currencyText.text =  "<mspace=0.65em>"+ txtCurrency.text.ToString() + "</mspace>";
-        scoreText.text = "<mspace=0.65em>" + pH.currentScore.ToString() + "</mspace>";
-
         
-
-
         if (countingCurrency)
         {
             CountCurrency();
+
+            if (countingTimer >= 1f)
+            {
+                countingCurrency = false;
+                currencyText.text = "<mspace=0.65em>" + pH.currentCurrency.ToString();
+                currencyText.transform.parent.localScale = new Vector3(2, 2, 1);
+
+            }
         }
 
-        if(countingTimer > 1f)
-        {
-            countingCurrency = false;
-        }
+        
 
     }
 
     void CountCurrency()
     {
         countingTimer += Time.deltaTime;
-        currencyText.text = "<mspace=0.65em>" + Mathf.RoundToInt((mH.initialCurrency + (((float)pH.currentCurrency - (float)mH.initialCurrency) * (((float)countingTimer - 1.5f) / 1f)))).ToString() + "</mspace>";
-        currencyText.transform.parent.localScale = new Vector3(1.5f + (0.5f * (((float)countingTimer - 1.5f) / 1f)), 1.5f + (0.5f * (((float)countingTimer - 1.5f) / 1f)), 1);
+        currencyText.text = "<mspace=0.65em>" + Mathf.RoundToInt((mH.initialCurrency + (((float)pH.currentCurrency - (float)mH.initialCurrency) * (float)countingTimer / 1f))).ToString() + "</mspace>";
+        currencyText.transform.parent.localScale = new Vector3(1.5f + (0.5f * (float)countingTimer / 1f), 1.5f + (0.5f * (float)countingTimer / 1f), 1);
     }
 
     public void MovePosition(Vector3 newPosition)
@@ -150,6 +155,6 @@ public class ResultScreen : MonoBehaviour
         MovePosition(new Vector3(0, 40, -10));
         countingCurrency = true;
         ShowVictoryText(victory);
-
+        visible = true;
     }
 }
