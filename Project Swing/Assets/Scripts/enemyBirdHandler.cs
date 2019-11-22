@@ -36,6 +36,7 @@ public class enemyBirdHandler : MonoBehaviour
     int localState;
 
     public bool readyToBeHit;
+    public bool perfectTiming;
 
     int offsetAmount;
 
@@ -164,6 +165,7 @@ public class enemyBirdHandler : MonoBehaviour
 
                 if (mainHandler.currentBeatTimer >= timeUntilCrash)
                 {
+                    perfectTiming = true;
                     Attack();
                 }
             }

@@ -226,13 +226,13 @@ public class beatIndicatorHandlerB : MonoBehaviour
         {
             if (mainHandler.currentState == 2)
             {
-                lines[lines.Count - 7].GetComponent<SpriteRenderer>().sprite = spriteLineGray;
-                lines[lines.Count - 8].GetComponent<SpriteRenderer>().sprite = spriteLineGray;
+                if (lines[lines.Count - 7] != null) lines[lines.Count - 7].GetComponent<SpriteRenderer>().sprite = spriteLineGray;
+                if (lines[lines.Count - 8] != null) lines[lines.Count - 8].GetComponent<SpriteRenderer>().sprite = spriteLineGray;
             }
             else
             {
-                lines[lines.Count - 5].GetComponent<SpriteRenderer>().sprite = spriteLineGray;
-                lines[lines.Count - 6].GetComponent<SpriteRenderer>().sprite = spriteLineGray;
+                if (lines[lines.Count - 5] != null) lines[lines.Count - 5].GetComponent<SpriteRenderer>().sprite = spriteLineGray;
+                if (lines[lines.Count - 6] != null) lines[lines.Count - 6].GetComponent<SpriteRenderer>().sprite = spriteLineGray;
             }
         }
     }

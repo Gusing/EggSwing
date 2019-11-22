@@ -24,9 +24,7 @@ public class timerBox : MonoBehaviour
     RectTransform timBox;
     Vector3 startingPos;
     Vector3 startingScale;
-
-
-    // Start is called before the first frame update
+    
     void Start()
     {
         timBox = GetComponent<RectTransform>();
@@ -35,8 +33,7 @@ public class timerBox : MonoBehaviour
         timerText = GetComponentInChildren<TextMeshProUGUI>();
         timerText.color = textColor;
     }
-
-    // Update is called once per frame
+    
     void FixedUpdate()
     {
         //ShakeBox(shakeAmount, shakeMagnitude);
@@ -84,10 +81,8 @@ public class timerBox : MonoBehaviour
         }
     }
 
-
     public void ShakeBox()
     {
-
         float shake = Random.Range(-shakeAmount, shakeAmount);
         
         timBox.rotation  = Quaternion.Euler(0f, 0f, timBox.rotation.z + shake);
@@ -106,6 +101,13 @@ public class timerBox : MonoBehaviour
     {
         timerText.text = currentTime.ToString();
         if (currentTime.ToString().Length >= 6) timerText.text = currentTime.ToString().Remove(5);
+    }
 
+    public void GameOver()
+    {
+        timerText.text = "0";
+        timBox.localScale = new Vector3(2, 2, 1);
+        timBox.position = startingPos;
+        timBox.rotation = new Quaternion(0, 0, 0, 0);
     }
 }
