@@ -213,7 +213,7 @@ public class playerHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundDodge;
     FMOD.Studio.EventInstance soundDie;
     FMOD.Studio.EventInstance soundFail;
-    FMOD.Studio.EventInstance soundBlock;
+    FMOD.Studio.EventInstance soundParry;
     FMOD.Studio.EventInstance soundEnemyBlock;
     FMOD.Studio.EventInstance soundSPBarFull;
     FMOD.Studio.EventInstance soundRankAnnouncer;
@@ -290,7 +290,7 @@ public class playerHandler : MonoBehaviour
         soundFail = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Miss_Brad");
         soundPickupCurrency = FMODUnity.RuntimeManager.CreateInstance("event:/Object/Pickup_gold_random");
         soundPickupHP = FMODUnity.RuntimeManager.CreateInstance("event:/Object/Pickup_hp");
-        soundBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Block");
+        soundParry = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Block");
         soundEnemyBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/HitArmor");
         soundSPBarFull = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/BarFull");
         soundRankAnnouncer = FMODUnity.RuntimeManager.CreateInstance("event:/Announcer/Voice");
@@ -1555,7 +1555,7 @@ public class playerHandler : MonoBehaviour
         attackType = 0;
         if (beatState == SUCCESS || beatState == BEAT)
         {
-            soundBlock.start();
+            soundParry.start();
             UpdateHitboxes();
             lastAttackBeat = currentBeat;
             blocking = true;
@@ -1590,7 +1590,8 @@ public class playerHandler : MonoBehaviour
         velX = 0;
         attackType = 0;
         parrying = true;
-        soundBlock.start();
+        soundParry.setParameterValue("Hit", 0);
+        soundParry.start();
         hitboxParry.enabled = true;
         UpdateHitboxes();
         lastAttackBeat = currentBeat;
@@ -2002,6 +2003,7 @@ public class playerHandler : MonoBehaviour
                     actionTimer = 0;
                     parryHitting = true;
                     other.GetComponent<enemyHandler>().GetParried();
+                    soundParry.setParameterValue("Hit", 1);
                     //other.GetComponent<enemyHandler>().TakeDamage(4, 100);
                 }
             }

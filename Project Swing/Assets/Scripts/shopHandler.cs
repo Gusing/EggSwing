@@ -76,7 +76,7 @@ public class shopHandler : MonoBehaviour
     {
         menuMusicPlayerHandler.Instance.checkStarted();
         menuMusicPlayerHandler.Instance.swapShop(true);
-
+        
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
         soundUIStart = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_Start");
         soundShopCannotAfford = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Punch_super_fail");

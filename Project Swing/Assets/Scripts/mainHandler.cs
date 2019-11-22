@@ -212,8 +212,7 @@ public class mainHandler : MonoBehaviour {
 
         // load save data
         data = SaveSystem.LoadPlayer();
-
-
+        
         // scene object references
         levelCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         player = GameObject.Find("Player").GetComponent<playerHandler>();
@@ -303,7 +302,6 @@ public class mainHandler : MonoBehaviour {
         seenBirdTutorial = data.seenBirdTutorial;
 
         player.Init(currency);
-        
         
         // default values
         currentSpawn = 0;
@@ -550,7 +548,7 @@ public class mainHandler : MonoBehaviour {
         if (gameMode == NORMAL)
         {
             if (level == 1) currentLevelSpawn = testSpawn;
-            if (level == 2) currentLevelSpawn = level2Spawn;
+            if (level == 2) currentLevelSpawn = testSpawn;
             if (level == 3) currentLevelSpawn = level3Spawn;
             if (level == 4) currentLevelSpawn = level4Spawn;
             if (level == 10) currentLevelSpawn = testSpawn;
@@ -637,6 +635,8 @@ public class mainHandler : MonoBehaviour {
         // play ambience
         if (level == 2) soundAmbCafe.start();
         if (level == 3) soundAmbSea.start();
+
+        resultScreen.gameObject.SetActive(false);
 
         // send analytics
         AnalyticsEvent.LevelStart("Level_" + level + "_Mode_" + gameMode, level);
@@ -1395,6 +1395,7 @@ public class mainHandler : MonoBehaviour {
         currency = player.currentCurrency;
         SaveSystem.SavePlayer(this);
 
+        resultScreen.gameObject.SetActive(true);
         resultScreen.ShowResultScreen(victory);
     }
 

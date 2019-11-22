@@ -26,7 +26,6 @@ public class menuMusicPlayerHandler : MonoBehaviour
 
     public FMOD.Studio.EventInstance soundMenuMusic;
     
-
     public bool started = false;
     
     public void checkStarted()
