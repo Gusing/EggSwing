@@ -44,7 +44,7 @@ public class shopHandler : MonoBehaviour
     [HideInInspector] public bool[] itemBought;
     [HideInInspector] public bool[] itemActive;
     [HideInInspector] public int lastMode;
-    [HideInInspector] public bool seenControls;
+    [HideInInspector] public bool seenTutorial;
     [HideInInspector] public bool seenBirdTutorial;
 
     EventSystem eventSystem;
@@ -105,7 +105,7 @@ public class shopHandler : MonoBehaviour
         itemBought = data.itemBought;
         itemActive = data.itemActive;
         lastMode = data.lastMode;
-        seenControls = data.seenControls;
+        seenTutorial = data.seenTutorial;
         seenBirdTutorial = data.seenBirdTutorial;
 
         prices = new int[] {
@@ -252,7 +252,7 @@ public class shopHandler : MonoBehaviour
 
     public void BackToPlayMenu()
     {
-        seenControls = true;
+        seenTutorial = true;
         SaveSystem.SavePlayerShop(this);
 
         soundUIClick.start();

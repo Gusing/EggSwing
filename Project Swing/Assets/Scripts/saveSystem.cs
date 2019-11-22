@@ -28,6 +28,18 @@ public class SaveSystem : MonoBehaviour
         stream.Close();
     }
 
+    public static void SavePlayerTutorial(mainHandlerTutorial handler)
+    {
+        BinaryFormatter formatter = new BinaryFormatter();
+        string path = Application.persistentDataPath + "/ScrambledSaves.sav";
+        FileStream stream = new FileStream(path, FileMode.Create);
+
+        PlayerData data = new PlayerData(handler);
+
+        formatter.Serialize(stream, data);
+        stream.Close();
+    }
+
     public static void SaveOptions(optionsHandler handler)
     {
         BinaryFormatter formatter = new BinaryFormatter();

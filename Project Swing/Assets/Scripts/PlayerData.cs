@@ -28,7 +28,7 @@ public class PlayerData
     public bool[] itemBought;
     public bool[] itemActive;
     public int lastMode;
-    public bool seenControls;
+    public bool seenTutorial;
     public bool seenBirdTutorial;
 
     public PlayerData()
@@ -58,7 +58,7 @@ public class PlayerData
             itemBought = new bool[10];
             itemActive = new bool[10];
             lastMode = 0;
-            seenControls = false;
+            seenTutorial = false;
             seenBirdTutorial = false;
 
             for (int i = 0; i < rankRecord.Length; i++)
@@ -121,7 +121,7 @@ public class PlayerData
 
         lastMode = handler.lastMode;
 
-        seenControls = handler.seenControls;
+        seenTutorial = handler.seenTutorial;
         seenBirdTutorial = handler.seenBirdTutorial;
     }
 
@@ -156,7 +156,42 @@ public class PlayerData
 
         lastMode = handler.lastMode;
 
-        seenControls = handler.seenControls;
+        seenTutorial = handler.seenTutorial;
+        seenBirdTutorial = handler.seenBirdTutorial;
+    }
+
+    public PlayerData(mainHandlerTutorial handler)
+    {
+        clearedLevel = handler.clearedLevel;
+        clearedBirdLevel = handler.clearedBirdLevel;
+        clearedHardLevel = handler.clearedHardLevel;
+
+        unlockedLevel = handler.unlockedLevel;
+        unlockedBirdLevel = handler.unlockedBirdLevel;
+        unlockedHardLevel = handler.unlockedHardLevel;
+
+        endlessRecord = handler.endlessRecord;
+
+        streakRecord = handler.streakRecord;
+        comboRecord = handler.comboRecord;
+        timeRecord = handler.timeRecord;
+        streakLevelEndlessRecord = handler.streakLevelEndlessRecord;
+
+        scoreRecord = handler.scoreRecord;
+        scoreBirdRecord = handler.scoreBirdRecord;
+        scoreHardRecord = handler.scoreHardRecord;
+
+        rankRecord = handler.rankRecord;
+        rankBirdRecord = handler.rankBirdRecord;
+        rankHardRecord = handler.rankHardRecord;
+
+        currency = handler.currency;
+        itemBought = handler.itemBought;
+        itemActive = handler.itemActive;
+
+        lastMode = handler.lastMode;
+
+        seenTutorial = handler.seenTutorial;
         seenBirdTutorial = handler.seenBirdTutorial;
     }
 

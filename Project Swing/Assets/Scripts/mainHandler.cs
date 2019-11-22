@@ -170,7 +170,7 @@ public class mainHandler : MonoBehaviour {
     [HideInInspector] public bool[] itemBought;
     [HideInInspector] public bool[] itemActive;
     [HideInInspector] public int lastMode;
-    [HideInInspector] public bool seenControls;
+    [HideInInspector] public bool seenTutorial;
     [HideInInspector] public bool seenBirdTutorial;
     
     //---------------------------------audio
@@ -296,7 +296,7 @@ public class mainHandler : MonoBehaviour {
         itemBought = data.itemBought;
         itemActive = data.itemActive;
         lastMode = data.lastMode;
-        seenControls = data.seenControls;
+        seenTutorial = data.seenTutorial;
         seenBirdTutorial = data.seenBirdTutorial;
 
         player.Init(currency);
@@ -1277,7 +1277,7 @@ public class mainHandler : MonoBehaviour {
         birdLevelFinished = false;
         lastMode = currentGameMode;
         if (gameMode == BIRD) seenBirdTutorial = true;
-        seenControls = true;
+        seenTutorial = true;
         SaveSystem.SavePlayer(this);
         for (int i = 0; i < enemies.Count; i++)
         {

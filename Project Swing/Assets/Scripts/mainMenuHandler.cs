@@ -100,8 +100,12 @@ public class mainMenuHandler : MonoBehaviour
     {
         soundMenuMusic.setParameterValue("End", 1);
         soundUIClick.start();
-        if (data.seenControls) SceneManager.LoadScene("MenuScene");
-        else SceneManager.LoadScene("ControlsScene");
+        if (data.seenTutorial) SceneManager.LoadScene("MenuScene");
+        else
+        {
+            menuMusicPlayerHandler.Instance.stopMusic();
+            SceneManager.LoadScene("TutorialScene");
+        }
 
     }
 
