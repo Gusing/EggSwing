@@ -11,10 +11,14 @@ public class enemyHandler : MonoBehaviour
     protected float walkAcc;
     protected float walkSpeed;
     protected float stopDistance;
+    protected float walkTimer;
+    protected float walkTime;
+    protected float stopTime;
+    protected bool walking;
 
     protected float accX;
     protected float velX;
-    protected int direction;
+    public int direction;
     protected readonly int RIGHT = -1, LEFT = 1;
     protected float groundY;
     
@@ -26,6 +30,7 @@ public class enemyHandler : MonoBehaviour
     protected int bigKnockbackLimit;
     protected bool invincible;
     protected float randomHitValue;
+    public int material;
 
     protected int hitstunDirection;
 
@@ -244,6 +249,7 @@ public class enemyHandler : MonoBehaviour
                 attackHitting = false;
                 hitstun = true;
                 attacking = false;
+                if (attackRecovery < 0.1f) attackRecovery = Random.Range(0.7f, 1.1f);
                 attackState = 0;
                 for (int i = 0; i < hitboxAttacks.Count; i++)
                 {
@@ -288,10 +294,12 @@ public class enemyHandler : MonoBehaviour
         }
         actionTimer = 0;
         attackActive = false;
+        attackHitting = false;
         attacking = false;
         parryable = false;
         busy = true;
         attackState = 0;
+        fallFromAbove = false;
         fallState = 0;
         if (player.transform.position.x < transform.position.x) hitstunDirection = LEFT;
         else hitstunDirection = RIGHT;
@@ -394,6 +402,23 @@ public class enemyHandler : MonoBehaviour
             actionTimer = 0;
             busy = false;
             parried = false;
+            if (attackRecovery < 0.1f) attackRecovery = Random.Range(0.7f, 1.1f);
+
+            // turn around
+            if (!player.GetComponent<playerHandler>().dead)
+            {
+                hitboxBody.offset = new Vector2(Mathf.Abs(hitboxBody.offset.x) * direction, hitboxBody.offset.y);
+                if (player.transform.position.x < transform.position.x)
+                {
+                    direction = LEFT;
+                    localSpriteRenderer.flipX = false;
+                }
+                else
+                {
+                    direction = RIGHT;
+                    localSpriteRenderer.flipX = true;
+                }
+            }
         }
     }
 
@@ -473,6 +498,7 @@ public class enemyHandler : MonoBehaviour
                 attackRecovery = 1;
                 fallState = 2;
                 attackActive = true;
+                parryable = true;
                 soundFall.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
                 soundImpact.start();
                 attackHitboxTimer = 0;
@@ -484,8 +510,8 @@ public class enemyHandler : MonoBehaviour
             }
             else if (attackState == 4)
             {
+                attackHitting = false;
                 hitboxBody.enabled = true;
-                print("down from sky");
                 soundFall.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
                 attackActive = false;
                 attacking = false;

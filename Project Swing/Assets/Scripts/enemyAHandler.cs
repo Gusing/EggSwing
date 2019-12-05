@@ -35,6 +35,8 @@ public class enemyAHandler : enemyHandler {
 
         parryTime = 2f;
 
+        material = 0;
+
         damage.Add(3);
 
         soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_attack");
@@ -134,7 +136,7 @@ public class enemyAHandler : enemyHandler {
             }
         }
         
-        if (mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
+        if (attackState > 0 && mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
         {
             parryable = false;
             attackHitting = true;

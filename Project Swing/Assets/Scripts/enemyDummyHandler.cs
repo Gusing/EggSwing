@@ -22,6 +22,8 @@ public class enemyDummyHandler : enemyHandler
 
         stopDistance = 1000;
 
+        material = 1;
+
         soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_attack");
         soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Egg_death");
     }

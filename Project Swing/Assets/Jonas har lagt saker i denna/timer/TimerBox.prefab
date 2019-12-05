@@ -90,10 +90,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 5470093410895814538}
-  shakeAmount: 0.2
-  shakeMagnitude: 4
-  sizeAmount: 0.1
-  sizeMagnitude: 0.05
+  timeStartShaking: 20
+  timeStartShakingText: 30
+  timeStartColorFade: 30
+  timeStartSizeJittering: 23
+  timeStartFlashing: 10
+  shakeOffsetStart: 0.5
+  shakeOffsetEnd: 5
+  sizeJitterStart: 0.1
+  sizeJitterEnd: 0.5
+  sizeMagnitude: 1.5
   positionAmount: 0.1
   positionMagnitude: 0.05
   colorFadeSpeed: 0.05

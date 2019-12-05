@@ -27,4 +27,5 @@ public class sceneSelectionHandler : MonoBehaviour
     public int gameModeSelected;
     public string lastButtonName;
     public int inputIcons;
+    public string sceneArrivedFrom;
 }

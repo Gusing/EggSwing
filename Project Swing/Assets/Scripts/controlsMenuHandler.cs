@@ -12,6 +12,15 @@ public class controlsMenuHandler : MonoBehaviour
 
     public SpriteRenderer rendererHideSuper;
     public SpriteRenderer rendererBirdControls;
+    public SpriteRenderer rendererControlsList;
+
+    public Sprite spriteControlsKeyboard;
+    public Sprite spriteControlsXbox;
+    public Sprite spriteControlsPS;
+
+    public Sprite spriteControlsBirdKeyboard;
+    public Sprite spriteControlsBirdXbox;
+    public Sprite spriteControlsBirdPS;
 
     EventSystem eventSystem;
     GameObject oldSelected;
@@ -35,9 +44,21 @@ public class controlsMenuHandler : MonoBehaviour
 
         data.Init();
         if (data.itemBought[3]) rendererHideSuper.enabled = false;
-        if (data.seenBirdTutorial) rendererBirdControls.enabled = true;
+        if (data.seenBirdTutorial)
+        {
+            rendererBirdControls.enabled = true;
+            if (sceneSelectionHandler.Instance.inputIcons == 0) rendererBirdControls.sprite = spriteControlsBirdXbox;
+            if (sceneSelectionHandler.Instance.inputIcons == 1) rendererBirdControls.sprite = spriteControlsBirdPS;
+            if (sceneSelectionHandler.Instance.inputIcons == 2) rendererBirdControls.sprite = spriteControlsBirdKeyboard;
+        }
+        
+        if (sceneSelectionHandler.Instance.inputIcons == 0) rendererControlsList.sprite = spriteControlsXbox;
+        if (sceneSelectionHandler.Instance.inputIcons == 1) rendererControlsList.sprite = spriteControlsPS;
+        if (sceneSelectionHandler.Instance.inputIcons == 2) rendererControlsList.sprite = spriteControlsKeyboard;
 
-        AnalyticsEvent.CustomEvent(new Dictionary<string, object> { { "Enter_Controls", 1 } });
+        if (!data.unlockedBirdLevel[1]) rendererBirdControls.enabled = false;
+
+        //AnalyticsEvent.CustomEvent(new Dictionary<string, object> { { "Enter_Controls", 1 } });
     }
 
     void Update()
@@ -75,8 +96,6 @@ public class controlsMenuHandler : MonoBehaviour
         {
             if (eventSystem.currentSelectedGameObject != oldSelected)
             {
-                print(eventSystem.currentSelectedGameObject.transform.position.y);
-
                 Destroy(currentUIMarker);
                 currentUIMarker = Instantiate(UIMarker, eventSystem.currentSelectedGameObject.transform);
                 currentUIMarker.GetComponent<RectTransform>().sizeDelta = new Vector2(eventSystem.currentSelectedGameObject.GetComponent<RectTransform>().sizeDelta.x, eventSystem.currentSelectedGameObject.GetComponent<RectTransform>().sizeDelta.y);
@@ -84,6 +103,13 @@ public class controlsMenuHandler : MonoBehaviour
         }
 
         oldSelected = eventSystem.currentSelectedGameObject;
+    }
+
+    public void ChangeInputIcons()
+    {
+        soundUIClick.start();
+        sceneSelectionHandler.Instance.sceneArrivedFrom = "ControlsScene";
+        SceneManager.LoadScene("InputSelectionScene");
     }
 
     public void BackToMenu()

@@ -19,8 +19,7 @@ public class levelContainerHandler : MonoBehaviour
     public Sprite[] bgImages;
     public string[] levelNames;
     public string[] levelBPMs;
-
-    // Start is called before the first frame update
+    
     void Start()
     {
         mainHandler = GameObject.Find("Main Camera");
@@ -53,7 +52,7 @@ public class levelContainerHandler : MonoBehaviour
         {
             if (gameMode == 0) txtLevelStreak.text = "Highest Streak: " + streak.ToString();
             if (gameMode == 1) txtLevelStreak.text = "Longest Combo: " + streak.ToString();
-            if (gameMode == 2) txtLevelStreak.text = "Most Time Left: " + streak.ToString();
+            if (gameMode == 2) txtLevelStreak.text = "Most Time Left: " + streak.ToString("0.00");
         }
         else txtLevelStreak.text = "";
     }

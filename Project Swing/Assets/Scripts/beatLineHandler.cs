@@ -12,8 +12,7 @@ public class beatLineHandler : MonoBehaviour
     int localBpm;
     float bpmInSeconds;
     float lifeTime;
-
-    // Start is called before the first frame update
+    
     void Start()
     {
         //timeBeforeCollision = beatIndicatorHandlerB.staticTimeBeforeCollision;
@@ -37,9 +36,7 @@ public class beatLineHandler : MonoBehaviour
     {
         Destroy(gameObject);
     }
-
-
-    // Update is called once per frame
+    
     void Update()
     {
         lifeTime += Time.deltaTime;

@@ -34,7 +34,7 @@ public class mainMenuHandler : MonoBehaviour
     {
         soundMenuMusic = FMODUnity.RuntimeManager.CreateInstance("event:/Music/MenuMusic");
 
-        menuMusicPlayerHandler.Instance.checkStarted();
+        menuMusicPlayerHandler.Instance.CheckStarted(false);
 
         oldSelected = eventSystem.currentSelectedGameObject;
 
@@ -100,11 +100,15 @@ public class mainMenuHandler : MonoBehaviour
     {
         soundMenuMusic.setParameterValue("End", 1);
         soundUIClick.start();
-        if (data.seenTutorial) SceneManager.LoadScene("MenuScene");
+        if (data.seenTutorial)
+        {
+            sceneSelectionHandler.Instance.inputIcons = data.inputSelected;
+            SceneManager.LoadScene("MenuScene");
+        }
         else
         {
-            menuMusicPlayerHandler.Instance.stopMusic();
-            SceneManager.LoadScene("TutorialScene");
+            sceneSelectionHandler.Instance.sceneArrivedFrom = "MainMenuScene";
+            SceneManager.LoadScene("InputSelectionScene");
         }
 
     }

@@ -23,6 +23,7 @@ public class playerHandler : MonoBehaviour
     public GameObject effectHitRed;
     public GameObject effectHitSuper;
     public GameObject effectHitBird;
+    public GameObject effectHitParry;
 
     [Header("_____Object Prefabs_____")]
     public GameObject damageNumberEnemy;
@@ -64,6 +65,7 @@ public class playerHandler : MonoBehaviour
 
     //--------------------------------local objects
     GameObject mainCamera;
+    ScreenShake screenShake;
     GameObject beatIndicator;
 
     SpriteRenderer localRenderer;
@@ -210,12 +212,17 @@ public class playerHandler : MonoBehaviour
     FMOD.Studio.EventInstance soundAttackSuper;
     FMOD.Studio.EventInstance soundAttackSuperUnable;
 
+    FMOD.Studio.EventInstance soundHitWood;
+    FMOD.Studio.EventInstance soundHitMetal;
+
     FMOD.Studio.EventInstance soundDodge;
     FMOD.Studio.EventInstance soundDie;
     FMOD.Studio.EventInstance soundFail;
     FMOD.Studio.EventInstance soundParry;
     FMOD.Studio.EventInstance soundEnemyBlock;
     FMOD.Studio.EventInstance soundSPBarFull;
+    FMOD.Studio.EventInstance soundSuperGet;
+
     FMOD.Studio.EventInstance soundRankAnnouncer;
 
     FMOD.Studio.EventInstance soundPickupCurrency;
@@ -293,10 +300,16 @@ public class playerHandler : MonoBehaviour
         soundParry = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Block");
         soundEnemyBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/HitArmor");
         soundSPBarFull = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/BarFull");
+        soundSuperGet = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/SuperRe");
+
         soundRankAnnouncer = FMODUnity.RuntimeManager.CreateInstance("event:/Announcer/Voice");
 
-        mainCamera = GameObject.Find("GameManager");
+        soundHitWood = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Boxingbag");
+        soundHitMetal = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/MetalHit");
+
+        mainCamera = GameObject.Find("Main Camera");
         beatIndicator = GameObject.Find("BeatIndicator");
+        screenShake = GameObject.Find("Main Camera").GetComponent<ScreenShake>();
         if (mainHandler.currentGameMode == 1) beatIndicator.SetActive(false);
 
         allCombos = new List<Attack[]>();
@@ -455,7 +468,7 @@ public class playerHandler : MonoBehaviour
             if (currentSP < maxSP) currentSP += 1.7f * Time.deltaTime;
             if (currentSP > maxSP)
             {
-                soundSPBarFull.start();
+                if (!normalLevelFinished && !birdLevelFinished) soundSPBarFull.start();
                 currentSP = maxSP;
                 chargingSP = false;
                 rendererSPFill.sprite = spriteSPBar1;
@@ -494,6 +507,8 @@ public class playerHandler : MonoBehaviour
 
         if (specialChargeTimer >= specialChargeExtraTime)
         {
+            soundSuperGet.setParameterValue("SuperPara", specialCharges - 1);
+            soundSuperGet.start();
             specialCharges++;
             specialChargeTimer = 0;
         }
@@ -761,15 +776,15 @@ public class playerHandler : MonoBehaviour
         if (birdHitReady)
         {
 
-            // AUTOPLAY  
-
-            if (birdHitPerfectReady)
+            // AUTOPLAY
+            /*
+            if (birdHitReady)
             {
                 attackID++;
                 attackIDStart = attackID;
                 BirdPunch();
             }
-
+            */
             /////////////
 
             if ((Input.GetButtonDown("Light Attack") || Input.GetButtonDown("Heavy Attack") || Input.GetButtonDown("Alternate Bird") || dpadV2 || dpadH2 || Input.GetButtonDown("Super") || Input.GetButtonDown("Other Action")))
@@ -1527,6 +1542,9 @@ public class playerHandler : MonoBehaviour
         busy = true;
         beatPassed = false;
         punchingActive = false;
+        hitboxBody.enabled = true;
+        hitstun = false;
+        dodgeSucces = false;
         RestockCombos();
         SuccessfulBirdPunch();
     }
@@ -1674,7 +1692,6 @@ public class playerHandler : MonoBehaviour
 
         if (actionTimer >= hitstunTime)
         {
-            hitboxBody.enabled = true;
             actionTimer = 0;
             hitstun = false;
             busy = false;
@@ -1971,12 +1988,14 @@ public class playerHandler : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
+        if (dead) return;
+
         // pick up
         if (other.tag == "currency" && hitboxPickup.IsTouching(other))
         {
-            currentScore += (int)(5 * currentMultiplier);
+            //currentScore += (int)(5 * currentMultiplier);
             soundPickupCurrency.start();
-            currentCurrency++;
+            if (currentCurrency <= 99999) currentCurrency++;
             Instantiate(pCurrencyPick, other.transform.position, new Quaternion(0, 0, 0, 0));
             Destroy(other.gameObject);
         }
@@ -1996,8 +2015,11 @@ public class playerHandler : MonoBehaviour
             // parry enemy
             if (hitboxParry.IsTouching(other))
             {
-                if (other.GetComponent<enemyHandler>().parryable)
+                if (other.GetComponent<enemyHandler>().parryable && other.GetComponent<enemyHandler>().direction == direction)
                 {
+                    GameObject tg = Instantiate(effectHitParry, (transform.position + other.transform.position)/2, Quaternion.Euler(0, 0, Random.Range(0f, 360f)));
+                    mainCamera.GetComponent<ScreenShake>().TriggerShake(0.05f, 0.9f, 1.2f);
+
                     beatIndicator.GetComponent<beatIndicatorHandlerB>().PlayerInput();
                     blockBeat = currentBeat;
                     actionTimer = 0;
@@ -2019,7 +2041,7 @@ public class playerHandler : MonoBehaviour
                 if (currentCombos[0][comboState].hitbox.IsTouching(other))
                 {
                     currentCombos[0][comboState].soundAttackHit.setParameterValue("Hit", 2);
-                    if (other.tag == "enemyDummy") currentCombos[0][comboState].soundAttackHit.setParameterValue("Material", 1);
+                    //if (other.tag == "enemyDummy") currentCombos[0][comboState].soundAttackHit.setParameterValue("Material", 1);
                     
                     tDmg = currentCombos[0][comboState].damage;
                     tBox = (Vector2)currentCombos[0][comboState].hitbox.transform.position + currentCombos[0][comboState].hitbox.offset;
@@ -2047,18 +2069,25 @@ public class playerHandler : MonoBehaviour
             
             if (tDmg > 0)
             {
-                if (other.tag == "enemy")
+                if (other.tag.Contains("enemy"))
                 {
                     tDmg = other.GetComponent<enemyHandler>().TakeDamage(tDmg, attackID, birdHitstun, attackType);
                     lastDmg = tDmg;
-                    if (chargingSP) currentSP += ((float)tDmg / 2f);
+                    if (chargingSP) currentSP += (Mathf.Clamp((float)tDmg / 2f, 0, 4));
                     if (usingSuper) AddBonusScore("Super Hit", 30);
+
+                    // gain super charge
+                    if (!usingSuper && data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER] && specialCharges < 3) specialChargeTimer += tDmg;
+
                     if (comboState >= 0)
                     {
-                        if (tDmg > 0) currentCombos[0][comboState].soundAttackHit.start();
+                        if (tDmg > 0)
+                        {
+                            if (other.GetComponent<enemyHandler>().material == 1) soundHitWood.start();
+                            if (other.GetComponent<enemyHandler>().material == 2) soundHitMetal.start();
+                            currentCombos[0][comboState].soundAttackHit.start();
+                        }
                         else soundEnemyBlock.start();
-                        if (!hitboxAttack3A.IsTouching(other) && data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER] && specialCharges < 3) specialChargeTimer += tDmg;
-
                         if (other.GetComponent<enemyHandler>().GetDefense() > 0 && tDmg > 0) soundHitArmor.start();
                     }
                 }

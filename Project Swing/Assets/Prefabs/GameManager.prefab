@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3099670002404772797}
   - component: {fileID: 4905378112181820986}
-  - component: {fileID: 3744606528972467884}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -54,11 +53,15 @@ MonoBehaviour:
   enemyB: {fileID: 1386477621940742, guid: c28fe41f88cbcca4b8341c862ce5d154, type: 3}
   enemyC: {fileID: 1386477621940742, guid: 78419bdd45202f24bb79234551ef90f9, type: 3}
   enemyD: {fileID: 1386477621940742, guid: f17819d1c6c6ff94e9d6fc045011eb23, type: 3}
+  enemyBoxLight: {fileID: 8723348879377983392, guid: b588a893592aa7742a80c2b8b8b3d05a,
+    type: 3}
+  enemyBoxHeavy: {fileID: 881514103494841168, guid: f7dd1bebc816ffd4692394285209338b,
+    type: 3}
+  enemyParryPractice: {fileID: 1386477621940742, guid: 8a5619b3dcbbc0e4790caeb8c6cf9068,
+    type: 3}
   enemyBird: {fileID: 8370553139761448980, guid: cfee2d09f6fddee4dab3c0b33913eab2,
     type: 3}
   currencyObject: {fileID: 338368309248678210, guid: d6324fbbf6cdd7f4fb4131545d93f055,
-    type: 3}
-  UIMarker: {fileID: 4072682925154051409, guid: 861e1dec572283f46834fa3bc3341327,
     type: 3}
   spriteCombos:
   - {fileID: 21300000, guid: 9150b467612be8247870b7d138549dd7, type: 3}
@@ -69,12 +72,18 @@ MonoBehaviour:
   comboHolder: {fileID: 21300000, guid: 5f4c5b1388ab82a4db25fe4b7ca7f49b, type: 3}
   comboBasicHeavy: {fileID: 21300000, guid: 9b1312dc1bc86c649b0cdb4979560cb5, type: 3}
   comboBasicLight: {fileID: 21300000, guid: 198bf1edaacf37f479ed9974a21b9cc1, type: 3}
-  spriteControlsOpen: {fileID: 21300000, guid: 336cf39f5a3a2a949aa1189c86e8351a, type: 3}
   spriteControlsClosed: {fileID: 21300000, guid: 4e5012c29233b4a46b8bf604235a230f,
     type: 3}
+  spriteControlsXbox: {fileID: 21300000, guid: 7e427f5e2027c8e49972367dadbd5c95, type: 3}
+  spriteControlsPS: {fileID: 21300000, guid: 215fc8eab58d74449ae36c0b65fc230e, type: 3}
+  spriteControlsKeyboard: {fileID: 21300000, guid: 5d3b1f66e3f54e845b2791095a3a709e,
+    type: 3}
+  initialCurrency: 0
   gameOver: 0
   totalEnemies: 0
   totalBirds: 0
+  currentTimeLimit: 0
+  moveResultScreen: 0
   endlessRecord: 0
   clearedLevel: 
   clearedBirdLevel: 
@@ -92,21 +101,13 @@ MonoBehaviour:
   rankRecord: 
   rankBirdRecord: 
   rankHardRecord: 
+  currentMaxStreak: 0
   currency: 0
   itemBought: 
   itemActive: 
   lastMode: 0
-  seenControls: 0
+  seenTutorial: 0
   seenBirdTutorial: 0
---- !u!114 &3744606528972467884
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1824926462911765906}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86bcb69c0102c8e48a427b18e91adf19, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  inputSelected: 0
+  gotNewRecord: 0
+  currentRecord: 0

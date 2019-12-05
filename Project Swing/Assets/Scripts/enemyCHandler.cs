@@ -40,6 +40,8 @@ public class enemyCHandler : enemyHandler
 
         damage.Add(4);
 
+        material = 0;
+
         soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Enemy/Knight_attack");
         soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Enemy/Knight_death");
         soundFall = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_warning");
@@ -126,6 +128,7 @@ public class enemyCHandler : enemyHandler
             }
             else if (attackState == 4)
             {
+                attackHitting = false;
                 attackActive = false;
                 hitboxAttacks[0].enabled = false;
                 localSpriteRenderer.sprite = spriteIdle;
@@ -136,7 +139,7 @@ public class enemyCHandler : enemyHandler
             }
         }
 
-        if (mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
+        if (attackState > 0 && mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
         {
             parryable = false;
             attackHitting = true;

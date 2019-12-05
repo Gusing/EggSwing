@@ -28,6 +28,7 @@ public class playerHandlerTutorial : MonoBehaviour
     public GameObject effectHitRed;
     public GameObject effectHitSuper;
     public GameObject effectHitBird;
+    public GameObject effectHitParry;
 
     [Header("Object Prefabs")]
     public GameObject damageNumberEnemy;
@@ -191,6 +192,7 @@ public class playerHandlerTutorial : MonoBehaviour
 
     mainHandlerTutorial gameManager;
     GameObject beatIndicator;
+    GameObject mainCamera;
 
     readonly int QUICK = 0, SLOW = 1, HOLD = 2, RAPID = 3;
 
@@ -216,6 +218,9 @@ public class playerHandlerTutorial : MonoBehaviour
     FMOD.Studio.EventInstance soundSPBarFull;
     FMOD.Studio.EventInstance soundRankAnnouncer;
 
+    FMOD.Studio.EventInstance soundHitWood;
+    FMOD.Studio.EventInstance soundHitMetal;
+
     FMOD.Studio.EventInstance soundPickupCurrency;
     FMOD.Studio.EventInstance soundPickupHP;
 
@@ -236,6 +241,8 @@ public class playerHandlerTutorial : MonoBehaviour
         gameManager = GameObject.Find("GameManager").GetComponent<mainHandlerTutorial>();
 
         beatIndicator = GameObject.Find("BeatIndicator");
+
+        mainCamera = GameObject.Find("Main Camera");
     }
 
     void Start()
@@ -253,7 +260,9 @@ public class playerHandlerTutorial : MonoBehaviour
         soundEnemyBlock = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/HitArmor");
         soundSPBarFull = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/BarFull");
         soundRankAnnouncer = FMODUnity.RuntimeManager.CreateInstance("event:/Announcer/Voice");
-        
+
+        soundHitWood = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/Boxingbag");
+        soundHitMetal = FMODUnity.RuntimeManager.CreateInstance("event:/Brad/MetalHit");
         
         if (mainHandler.currentGameMode == 1) beatIndicator.SetActive(false);
 
@@ -1219,7 +1228,7 @@ public class playerHandlerTutorial : MonoBehaviour
         if (beatState == SUCCESS || beatState == BEAT)
         {
             Instantiate(effectHitSuper, transform.position + new Vector3(0, 1.5f), new Quaternion(0, 0, 0, 0));
-            gameManager.gameObject.GetComponent<ScreenShake>().TriggerShake(0.8f, 0.5f, 1.2f);
+            mainCamera.GetComponent<ScreenShake>().TriggerShake(0.8f, 0.5f, 1.2f);
             soundAttackSuper.start();
             //Instantiate(pSpecialAttack, transform.position, new Quaternion(0, 0, 0, 0));
             UpdateHitboxes();
@@ -1531,6 +1540,7 @@ public class playerHandlerTutorial : MonoBehaviour
         velX = 0;
         attackType = 0;
         parrying = true;
+        soundBlock.setParameterValue("Hit", 0);
         soundBlock.start();
         hitboxParry.enabled = true;
         UpdateHitboxes();
@@ -1947,12 +1957,16 @@ public class playerHandlerTutorial : MonoBehaviour
             {
                 if (other.GetComponent<enemyHandler>().parryable)
                 {
+                    GameObject tg = Instantiate(effectHitParry, (transform.position + other.transform.position) / 2, Quaternion.Euler(0, 0, Random.Range(0f, 360f)));
+                    mainCamera.GetComponent<ScreenShake>().TriggerShake(0.05f, 0.9f, 1.2f);
+
                     beatIndicator.GetComponent<beatIndicatorHandlerBTutorial>().PlayerInput();
                     blockBeat = currentBeat;
                     actionTimer = 0;
                     parryHitting = true;
                     other.GetComponent<enemyHandler>().GetParried();
                     gameManager.PlayerInput(2);
+                    soundBlock.setParameterValue("Hit", 1);
                     //other.GetComponent<enemyHandler>().TakeDamage(4, 100);
                 }
             }
@@ -2005,11 +2019,13 @@ public class playerHandlerTutorial : MonoBehaviour
                     if (usingSuper) AddBonusScore("Super Hit", 30);
                     if (comboState >= 0)
                     {
-                        if (tDmg > 0) currentCombos[0][comboState].soundAttackHit.start();
+                        if (tDmg > 0)
+                        {
+                            if (other.GetComponent<enemyHandler>().material == 1) soundHitWood.start();
+                            if (other.GetComponent<enemyHandler>().material == 2) soundHitMetal.start();
+                            currentCombos[0][comboState].soundAttackHit.start();
+                        }
                         else soundEnemyBlock.start();
-                        //if (!hitboxAttack3A.IsTouching(other) && data.itemBought[COMBOSUPER] && data.itemActive[COMBOSUPER] && specialCharges < 3) specialChargeTimer += tDmg;
-                        //print(specialChargeTimer);
-
                         if (other.GetComponent<enemyHandler>().GetDefense() > 0 && tDmg > 0) soundHitArmor.start();
                     }
                 }
@@ -2021,7 +2037,7 @@ public class playerHandlerTutorial : MonoBehaviour
 
                 if (comboState == currentCombos[0].Length - 1 && tDmg > 0)
                 {
-                    gameManager.gameObject.GetComponent<ScreenShake>().TriggerShake(0.07f + 0.027f * tDmg, 0.2f + 0.08f * tDmg, 1.2f);
+                    mainCamera.GetComponent<ScreenShake>().TriggerShake(0.07f + 0.027f * tDmg, 0.2f + 0.08f * tDmg, 1.2f);
                     Instantiate(effectHitRed, tBox, new Quaternion(0, 0, 0, 0));
                 }
                 else if (tDmg < 8 && tDmg > 0 && !birdHitstun)

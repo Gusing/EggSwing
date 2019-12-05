@@ -14,8 +14,12 @@ public class menuHandler : MonoBehaviour {
     public GameObject BirdScrollList;
     public GameObject hardListContent;
     public GameObject hardScrollList;
-    
+
     public GameObject levelContainer;
+
+    public Sprite spriteBirdTutKeyboard;
+    public Sprite spriteBirdTutXbox;
+    public Sprite spriteBirdTutPS;
 
     EventSystem eventSystem;
     GameObject oldSelected;
@@ -23,15 +27,17 @@ public class menuHandler : MonoBehaviour {
     GameObject currentUIMarker;
     float UIMarkerColor;
     bool UIMarkerColorSwitch;
-    public float UIMarkerSpeed = 2;
-    public float UIMarkerDarkness = 0.5f;
+    public float UIMarkerSpeed = 20;
+    public float UIMarkerDarkness = 1f;
 
     public Button btnEndless;
     public SpriteRenderer spriteLockEndless;
     public Text txtEndlessRecord;
+    public Button btnBird;
     public Button btnHard;
-    public SpriteRenderer spriteLockHard;
-    //Text txtCurrency;
+    public SpriteRenderer rendererLockHard;
+    public SpriteRenderer rendererLockBird;
+    Text txtCurrency;
 
     public SpriteRenderer rendererBirdTutorial;
     bool birdTutorialVisible;
@@ -58,14 +64,14 @@ public class menuHandler : MonoBehaviour {
     {
         data = SaveSystem.LoadPlayer();
 
-        //txtCurrency = GameObject.Find("txtCurrency").GetComponent<Text>();
+        txtCurrency = GameObject.Find("txtCurrency").GetComponent<Text>();
     }
     
     void Start()
     {
         soundMenuMusic = FMODUnity.RuntimeManager.CreateInstance("event:/Music/MenuMusic");
 
-        menuMusicPlayerHandler.Instance.checkStarted();
+        menuMusicPlayerHandler.Instance.CheckStarted(false);
 
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
         soundUIStart = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_Start");
@@ -74,7 +80,7 @@ public class menuHandler : MonoBehaviour {
         
         data.Init();
 
-        for (int i = 1; i < data.unlockedLevel.Length; i++)
+        for (int i = 1; i < 6; i++)
         {
             GameObject levelListItem = Instantiate(levelContainer) as GameObject;
             levelListItem.SetActive(true);
@@ -88,7 +94,7 @@ public class menuHandler : MonoBehaviour {
             if (data.rankRecord[i] == 3) tRank = "B";
             if (data.rankRecord[i] == 4) tRank = "A";
             if (data.rankRecord[i] == 5) tRank = "S";
-            if (!data.clearedLevel[i]) tRank = "F";
+            if (!data.clearedLevel[i]) tRank = "-";
 
             if (data.unlockedLevel[i]) levelListItem.GetComponent<levelContainerHandler>().Init(tRank, data.scoreRecord[i], data.streakRecord[i], i, true, 0);
             else levelListItem.GetComponent<levelContainerHandler>().Init(" ", 0, 0, i, false, 0);
@@ -105,7 +111,7 @@ public class menuHandler : MonoBehaviour {
             txtEndlessRecord.text =  "Record: " + data.endlessRecord.ToString();
         }
 
-        for (int i = 1; i < data.unlockedBirdLevel.Length; i++)
+        for (int i = 1; i < 6; i++)
         {
             GameObject levelListItem = Instantiate(levelContainer) as GameObject;
             levelListItem.SetActive(true);
@@ -119,7 +125,7 @@ public class menuHandler : MonoBehaviour {
             if (data.rankBirdRecord[i] == 3) tRank = "B";
             if (data.rankBirdRecord[i] == 4) tRank = "A";
             if (data.rankBirdRecord[i] == 5) tRank = "P";
-            if (!data.clearedBirdLevel[i]) tRank = "F";
+            if (!data.clearedBirdLevel[i]) tRank = "-";
 
             if (data.unlockedBirdLevel[i]) levelListItem.GetComponent<levelContainerHandler>().Init(tRank, data.scoreBirdRecord[i], data.comboRecord[i], i, true, 1);
             else levelListItem.GetComponent<levelContainerHandler>().Init(" ", 0, 0, i, false, 1);
@@ -128,11 +134,22 @@ public class menuHandler : MonoBehaviour {
         if (data.unlockedHardLevel[1]) btnHard.interactable = true;
         else
         {
-            spriteLockHard.enabled = true;
+            rendererLockHard.enabled = true;
             btnHard.gameObject.SetActive(false);
         }
 
-        for (int i = 1; i < data.unlockedHardLevel.Length; i++)
+        if (data.unlockedBirdLevel[1]) btnBird.interactable = true;
+        else
+        {
+            rendererLockBird.enabled = true;
+            btnBird.gameObject.SetActive(false);
+        }
+
+        if (data.inputSelected == 0) rendererBirdTutorial.sprite = spriteBirdTutXbox;
+        if (data.inputSelected == 1) rendererBirdTutorial.sprite = spriteBirdTutPS;
+        if (data.inputSelected == 2) rendererBirdTutorial.sprite = spriteBirdTutKeyboard;
+
+        for (int i = 1; i < 6; i++)
         {
             GameObject levelListItem = Instantiate(levelContainer) as GameObject;
             levelListItem.SetActive(true);
@@ -146,7 +163,7 @@ public class menuHandler : MonoBehaviour {
             if (data.rankHardRecord[i] == 3) tRank = "B";
             if (data.rankHardRecord[i] == 4) tRank = "A";
             if (data.rankHardRecord[i] == 5) tRank = "S";
-            if (!data.clearedHardLevel[i]) tRank = "F";
+            if (!data.clearedHardLevel[i]) tRank = "-";
 
             if (data.unlockedHardLevel[i]) levelListItem.GetComponent<levelContainerHandler>().Init(tRank, data.scoreHardRecord[i], data.timeRecord[i], i, true, 2);
             else levelListItem.GetComponent<levelContainerHandler>().Init(" ", 0, 0, i, false, 0);
@@ -154,11 +171,12 @@ public class menuHandler : MonoBehaviour {
 
         ChangeMode(data.lastMode);
 
-        //txtCurrency.text = data.currency.ToString();
+        txtCurrency.text = data.currency.ToString();
 
         oldSelected = eventSystem.currentSelectedGameObject;
         
         if (sceneSelectionHandler.Instance.lastButtonName != "") eventSystem.SetSelectedGameObject(GameObject.Find(sceneSelectionHandler.Instance.lastButtonName));
+
         
     }
     
@@ -270,7 +288,7 @@ public class menuHandler : MonoBehaviour {
         if (num > 0) soundUIStart.start();
         else soundUIClick.start();
 
-        menuMusicPlayerHandler.Instance.stopMusic();
+        menuMusicPlayerHandler.Instance.StopMusic();
 
         sceneSelectionHandler.Instance.gameModeSelected = selectedGameMode;
         
@@ -283,7 +301,8 @@ public class menuHandler : MonoBehaviour {
 
     public void CycleMode(bool right)
     {
-        int maxmodes = 2;
+        int maxmodes = 1;
+        if (data.unlockedBirdLevel[1]) maxmodes = 2;
         if (data.unlockedHardLevel[1]) maxmodes = 3;
 
         if (right) ChangeMode(mod(selectedGameMode + 1, maxmodes));
@@ -291,12 +310,7 @@ public class menuHandler : MonoBehaviour {
 
         eventSystem.SetSelectedGameObject(GameObject.Find("btnStartLevelMoon"));
     }
-
-    int mod(int x, int m)
-    {
-        return (x % m + m) % m;
-    }
-
+    
     public void ChangeMode(int num)
     {
         if (num == 0)
@@ -336,9 +350,19 @@ public class menuHandler : MonoBehaviour {
 
     public void EnterShop()
     {
+        Texture2D tex = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
+        int width = Screen.width;
+        int height = Screen.height;
+        tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+        tex.Apply();
+
+        print(tex.GetPixel(0, 0));
+
+        /*
         soundUIClick.start();
-        menuMusicPlayerHandler.Instance.swapShop(true);
+        menuMusicPlayerHandler.Instance.SwapShop(true);
         SceneManager.LoadScene("ShopScene");
+        */
     }
 
     public void EnterControls()
@@ -349,7 +373,7 @@ public class menuHandler : MonoBehaviour {
 
     public void EnterTutorial()
     {
-        menuMusicPlayerHandler.Instance.stopMusic();
+        menuMusicPlayerHandler.Instance.StopMusic();
         soundUIClick.start();
         SceneManager.LoadScene("TutorialScene");
     }
@@ -371,5 +395,10 @@ public class menuHandler : MonoBehaviour {
     {
         AnalyticsEvent.Custom("clicked_sunscale");
         Application.OpenURL("http://www.sunscalestudios.com/");
+    }
+
+    int mod(int x, int m)
+    {
+        return (x % m + m) % m;
     }
 }

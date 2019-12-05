@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 8723348879377983395}
   - component: {fileID: 8723348879377983394}
   - component: {fileID: 8723348879377983393}
-  - component: {fileID: 8723348879377983420}
   - component: {fileID: 8723348879377983421}
+  - component: {fileID: 3385951459908614602}
   m_Layer: 0
   m_Name: BoxLight
-  m_TagString: enemy
+  m_TagString: enemyDummy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 8723348879377983392}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.22, y: -2.78, z: 88.71441}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -72,12 +72,12 @@ SpriteRenderer:
   m_SortingLayerID: -1211973967
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: be8828e76e08d3249b70d6f2397c3cea, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8a6ec9e8afbc4004b9ef9a0157c15871, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3, y: 3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -96,44 +96,19 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.75}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 3, y: 3}
+    newSize: {x: 3, y: 3}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.45, y: 1.45}
   m_EdgeRadius: 0
---- !u!114 &8723348879377983420
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8723348879377983392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89b698af914e3b9449948148996ff2f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dead: 0
-  currentHP: 0
-  maxHP: 0
-  parryable: 0
-  rendererHPBar: {fileID: 0}
-  rendererHPFill: {fileID: 0}
-  pYellowWarning: {fileID: 0}
-  pRedWarning: {fileID: 0}
-  currency: {fileID: 0}
-  HPPickup: {fileID: 0}
-  warningPoints: []
-  hitboxAttacks: []
-  hitboxAttackFall: {fileID: 0}
 --- !u!95 &8723348879377983421
 Animator:
   serializedVersion: 3
@@ -153,3 +128,31 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &3385951459908614602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8723348879377983392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad527cad43ae8554d929e0ba20931c68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dead: 0
+  currentHP: 0
+  maxHP: 0
+  parryable: 0
+  direction: 0
+  rendererHPBar: {fileID: 0}
+  rendererHPFill: {fileID: 0}
+  pYellowWarning: {fileID: 0}
+  pRedWarning: {fileID: 0}
+  currency: {fileID: 338368309248678210, guid: d6324fbbf6cdd7f4fb4131545d93f055, type: 3}
+  HPPickup: {fileID: 8659057177738005108, guid: 5609f170b5149924c8ab3db1deee0de2,
+    type: 3}
+  warningPoints: []
+  hitboxAttacks: []
+  hitboxAttackFall: {fileID: 0}
+  canDie: 0

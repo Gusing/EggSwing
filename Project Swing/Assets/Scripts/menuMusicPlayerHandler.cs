@@ -28,24 +28,34 @@ public class menuMusicPlayerHandler : MonoBehaviour
     
     public bool started = false;
     
-    public void checkStarted()
+    public void CheckStarted(bool shop)
     {
         if (!started)
         {
             soundMenuMusic = FMODUnity.RuntimeManager.CreateInstance("event:/Music/MenuMusic");
             soundMenuMusic.start();
             started = true;
+            if (shop)
+            {
+                soundMenuMusic.setParameterValue("ShopMenu", 2);
+                soundMenuMusic.setParameterValue("Shop", 1);
+            }
+            else
+            {
+                soundMenuMusic.setParameterValue("ShopMenu", 1);
+                soundMenuMusic.setParameterValue("Shop", 0);
+            }
         }
        
     }
 
-    public void stopMusic()
+    public void StopMusic()
     {
         started = false;
         soundMenuMusic.setParameterValue("End", 1);
     }
 
-    public void swapShop(bool shopMusic)
+    public void SwapShop(bool shopMusic)
     {
         if (shopMusic) soundMenuMusic.setParameterValue("Shop", 1);
         else soundMenuMusic.setParameterValue("Shop", 0);

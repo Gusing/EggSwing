@@ -40,6 +40,8 @@ public class enemyDHandler : enemyHandler
         damage.Add(3);
         damage.Add(4);
 
+        material = 0;
+
         soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Enemy/Ninja_attack");
         soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Enemy/Ninja_death");
         soundFall = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_warning");
@@ -166,6 +168,7 @@ public class enemyDHandler : enemyHandler
             }
             else if (attackState == 4)
             {
+                attackHitting = false;
                 attackActive = false;
                 hitboxAttacks[0].enabled = false;
                 attacking = false;
@@ -175,7 +178,7 @@ public class enemyDHandler : enemyHandler
             }
         }
 
-        if (mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
+        if (attackState > 0 && mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
         {
             parryable = false;
             attackHitting = true;
@@ -217,6 +220,7 @@ public class enemyDHandler : enemyHandler
             }
             else if (attackState == 4)
             {
+                attackHitting = false;
                 attackActive = false;
                 hitboxAttacks[1].enabled = false;
                 attacking = false;
@@ -226,7 +230,7 @@ public class enemyDHandler : enemyHandler
             }
         }
 
-        if (mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
+        if (attackState > 0 && mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
         {
             parryable = false;
             attackHitting = true;

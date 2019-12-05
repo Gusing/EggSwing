@@ -53,9 +53,7 @@ public class mainHandlerTutorial : MonoBehaviour {
     public static bool birdLevelFinished;
 
     bool gotCool;
-
-    public Button btnRetry;
-    public Button btnGameOver;
+    
     public SpriteMask maskProgressFill;
     public SpriteRenderer rendererProgressMarker;
 
@@ -145,6 +143,7 @@ public class mainHandlerTutorial : MonoBehaviour {
     [HideInInspector] public int lastMode;
     [HideInInspector] public bool seenTutorial;
     [HideInInspector] public bool seenBirdTutorial;
+    [HideInInspector] public int inputSelected;
 
     int[] numBirds;
     public List<int[]> birdRankLimits; 
@@ -281,8 +280,6 @@ public class mainHandlerTutorial : MonoBehaviour {
         eventSystem = EventSystem.current;
 
         timerBox.gameObject.SetActive(false);
-        btnRetry.gameObject.SetActive(false);
-        btnGameOver.gameObject.SetActive(false);
 
         // load data
         data.Init();
@@ -309,6 +306,7 @@ public class mainHandlerTutorial : MonoBehaviour {
         lastMode = data.lastMode;
         seenTutorial = data.seenTutorial;
         seenBirdTutorial = data.seenBirdTutorial;
+        inputSelected = data.inputSelected;
 
         player.GetComponent<playerHandlerTutorial>().Init(currency);
         
@@ -328,12 +326,12 @@ public class mainHandlerTutorial : MonoBehaviour {
         playerHUD.transform.Find("StreakCounter").position += new Vector3(-1000, 0, 0);
         playerHUD.transform.Find("ScoreRank").position += new Vector3(-1000, 0, 0);
         levelUI.transform.Find("ProgressBar").position += new Vector3(-1000, 0, 0);
-        levelUI.transform.Find("Currency").position += new Vector3(-1000, 0, 0);
         
         if (level > 0) levelUI = GameObject.Find("LevelUI").GetComponent<Canvas>();
         playerHUD = GameObject.Find("playerHUD").GetComponent<Canvas>();
 
         tutorialState = -1;
+        tutorialTimer = 0;
         everyOtherBeat = false;
 
         // load practice
@@ -842,8 +840,6 @@ public class mainHandlerTutorial : MonoBehaviour {
     
     void Update()
     {
-
-        print(normalLevelFinished);
         beatTimer2 += Time.deltaTime;
         currentBeatTimer += Time.deltaTime;
         
@@ -935,10 +931,6 @@ public class mainHandlerTutorial : MonoBehaviour {
                 //SaveSystem.SavePlayer(this);
             }
             gameOver = true;
-            print("buttons");
-            btnRetry.gameObject.SetActive(true);
-            btnGameOver.gameObject.SetActive(true);
-            btnRetry.Select();
         }
 
         if (gameOverTimer >= 2f && gameOver)
@@ -1088,8 +1080,7 @@ public class mainHandlerTutorial : MonoBehaviour {
         {
             lineMarkerTimer += Time.deltaTime;
             imgLineMarker.GetComponent<RectTransform>().localPosition = new Vector2(Mathf.Clamp(-253 + 506 * (lineMarkerTimer / 1f), -253, 253), 111);
-
-
+            
             if ((tutorialState == 5 || tutorialState == 10) && player.GetComponent<playerHandlerTutorial>().comboState == -1)
             {
                 lineMarkerMoving = false;
@@ -1128,10 +1119,10 @@ public class mainHandlerTutorial : MonoBehaviour {
         {
             tutorialState++;
             tutorialTimer = 0;
-            txtTutorial1.text = "Press <sprite=6> to do a <sprite=0>Light Attack when the lines converge!";
+            txtTutorial1.text = "Press <sprite=" + (9 + sceneSelectionHandler.Instance.inputIcons * 11) + "> to do a <sprite=0>Light Attack when the lines converge!";
             txtTutorial2.text = "(0/5)";
             currentTutorialObject = Instantiate(enemyBoxLight, player.transform.position + new Vector3(1.7f, 0, 0), new Quaternion(0, 0, 0, 0));
-            currentTutorialObject.GetComponent<enemyBoxLightHandler>().Init(false);
+            currentTutorialObject.GetComponent<enemyBoxLightTutorialHandler>().Init(false);
             player.GetComponent<playerHandlerTutorial>().disabledLight = false;
             soundMusic.setParameterValue("Tutorial", 1);
             currentTutorialIndicator = Instantiate(tutorialLightSignal, new Vector3(0, 1.50f, 0), new Quaternion(0, 0, 0, 0));
@@ -1143,7 +1134,7 @@ public class mainHandlerTutorial : MonoBehaviour {
             tutorialTimer = 0;
             txtTutorial1.text = "Now go for a combo!";
             txtTutorial2.text = "";
-            currentTutorialObject.GetComponent<enemyBoxLightHandler>().canDie = true;
+            currentTutorialObject.GetComponent<enemyBoxLightTutorialHandler>().canDie = true;
             Destroy(currentTutorialIndicator);
             
             imgLineMarker.enabled = true;
@@ -1181,10 +1172,10 @@ public class mainHandlerTutorial : MonoBehaviour {
         {
             tutorialState = 8;
             tutorialTimer = 0;
-            txtTutorial1.text = "Press <sprite=8> to do a <sprite=1>Heavy attack every other beat!";
+            txtTutorial1.text = "Press <sprite=" + (10 + sceneSelectionHandler.Instance.inputIcons * 11) + "> to do a <sprite=1>Heavy attack every other beat!";
             txtTutorial2.text = "(0/5)";
-            currentTutorialObject = Instantiate(enemyBoxHeavy, player.transform.position + new Vector3(1.3f, 0, 0), new Quaternion(0, 0, 0, 0));
-            currentTutorialObject.GetComponent<enemyBoxHeavyHandler>().Init(false);
+            currentTutorialObject = Instantiate(enemyBoxHeavy, player.transform.position + new Vector3(1.5f, 0, 0), new Quaternion(0, 0, 0, 0));
+            currentTutorialObject.GetComponent<enemyBoxHeavyTutorialHandler>().Init(false);
             player.GetComponent<playerHandlerTutorial>().disabledHeavy = false;
             player.GetComponent<playerHandlerTutorial>().restrictedHeavy = true;
             beatIndicator.SetShowEveryOther(true);
@@ -1198,7 +1189,7 @@ public class mainHandlerTutorial : MonoBehaviour {
             tutorialTimer = 0;
             txtTutorial1.text = "Now go for a combo!";
             txtTutorial2.text = "";
-            currentTutorialObject.GetComponent<enemyBoxHeavyHandler>().canDie = true;
+            currentTutorialObject.GetComponent<enemyBoxHeavyTutorialHandler>().canDie = true;
             Destroy(currentTutorialIndicator);
 
             imgLineMarker.enabled = true;
@@ -1231,10 +1222,10 @@ public class mainHandlerTutorial : MonoBehaviour {
         {
             tutorialState++;
             tutorialTimer = 0;
-            txtTutorial1.text = "Press <sprite=11> to do a <sprite=4>Parry against the enemy attack!";
+            txtTutorial1.text = "Press <sprite=" + (14 + sceneSelectionHandler.Instance.inputIcons * 11) + "> to do a <sprite=5>Parry against the enemy attack!";
             txtTutorial2.text = "(0/3)";
-            currentTutorialObject = Instantiate(parryPractice, player.transform.position + new Vector3(1.3f, 0, 0), new Quaternion(0, 0, 0, 0));
-            currentTutorialObject.GetComponent<enemyParryPracticeHandler>().Init(false);
+            currentTutorialObject = Instantiate(parryPractice, player.transform.position + new Vector3(1.7f, 0, 0), new Quaternion(0, 0, 0, 0));
+            currentTutorialObject.GetComponent<enemyParryPracticeTutorialHandler>().Init(false);
             player.GetComponent<playerHandlerTutorial>().disabledParry = false;
             soundMusic.setParameterValue("Tutorial", 3);
             imgLineMarker.enabled = true;
@@ -1260,7 +1251,8 @@ public class mainHandlerTutorial : MonoBehaviour {
         {
             tutorialState++;
             tutorialTimer = 0;
-            txtTutorial1.text = "Move freely with <sprite=5>/<sprite=5>";
+            if (sceneSelectionHandler.Instance.inputIcons == 2) txtTutorial1.text = "Move freely with <sprite=39>";
+            else txtTutorial1.text = "Move freely with <sprite=" + (17 + sceneSelectionHandler.Instance.inputIcons * 11) + ">/<sprite=" + (18 + sceneSelectionHandler.Instance.inputIcons * 11) + ">";
             player.GetComponent<playerHandlerTutorial>().disabledMove = false;
         }
 
@@ -1268,10 +1260,10 @@ public class mainHandlerTutorial : MonoBehaviour {
         {
             tutorialState++;
             tutorialTimer = 0;
-            txtTutorial1.text = "Press <sprite=10> to use <sprite=3>Dodge to go through objects!";
+            txtTutorial1.text = "Press <sprite=" + (13 + sceneSelectionHandler.Instance.inputIcons * 11) + "> to use <sprite=4>Dodge to go through objects!";
             txtTutorial2.text = "Get to the right";
-            currentTutorialObject = Instantiate(objectWall, new Vector3(1.35f, -1.31f, 0), new Quaternion(0, 0, 0, 0));
-            currentTutorialObject = Instantiate(objectWall, new Vector3(4.85f, -1.31f, 0), new Quaternion(0, 0, 0, 0));
+            currentTutorialObject = Instantiate(objectWall, new Vector3(1.35f, -1.11f, 0), new Quaternion(0, 0, 0, 0));
+            currentTutorialObject = Instantiate(objectWall, new Vector3(4.85f, -1.11f, 0), new Quaternion(0, 0, 0, 0));
             player.GetComponent<playerHandlerTutorial>().disabledDash = false;
         }
 
@@ -1285,7 +1277,9 @@ public class mainHandlerTutorial : MonoBehaviour {
             tutorialTimer = 0;
             txtTutorial1.text = "Use everything you've learned!";
             txtTutorial2.rectTransform.localPosition = new Vector3(0, 200, 0);
-            txtTutorial2.text = "<sprite=0>Light Attack (0/3)\n<sprite=1>Heavy Attack (0/3)\n<sprite=4>Parry (0/3)\n<sprite=3>Dodge Through (0/3)";
+            txtTutorial2.alignment = TextAlignmentOptions.MidlineLeft;
+            txtTutorial2.rectTransform.sizeDelta = new Vector2(600, txtTutorial2.rectTransform.sizeDelta.y);
+            txtTutorial2.text = "<sprite=0>Light Attack (0/3)\n<sprite=1>Heavy Attack (0/3)\n<sprite=5>Parry (0/3)\n<sprite=4>Dodge Through (0/3)";
             currentTutorialObject = Instantiate(enemyTutorial, new Vector3(-10, 0, 0), new Quaternion(0, 0, 0, 0));
             currentTutorialObject.GetComponent<enemyATutorialHandler>().Init(false);
             playerRightSide = true;
@@ -1295,7 +1289,7 @@ public class mainHandlerTutorial : MonoBehaviour {
 
         if (tutorialState == 18)
         {
-            txtTutorial2.text = "<sprite=0>Light Attack (" + lightCounter + "/3)\n<sprite=1>Heavy Attack (" + heavyCounter + "/3)\n<sprite=4>Parry (" + parryCounter + "/3)\n<sprite=3>Dodge Through (" + dashCounter + "/3)";
+            txtTutorial2.text = "<sprite=0>Light Attack (" + lightCounter + "/3)\n<sprite=1>Heavy Attack (" + heavyCounter + "/3)\n<sprite=5>Parry (" + parryCounter + "/3)\n<sprite=4>Dodge Through (" + dashCounter + "/3)";
 
             if (player.transform.position.x > currentTutorialObject.transform.position.x && !playerRightSide && dashCounter < 3)
             {
@@ -1396,7 +1390,7 @@ public class mainHandlerTutorial : MonoBehaviour {
                 {
                     heavyCounter = 0;
                     tutorialState++;
-                    currentTutorialObject.GetComponent<enemyBoxHeavyHandler>().canDie = true;
+                    currentTutorialObject.GetComponent<enemyBoxHeavyTutorialHandler>().canDie = true;
                 }
             }
 
@@ -1409,7 +1403,7 @@ public class mainHandlerTutorial : MonoBehaviour {
                 {
                     parryCounter = 0;
                     tutorialState++;
-                    currentTutorialObject.GetComponent<enemyParryPracticeHandler>().Die(100);
+                    currentTutorialObject.GetComponent<enemyParryPracticeTutorialHandler>().Die(100);
                 }
             }
 
@@ -1428,7 +1422,7 @@ public class mainHandlerTutorial : MonoBehaviour {
                     parryCounter++;
                 }
 
-                txtTutorial2.text = "<sprite=0>Light Attack (" + lightCounter + "/3)\n<sprite=1>Heavy Attack (" + heavyCounter + "/3)\n<sprite=4>Parry (" + parryCounter + "/3)\n<sprite=3>Dodge Through (" + dashCounter + "/3)";
+                txtTutorial2.text = "<sprite=0>Light Attack (" + lightCounter + "/3)\n<sprite=1>Heavy Attack (" + heavyCounter + "/3)\n<sprite=5>Parry (" + parryCounter + "/3)\n<sprite=4>Dodge Through (" + dashCounter + "/3)";
 
                 if (parryCounter >= 3 && lightCounter >= 3 && heavyCounter >= 3 && dashCounter >= 3)
                 {
@@ -1477,8 +1471,12 @@ public class mainHandlerTutorial : MonoBehaviour {
         birdLevelFinished = false;
         //lastMode = currentGameMode;
         if (gameMode == BIRD) seenBirdTutorial = true;
+
+        // save data
+        inputSelected = sceneSelectionHandler.Instance.inputIcons;
         seenTutorial = true;
         SaveSystem.SavePlayerTutorial(this);
+
         for (int i = 0; i < enemies.Count; i++)
         {
             enemies[i].GetComponent<enemyHandler>().Stop();
@@ -1707,8 +1705,6 @@ public class mainHandlerTutorial : MonoBehaviour {
         if (gameMode == HARD) txtTimeLeft.transform.localScale = new Vector3(0.5f, 0.5f);
         gameOver = false;
         songStarted = false;
-        btnRetry.gameObject.SetActive(false);
-        btnGameOver.gameObject.SetActive(false);
         waitingForDeath = false;
         enemiesDead = 0;
 

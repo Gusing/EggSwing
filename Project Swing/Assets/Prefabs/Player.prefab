@@ -458,7 +458,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e892bbe9c407b44a86680f7b1a8abb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 1415857242}
   pAttackHit: {fileID: 198092016000819786, guid: e7e68039f0a7132478a975c8b83c8ece,
     type: 3}
   pPlayerkHit: {fileID: 198441383387141426, guid: 8c355677d2d5d3f42a830bd6f76efb49,
@@ -484,63 +483,33 @@ MonoBehaviour:
     type: 3}
   effectHitBird: {fileID: 1811336824147919723, guid: 81cff496e5ea67e4daa9a092d13d793a,
     type: 3}
+  effectHitParry: {fileID: 1811336824147919723, guid: ef24320feed6c724e8e992ec6e581bba,
+    type: 3}
   damageNumberEnemy: {fileID: 1188790007723088, guid: be7b358b633dad04b97c1664f125b762,
     type: 3}
   damageNumberPlayer: {fileID: 1188790007723088, guid: c7a6b36ed9e1d6747909971dea30d693,
     type: 3}
   scoreBonusText: {fileID: 1188790007723088, guid: 55d1e258e310c5b418f84d12560d5597,
     type: 3}
-  birds: []
-  hitboxAttack1A: {fileID: 61741449176305972}
-  hitboxAttack1B: {fileID: 61559435943942068}
-  hitboxAttack1C: {fileID: 61935381213087658}
-  hitboxAttack2A: {fileID: 61885184371558116}
-  hitboxAttack2B: {fileID: 61304478114702404}
-  hitboxAttack2C: {fileID: 61593534875135332}
-  hitboxAttack2D: {fileID: 61058314780536884}
-  hitboxAttack3A: {fileID: 61580625990617342}
-  hitboxAttack4A: {fileID: 5831932050899131963}
-  hitboxAttack5A: {fileID: 2728208179363923716}
-  hitboxAttack6A: {fileID: 3127674731282938370}
-  hitboxAttack6B: {fileID: 4614797078207926141}
-  hitboxAttackBird: {fileID: 7024313204007356432}
-  hitboxPickup: {fileID: 2233312929610599042}
-  hitboxParry: {fileID: 1728066477894857841}
-  punchingSuccess: 0
-  punchingActive: 0
-  attackType: 0
-  currentStreak: 0
-  streakLevel: 0
-  currentCurrency: 0
-  maxSP: 20
-  currentScore: 0
-  currentRank: 0
-  enemyKilled: 0
-  rendererHPFill: {fileID: 0}
-  maskHPFill: {fileID: 0}
-  renderersSpecialCharges:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  spriteScoreBg: {fileID: 0}
-  textStreak: {fileID: 0}
-  textCombo: {fileID: 0}
-  textCurrency: {fileID: 0}
-  textScore: {fileID: 0}
-  textMultiplier: {fileID: 0}
-  textRank: {fileID: 0}
-  maskSPFill: {fileID: 6076490977180517456}
-  rendererSPFill: {fileID: 2361852901421952468}
-  SPBar: {fileID: 6724189256972124182}
   spriteSPBar1: {fileID: 21300000, guid: 0dc46d9e55ddfef44837330137fd2594, type: 3}
   spriteSPBar2: {fileID: 21300000, guid: 8f7dac6f3ad1a3c4f9d3c40d038b2943, type: 3}
   spriteSuperFull: {fileID: 21300000, guid: 4604acc9d9235684cb79dd4e60b8f78b, type: 3}
   spriteSuperCharging: {fileID: 21300000, guid: 24d07f0b01bb2bc409b4c94a3639edf0,
     type: 3}
+  textRank: {fileID: 0}
+  punchingSuccess: 0
+  punchingActive: 0
+  attackType: 0
+  enemyKilled: 0
+  birds: []
+  maxSP: 20
   dead: 0
   direction: 0
-  txtComboState: {fileID: 0}
-  txtNumberCombos: {fileID: 0}
+  currentStreak: 0
+  streakLevel: 0
+  currentCurrency: 0
+  currentScore: 0
+  currentRank: 0
 --- !u!50 &50817387530073000
 Rigidbody2D:
   serializedVersion: 4

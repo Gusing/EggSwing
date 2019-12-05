@@ -46,6 +46,7 @@ public class shopHandler : MonoBehaviour
     [HideInInspector] public int lastMode;
     [HideInInspector] public bool seenTutorial;
     [HideInInspector] public bool seenBirdTutorial;
+    [HideInInspector] public int inputSelected;
 
     EventSystem eventSystem;
     GameObject oldSelected;
@@ -74,8 +75,7 @@ public class shopHandler : MonoBehaviour
 
     void Start()
     {
-        menuMusicPlayerHandler.Instance.checkStarted();
-        menuMusicPlayerHandler.Instance.swapShop(true);
+        menuMusicPlayerHandler.Instance.CheckStarted(true);
         
         soundUIClick = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_klick");
         soundUIStart = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_Start");
@@ -110,6 +110,7 @@ public class shopHandler : MonoBehaviour
         lastMode = data.lastMode;
         seenTutorial = data.seenTutorial;
         seenBirdTutorial = data.seenBirdTutorial;
+        inputSelected = data.inputSelected;
 
         prices = new int[] {
             100,
@@ -118,8 +119,8 @@ public class shopHandler : MonoBehaviour
             80,
             140
         };
-
-        /*
+        
+        
         prices = new int[] {
             0,
             0,
@@ -127,8 +128,8 @@ public class shopHandler : MonoBehaviour
             0,
             0
         };
-        */
-
+        
+        
         // load data
         GameObject ShopListItem = Instantiate(ShopItemContainer) as GameObject;
         ShopListItem.SetActive(true);
@@ -226,7 +227,6 @@ public class shopHandler : MonoBehaviour
 
     public bool ClickBuy(int ID)
     {
-        
         if (!itemBought[ID])
         {
             if (currency >= prices[ID])
@@ -256,12 +256,13 @@ public class shopHandler : MonoBehaviour
     public void BackToPlayMenu()
     {
         seenTutorial = true;
+        inputSelected = sceneSelectionHandler.Instance.inputIcons;
         SaveSystem.SavePlayerShop(this);
 
         soundUIClick.start();
 
         if(menuMusicPlayerHandler.Instance != null)
-        menuMusicPlayerHandler.Instance.swapShop(false);
+        menuMusicPlayerHandler.Instance.SwapShop(false);
         SceneManager.LoadScene("MenuScene");
     }
 }

@@ -72,18 +72,21 @@ public class enemyBirdHandler : MonoBehaviour
             beatLimit = 5;
             localRenderer.sprite = spriteBirdA3;
             timeToCharge = bpmInSeconds * 1;
+            soundWarning.setParameterValue("Bird", 2);
         }
         if (type == YELLOW)
         {
             beatLimit = 6;
             localRenderer.sprite = spriteBirdA;
             timeToCharge = bpmInSeconds * 2;
+            soundWarning.setParameterValue("Bird", 1);
         }
         if (type == GREEN)
         {
             beatLimit = 8;
             localRenderer.sprite = spriteBirdA2;
             timeToCharge = bpmInSeconds * 4;
+            soundWarning.setParameterValue("Bird", 0);
         }
     }
 

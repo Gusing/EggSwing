@@ -774,6 +774,8 @@ MonoBehaviour:
     type: 3}
   effectHitBird: {fileID: 1811336824147919723, guid: 81cff496e5ea67e4daa9a092d13d793a,
     type: 3}
+  effectHitParry: {fileID: 1811336824147919723, guid: ef24320feed6c724e8e992ec6e581bba,
+    type: 3}
   damageNumberEnemy: {fileID: 1188790007723088, guid: be7b358b633dad04b97c1664f125b762,
     type: 3}
   damageNumberPlayer: {fileID: 1188790007723088, guid: c7a6b36ed9e1d6747909971dea30d693,
@@ -781,6 +783,8 @@ MonoBehaviour:
   scoreBonusText: {fileID: 1188790007723088, guid: 55d1e258e310c5b418f84d12560d5597,
     type: 3}
   birds: []
+  comboState: 0
+  lastAttackSlow: 0
   hitboxAttack1A: {fileID: 2423849051446039232}
   hitboxAttack1B: {fileID: 2423736633930716224}
   hitboxAttack1C: {fileID: 2424183158799172702}
@@ -829,6 +833,13 @@ MonoBehaviour:
     type: 3}
   dead: 0
   direction: 0
+  disabledLight: 0
+  disabledHeavy: 0
+  disabledMove: 0
+  disabledParry: 0
+  disabledDash: 0
+  canCombo: 0
+  restrictedHeavy: 0
   txtComboState: {fileID: 0}
   txtNumberCombos: {fileID: 0}
 --- !u!1 &2413448459231165604

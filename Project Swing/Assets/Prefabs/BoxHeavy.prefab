@@ -12,10 +12,10 @@ GameObject:
   - component: {fileID: 881514103494841170}
   - component: {fileID: 881514103494841169}
   - component: {fileID: 881514103494841165}
-  - component: {fileID: 39873776}
+  - component: {fileID: 7313377052321567492}
   m_Layer: 0
   m_Name: BoxHeavy
-  m_TagString: enemy
+  m_TagString: enemyDummy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 881514103494841168}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.22, y: -2.78, z: 88.71441}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -72,7 +72,7 @@ SpriteRenderer:
   m_SortingLayerID: -1211973967
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ada501092a185ba4c9fe0659c921ba3c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4e60900a1636e55418aff75e7a4eec70, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -96,18 +96,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.53}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 3, y: 3}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.88, y: 1.86}
   m_EdgeRadius: 0
 --- !u!95 &881514103494841165
 Animator:
@@ -128,7 +128,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &39873776
+--- !u!114 &7313377052321567492
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -137,19 +137,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 881514103494841168}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd4870c3bf702574eb2fce5ea35aff69, type: 3}
+  m_Script: {fileID: 11500000, guid: be244411767abdd4c977439082ea726d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dead: 0
   currentHP: 0
   maxHP: 0
   parryable: 0
+  direction: 0
   rendererHPBar: {fileID: 0}
   rendererHPFill: {fileID: 0}
   pYellowWarning: {fileID: 0}
   pRedWarning: {fileID: 0}
-  currency: {fileID: 0}
-  HPPickup: {fileID: 0}
+  currency: {fileID: 338368309248678210, guid: d6324fbbf6cdd7f4fb4131545d93f055, type: 3}
+  HPPickup: {fileID: 8659057177738005108, guid: 5609f170b5149924c8ab3db1deee0de2,
+    type: 3}
   warningPoints: []
   hitboxAttacks: []
   hitboxAttackFall: {fileID: 0}
+  canDie: 0

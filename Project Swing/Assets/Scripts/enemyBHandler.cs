@@ -40,7 +40,9 @@ public class enemyBHandler : enemyHandler
 
         damage.Add(4);
         damage.Add(3);
-        
+
+        material = 0;
+
         soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Enemy/Egg_big_attack");
         soundDeath = FMODUnity.RuntimeManager.CreateInstance("event:/Enemy/Egg_big_death");
         soundFall = FMODUnity.RuntimeManager.CreateInstance("event:/Ligth_warning");
@@ -166,6 +168,7 @@ public class enemyBHandler : enemyHandler
             }
             else if (attackState == 6)
             {
+                attackHitting = false;
                 attackActive = false;
                 hitboxAttacks[0].enabled = false;
                 localSpriteRenderer.sprite = spriteIdle;
@@ -176,7 +179,7 @@ public class enemyBHandler : enemyHandler
             }
         }
 
-        if (mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
+        if (attackState > 0 && mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
         {
             parryable = false;
             attackHitting = true;
@@ -221,6 +224,7 @@ public class enemyBHandler : enemyHandler
             }
             else if (attackState == 4)
             {
+                attackHitting = false;
                 attackActive = false;
                 hitboxAttacks[1].enabled = false;
                 localSpriteRenderer.sprite = spriteIdle;
@@ -231,7 +235,7 @@ public class enemyBHandler : enemyHandler
             }
         }
 
-        if (mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
+        if (attackState > 0 && mainHandler.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
         {
             parryable = false;
             attackHitting = true;

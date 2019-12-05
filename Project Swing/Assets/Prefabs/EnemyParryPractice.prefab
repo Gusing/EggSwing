@@ -44,7 +44,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.77, y: -0.23}
+  m_Offset: {x: -1.45, y: -0.23}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -55,7 +55,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.8, y: 0.8}
+  m_Size: {x: 0.91, y: 0.8}
   m_EdgeRadius: 0
 --- !u!1 &1198538958262342
 GameObject:
@@ -151,7 +151,7 @@ GameObject:
   - component: {fileID: 61714063571005678}
   - component: {fileID: 50898442520606196}
   - component: {fileID: 483239405}
-  - component: {fileID: 2782308306312161746}
+  - component: {fileID: 1231770290483598874}
   m_Layer: 0
   m_Name: EnemyParryPractice
   m_TagString: enemy
@@ -215,7 +215,7 @@ SpriteRenderer:
   m_SortingLayerID: -1211973967
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 2d2b06cbdf059274ca50d773cd541d17, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8fa2341096f101f4aa9133a14c903a1f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -243,7 +243,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2, y: 2}
+    oldSize: {x: 4.1, y: 3}
     newSize: {x: 1, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -292,7 +292,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &2782308306312161746
+--- !u!114 &1231770290483598874
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -301,13 +301,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1386477621940742}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06bce6b43b56bf143834d6d4027cdb18, type: 3}
+  m_Script: {fileID: 11500000, guid: 09032755be8de684d8292b85031b0623, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dead: 0
-  currentHP: 20
-  maxHP: 20
+  currentHP: 0
+  maxHP: 0
   parryable: 0
+  direction: 0
+  material: 0
   rendererHPBar: {fileID: 212215759497151352}
   rendererHPFill: {fileID: 212720327578161122}
   pYellowWarning: {fileID: 198766640297364512, guid: cd7ee2537b3a3154e9be53fa1eabfbe9,
@@ -322,16 +324,6 @@ MonoBehaviour:
   hitboxAttacks:
   - {fileID: 61453437351561534}
   hitboxAttackFall: {fileID: 5536400277811778534}
-  spriteIdle: {fileID: 0}
-  spriteStomp1: {fileID: 0}
-  spriteStomp2: {fileID: 0}
-  spriteDead: {fileID: 0}
-  spriteDead2: {fileID: 0}
-  spriteDead3: {fileID: 0}
-  spriteDead4: {fileID: 0}
-  spriteAttackPre: {fileID: 0}
-  spriteAttackActive: {fileID: 0}
-  spriteHitstun: {fileID: 0}
 --- !u!1 &1535724378489824
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,7 +349,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1535724378489824}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.4, y: 0.55, z: 0}
+  m_LocalPosition: {x: 1.3, y: -0.52, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4627536998785070}

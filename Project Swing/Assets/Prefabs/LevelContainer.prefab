@@ -107,6 +107,7 @@ GameObject:
   - component: {fileID: 7946386013091829295}
   - component: {fileID: 601096343736396820}
   - component: {fileID: 5440010265763897901}
+  - component: {fileID: 7143519578903140072}
   m_Layer: 5
   m_Name: txtBPM
   m_TagString: Untagged
@@ -130,7 +131,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -210, y: -38}
+  m_AnchoredPosition: {x: -210, y: -33.36}
   m_SizeDelta: {x: 137.6, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7946386013091829295
@@ -154,7 +155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.13372105, g: 0.23584908, b: 0.130162, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -187,6 +188,21 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!114 &7143519578903140072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472304891925731162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &2132888670738961497
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,15 +354,18 @@ MonoBehaviour:
   imgBg: {fileID: 1765172047853534361}
   bgImages:
   - {fileID: 21300000, guid: 9040ee40cea9f64439a4eacb7a01b5af, type: 3}
+  - {fileID: 21300000, guid: 9040ee40cea9f64439a4eacb7a01b5af, type: 3}
   - {fileID: 21300000, guid: e17de74901d786a449bdd7b57e4c0c7d, type: 3}
   - {fileID: 21300000, guid: e68ad669c04341748b42b5e07f32e2ab, type: 3}
   - {fileID: 21300000, guid: 055d8267fc7c66b42afd0847390e4558, type: 3}
   levelNames:
-  - MOON
-  - SWING
-  - PIRATE
-  - HELL
+  - Sunshine
+  - Moon
+  - Swing
+  - Pirate
+  - Hell
   levelBPMs:
+  - 142
   - 100
   - 128
   - 148
@@ -419,7 +438,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: f9dcb4c9976b62041a0ced067636f349, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 788e9a75983673d478f4c75d47f5f250, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -603,6 +622,7 @@ GameObject:
   - component: {fileID: 4905792152573220126}
   - component: {fileID: 3808831904572543122}
   - component: {fileID: 842587999390638943}
+  - component: {fileID: 5546730111959802114}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -650,7 +670,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.11449803, g: 0.2924528, b: 0.1300147, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -671,6 +691,21 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Moon
+--- !u!114 &5546730111959802114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6083395704896223470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &7345925374211475496
 GameObject:
   m_ObjectHideFlags: 0

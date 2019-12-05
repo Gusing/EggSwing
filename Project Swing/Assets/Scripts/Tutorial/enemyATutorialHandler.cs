@@ -142,6 +142,36 @@ public class enemyATutorialHandler : enemyHandler {
         base.UpdateMovement();
     }
 
+    protected override void Parried()
+    {
+        actionTimer += Time.deltaTime;
+
+        velX = 0;
+
+        if (actionTimer >= parryTime)
+        {
+            actionTimer = 0;
+            busy = false;
+            parried = false;
+
+            // turn around
+            if (!player.GetComponent<playerHandlerTutorial>().dead)
+            {
+                hitboxBody.offset = new Vector2(Mathf.Abs(hitboxBody.offset.x) * direction, hitboxBody.offset.y);
+                if (player.transform.position.x < transform.position.x)
+                {
+                    direction = LEFT;
+                    localSpriteRenderer.flipX = false;
+                }
+                else
+                {
+                    direction = RIGHT;
+                    localSpriteRenderer.flipX = true;
+                }
+            }
+        }
+    }
+
     void AttackA()
     {
         // stop if hitstunned
@@ -211,7 +241,7 @@ public class enemyATutorialHandler : enemyHandler {
             }
         }
         
-        if (mainHandlerTutorial.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
+        if (attackState > 0 && mainHandlerTutorial.currentState == NOTBEAT && attackHitboxActive && !attackHitting)
         {
             parryable = false;
             attackHitting = true;

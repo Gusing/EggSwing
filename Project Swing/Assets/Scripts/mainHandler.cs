@@ -10,9 +10,6 @@ using System.Text;
 using UnityEngine.Analytics;
 using UnityEngine.EventSystems;
 
-
-
-
 public class mainHandler : MonoBehaviour {
 
     [Header("_____Level Data_____")]
@@ -28,6 +25,9 @@ public class mainHandler : MonoBehaviour {
     public GameObject enemyB;
     public GameObject enemyC;
     public GameObject enemyD;
+    public GameObject enemyBoxLight;
+    public GameObject enemyBoxHeavy;
+    public GameObject enemyParryPractice;
     public GameObject enemyBird;
     public GameObject currencyObject;
     
@@ -37,8 +37,10 @@ public class mainHandler : MonoBehaviour {
     public Sprite comboHolder;
     public Sprite comboBasicHeavy;
     public Sprite comboBasicLight;
-    public Sprite spriteControlsOpen;
     public Sprite spriteControlsClosed;
+    public Sprite spriteControlsXbox;
+    public Sprite spriteControlsPS;
+    public Sprite spriteControlsKeyboard;
 
     //--------------------------------local objects
     Camera levelCamera;
@@ -110,10 +112,12 @@ public class mainHandler : MonoBehaviour {
     EnemySpawn[] level2Spawn;
     EnemySpawn[] level3Spawn;
     EnemySpawn[] level4Spawn;
+    EnemySpawn[] level5Spawn;
     EnemySpawn[] level1HardSpawn;
     EnemySpawn[] level2HardSpawn;
     EnemySpawn[] level3HardSpawn;
     EnemySpawn[] level4HardSpawn;
+    EnemySpawn[] level5HardSpawn;
     EnemySpawn[] testSpawn;
     EnemySpawn[] currentLevelSpawn;
     float[] endWaitTimer;
@@ -122,7 +126,7 @@ public class mainHandler : MonoBehaviour {
     public List<int[]> birdRankLimits;
     float[] songLengths;
     float[] hardLevelTimeLimits;
-    float currentTimeLimit;
+    public float currentTimeLimit;
     int[] numBirds;
     
     List<GameObject> enemies;
@@ -166,13 +170,16 @@ public class mainHandler : MonoBehaviour {
     [HideInInspector] public int[] rankRecord;
     [HideInInspector] public int[] rankBirdRecord;
     [HideInInspector] public int[] rankHardRecord;
-    [HideInInspector] int currentMaxStreak;
+    [HideInInspector] public int currentMaxStreak;
     [HideInInspector] public int currency;
     [HideInInspector] public bool[] itemBought;
     [HideInInspector] public bool[] itemActive;
     [HideInInspector] public int lastMode;
     [HideInInspector] public bool seenTutorial;
     [HideInInspector] public bool seenBirdTutorial;
+    [HideInInspector] public int inputSelected;
+    public bool gotNewRecord;
+    public int currentRecord;
     
     //---------------------------------audio
     FMOD.Studio.EventInstance soundMusic;
@@ -227,6 +234,8 @@ public class mainHandler : MonoBehaviour {
             txtRecordAnnouncement = GameObject.Find("RecordAnnouncement").GetComponent<Text>();
         }
 
+        timerBox = GameObject.Find("TimerBox").GetComponent<timerBox>();
+
         // practice mode object references
         if (level == -1)
         {
@@ -237,7 +246,6 @@ public class mainHandler : MonoBehaviour {
         else
         {
             //txtCurrency = GameObject.Find("txtCurrency").GetComponent<Text>();
-            timerBox = GameObject.Find("TimerBox").GetComponent<timerBox>();
             maskProgressFill = GameObject.Find("ProgressBarMask").GetComponent<SpriteMask>();
             rendererProgressMarker = GameObject.Find("ProgressBarMarker").GetComponent<SpriteRenderer>();
             //txtVictory = GameObject.Find("txtVictory").GetComponent<Text>();
@@ -300,6 +308,7 @@ public class mainHandler : MonoBehaviour {
         lastMode = data.lastMode;
         seenTutorial = data.seenTutorial;
         seenBirdTutorial = data.seenBirdTutorial;
+        inputSelected = data.inputSelected;
 
         player.Init(currency);
         
@@ -318,6 +327,7 @@ public class mainHandler : MonoBehaviour {
         initialCurrency = player.currentCurrency;
         birdLevelFinished = false;
         normalLevelFinished = false;
+        gotNewRecord = false;
         //player.Reset();
 
         // load practice
@@ -345,21 +355,37 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(3, new GameObject[] { enemyA }, new float[] { 10 * RandDirection() }, new bool[] { false })
         };
 
-        level1Spawn = new EnemySpawn[] {
+        level1Spawn = new EnemySpawn[]
+        {
+            new EnemySpawn(2f, new GameObject[] { enemyBoxLight }, new float[] { 2.5f }, new bool[] { false }, -1, true ),
+            new EnemySpawn(0f, new GameObject[] { enemyA }, new float[] { -13f }, new bool[] { false, false }, 0, false ),
+            new EnemySpawn(0f, new GameObject[] { enemyA }, new float[] { 10 }, new bool[] { false } ),
+            new EnemySpawn(3f, new GameObject[] { enemyParryPractice }, new float[] { -4 }, new bool[] { false } ),
+            new EnemySpawn(3f, new GameObject[] { enemyBoxHeavy }, new float[] { 3f }, new bool[] { false }, 1, true ),
+            new EnemySpawn(0f, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false } ),
+            new EnemySpawn(3f, new GameObject[] { enemyBoxLight }, new float[] { 4 }, new bool[] { false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyBoxLight }, new float[] { 0 }, new bool[] { false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyBoxLight }, new float[] { -4 }, new bool[] { false } ),
+            new EnemySpawn(3f, new GameObject[] { enemyA }, new float[] { 10 }, new bool[] { false }, 1 ),
+            new EnemySpawn(2f, new GameObject[] { enemyBoxHeavy, enemyBoxHeavy }, new float[] { -2.5f, 2.5f }, new bool[] { false, false }, 0, true ),
+            new EnemySpawn(0f, new GameObject[] { enemyA, enemyA }, new float[] { -10f, 10f }, new bool[] { false, false } ),
+        };
+
+        level2Spawn = new EnemySpawn[] {
             new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 }, new bool[] { false }, 0 ),
             new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false }),
             new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { 10 }, new bool[] { false }),
             new EnemySpawn(2, new GameObject[] { enemyA }, new float[] { 0 }, new bool[] { true }, 1),
-            new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }, new bool[] { false, false }, 0),
+            //new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }, new bool[] { false, false }, 0),
             new EnemySpawn(0, new GameObject[] { enemyB }, new float[] { 10 }, new bool[] { false }, 0),
-            new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }, new bool[] { false, false }),
-            new EnemySpawn(5, new GameObject[] { enemyA, enemyA }, new float[] { -2, 2 }, new bool[] { true, true }, 1),
+            new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { -10, 10 }, new bool[] { false, false }, 1),
+            //new EnemySpawn(5, new GameObject[] { enemyA, enemyA }, new float[] { -2, 2 }, new bool[] { true, true }, 1),
             new EnemySpawn(0, new GameObject[] { enemyB, enemyA }, new float[] { -10, 7 }, new bool[] { false, true }),
             new EnemySpawn(6, new GameObject[] { enemyA }, new float[] { -10 }, new bool[] { false }, 0),
             new EnemySpawn(0, new GameObject[] { enemyB, enemyB }, new float[] { -10, 10 }, new bool[] { false, false })
         };
         
-        level2Spawn = new EnemySpawn[] {
+        level3Spawn = new EnemySpawn[] {
             new EnemySpawn(7, new GameObject[] { enemyA, enemyB }, new float[] { -8, 12 }, new bool[] { true, false }),
             new EnemySpawn(8, new GameObject[] { enemyB, enemyA }, new float[] { -12, 7 }, new bool[] { false, true }, 0),
             new EnemySpawn(0, new GameObject[] { enemyA }, new float[] { 0 }, new bool[] { true }),
@@ -377,7 +403,7 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(0, new GameObject[] { enemyA, enemyA }, new float[] { -11, 11}, new bool[] { false, false }),
         };
         
-        level3Spawn = new EnemySpawn[] {
+        level4Spawn = new EnemySpawn[] {
             new EnemySpawn(10, new GameObject[] { enemyC, enemyC }, new float[] { -11, 11 }, new bool[] { false, false }, 1),
             new EnemySpawn(2, new GameObject[] { enemyA, enemyA }, new float[] { -2, 2 }, new bool[] { true, true }),
             new EnemySpawn(4, new GameObject[] { enemyA, enemyB }, new float[] { -6, 12 }, new bool[] { true, false }, 1),
@@ -391,7 +417,7 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(0, new GameObject[] { enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA, enemyA }, new float[] { 10, 11, 12, 13, 14, 15, -10, -11, -12, -13, -14, -15, 0 }, new bool[] { false, false,false,false,false,false,false,false,false,false,false,false,true })
         };
 
-        level4Spawn = new EnemySpawn[] {
+        level5Spawn = new EnemySpawn[] {
             new EnemySpawn(8, new GameObject[] { enemyA, enemyC }, new float[] { -4, 11 }, new bool[] { true, false }),
             new EnemySpawn(5, new GameObject[] { enemyA, enemyA }, new float[] { -11, -13 }, new bool[] { false, false }),
             new EnemySpawn(2, new GameObject[] { enemyA, enemyA }, new float[] { 11, 13 }, new bool[] { false, false }),
@@ -410,7 +436,33 @@ public class mainHandler : MonoBehaviour {
         };
 
         level1HardSpawn = new EnemySpawn[] {
-            new EnemySpawn(5, new GameObject[] { enemyC, enemyC, enemyB }, new float[] { -7, 7, 0 }, new bool[] { true, true, true } ),
+            new EnemySpawn(2f, new GameObject[] { enemyBoxLight, enemyBoxLight, enemyBoxLight }, new float[] { -8, -1, 6  }, new bool[] { false, false, false } ),
+            new EnemySpawn(1f, new GameObject[] { enemyBoxHeavy, enemyBoxHeavy, enemyBoxHeavy }, new float[] { -5, 3, 8  }, new bool[] { false, false, false } ),
+            new EnemySpawn(1, new GameObject[] { enemyA, enemyD, enemyA, enemyD }, new float[] { -10, -14, 10, 14 }, new bool[] { false, false, false, false } ),
+            new EnemySpawn(4, new GameObject[] { enemyB, enemyB }, new float[] { -1, 1 }, new bool[] { true, true }, 1 ),
+            new EnemySpawn(0, new GameObject[] { enemyParryPractice }, new float[] { -6 }, new bool[] { false } ),
+            new EnemySpawn(0.1f, new GameObject[] { enemyC }, new float[] { -3 }, new bool[] { true } ),
+            new EnemySpawn(0.2f, new GameObject[] { enemyParryPractice }, new float[] { 2 }, new bool[] { false } ),
+            new EnemySpawn(1.3f, new GameObject[] { enemyParryPractice }, new float[] { 5 }, new bool[] { false } ),
+            new EnemySpawn(0.1f, new GameObject[] { enemyC }, new float[] { 0 }, new bool[] { true } ),
+            new EnemySpawn(0.8f, new GameObject[] { enemyParryPractice }, new float[] { -1 }, new bool[] { false } ),
+            new EnemySpawn(0.5f, new GameObject[] { enemyParryPractice }, new float[] { -8 }, new bool[] { false } ),
+            new EnemySpawn(1.7f, new GameObject[] { enemyParryPractice }, new float[] { 8.5f }, new bool[] { false } ),
+            new EnemySpawn(0.2f, new GameObject[] { enemyA, enemyA, enemyA, enemyA }, new float[] { -10, -14, 10, 14 }, new bool[] { false, false, false, false }, 0 ),
+            new EnemySpawn(0f, new GameObject[] { enemyBoxLight }, new float[] { -8f }, new bool[] { false } ),
+            new EnemySpawn(0.211f, new GameObject[] { enemyBoxLight }, new float[] { -6f }, new bool[] { false } ),
+            new EnemySpawn(0.211f, new GameObject[] { enemyBoxLight }, new float[] { -4f }, new bool[] { false } ),
+            new EnemySpawn(0.211f, new GameObject[] { enemyBoxLight }, new float[] { -2f }, new bool[] { false } ),
+            new EnemySpawn(0.211f, new GameObject[] { enemyBoxLight }, new float[] { 0f }, new bool[] { false } ),
+            new EnemySpawn(0.211f, new GameObject[] { enemyBoxLight }, new float[] { 2f }, new bool[] { false } ),
+            new EnemySpawn(0.211f, new GameObject[] { enemyBoxLight }, new float[] { 4f }, new bool[] { false } ),
+            new EnemySpawn(0.211f, new GameObject[] { enemyBoxLight }, new float[] { 6f }, new bool[] { false } ),
+            new EnemySpawn(0.211f, new GameObject[] { enemyBoxLight }, new float[] { 8f }, new bool[] { false } ),
+
+        };
+
+        level2HardSpawn = new EnemySpawn[] {
+            new EnemySpawn(5, new GameObject[] { enemyC, enemyC, enemyB }, new float[] { -7, 7, 0.2f }, new bool[] { true, true, true } ),
             new EnemySpawn(3, new GameObject[] { enemyD, enemyD }, new float[] { -12, 12 }, new bool[] { false, false } ),
             new EnemySpawn(3, new GameObject[] { enemyB }, new float[] { -4 }, new bool[] { true } ),
             new EnemySpawn(2, new GameObject[] { enemyC }, new float[] { 2 }, new bool[] { true }, 2),
@@ -428,7 +480,7 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(0, new GameObject[] { enemyC, enemyC,  }, new float[] { -1, 1 }, new bool[] { true, true } ),
         };
 
-        level2HardSpawn = new EnemySpawn[] {
+        level3HardSpawn = new EnemySpawn[] {
             new EnemySpawn(7, new GameObject[] { enemyD, enemyD }, new float[] { -12, 6 }, new bool[] { false, true } ),
             new EnemySpawn(3, new GameObject[] { enemyC }, new float[] { 12 }, new bool[] { false } ),
             new EnemySpawn(2, new GameObject[] { enemyD }, new float[] { -2 }, new bool[] { true } ),
@@ -462,7 +514,7 @@ public class mainHandler : MonoBehaviour {
 
         };
 
-        level3HardSpawn = new EnemySpawn[] {
+        level4HardSpawn = new EnemySpawn[] {
             new EnemySpawn(10, new GameObject[] { enemyB, enemyB }, new float[] { -4, 4 }, new bool[] { true, true } ),
             new EnemySpawn(4, new GameObject[] { enemyB, enemyB }, new float[] { -7, 7 }, new bool[] { true, true } ),
             new EnemySpawn(4, new GameObject[] { enemyB, enemyB }, new float[] { -10, 10 }, new bool[] { true, true }, 1 ),
@@ -481,7 +533,7 @@ public class mainHandler : MonoBehaviour {
             new EnemySpawn(1, new GameObject[] { enemyB }, new float[] { 0 }, new bool[] { true } ),
         };
 
-        level4HardSpawn = new EnemySpawn[] {
+        level5HardSpawn = new EnemySpawn[] {
             new EnemySpawn(8, new GameObject[] { enemyC, enemyB, enemyA }, new float[] { 8, -3, 12 }, new bool[] { true, true, false } ),
             new EnemySpawn(3, new GameObject[] { enemyA, enemyD, enemyA }, new float[] { 3, -6, -12 }, new bool[] { true, true, false } ),
             new EnemySpawn(3, new GameObject[] { enemyD, enemyD, enemyA }, new float[] { 1, -9, 12 }, new bool[] { true, true, false } ),
@@ -529,6 +581,7 @@ public class mainHandler : MonoBehaviour {
 
         hardLevelTimeLimits = new float[] {
             10,
+            85,
             80,
             105,
             93,
@@ -547,10 +600,11 @@ public class mainHandler : MonoBehaviour {
         // load spawn
         if (gameMode == NORMAL)
         {
-            if (level == 1) currentLevelSpawn = testSpawn;
-            if (level == 2) currentLevelSpawn = testSpawn;
+            if (level == 1) currentLevelSpawn = level1Spawn;
+            if (level == 2) currentLevelSpawn = level2Spawn;
             if (level == 3) currentLevelSpawn = level3Spawn;
             if (level == 4) currentLevelSpawn = level4Spawn;
+            if (level == 5) currentLevelSpawn = level5Spawn;
             if (level == 10) currentLevelSpawn = testSpawn;
             if (level == 100)
             {
@@ -568,6 +622,7 @@ public class mainHandler : MonoBehaviour {
             if (level == 2) currentLevelSpawn = level2HardSpawn;
             if (level == 3) currentLevelSpawn = level3HardSpawn;
             if (level == 4) currentLevelSpawn = level4HardSpawn;
+            if (level == 5) currentLevelSpawn = level5HardSpawn;
         }
 
         for (int i = 0; i < currentLevelSpawn.Length; i++)
@@ -583,7 +638,8 @@ public class mainHandler : MonoBehaviour {
         // song lengths
         songLengths = new float[] {
             1f,
-            129.6f,
+            55.7f,
+            91.2f,
             127.3f,
             129.2f,
             64.4f
@@ -592,6 +648,7 @@ public class mainHandler : MonoBehaviour {
         // rank data
         levelRankLimits = new List<int[]>() {
             new int[] { 10, 20, 30, 40, 50 },
+            new int[] { 2000, 3200, 3700, 4100, 5500 },
             new int[] { 3000, 4200, 5500, 7000, 10000 },
             new int[] { 5000, 7000, 9000, 11500, 14000 },
             new int[] { 8000, 11000, 14000, 17000, 22000 },
@@ -600,7 +657,8 @@ public class mainHandler : MonoBehaviour {
 
         hardRankLimits = new List<int[]>() {
             new int[] { 10, 20, 30, 40, 50 },
-            new int[] { 3000, 5000, 7000, 10000, 15000 },
+            new int[] { 8000, 10000, 1100, 13000, 15000 },
+            new int[] { 5000, 6500, 7000, 10000, 15000 },
             new int[] { 9000, 14000, 17000, 20000, 25000 },
             new int[] { 8000, 11000, 14500, 18000, 23500 },
             new int[] { 20000, 26000, 33000, 38000, 50000 },
@@ -608,13 +666,14 @@ public class mainHandler : MonoBehaviour {
 
         birdRankLimits = new List<int[]>() {
             new int[] { 10, 20, 30, 40, 50 },
-            CalculateRankLimits(100),
+            CalculateRankLimits(45),
+            CalculateRankLimits(63),
             CalculateRankLimits(146),
             CalculateRankLimits(178),
             CalculateRankLimits(127),
         };
 
-        if (!(gameMode == HARD))
+        if (gameMode != HARD)
         {
             timerBox.gameObject.SetActive(false);
         }
@@ -632,9 +691,10 @@ public class mainHandler : MonoBehaviour {
         {
             if (level < 100 && level > 0) currentRankLimits = hardRankLimits[level];
         }
+
         // play ambience
-        if (level == 2) soundAmbCafe.start();
-        if (level == 3) soundAmbSea.start();
+        if (level == 3) soundAmbCafe.start();
+        if (level == 4) soundAmbSea.start();
 
         resultScreen.gameObject.SetActive(false);
 
@@ -645,6 +705,7 @@ public class mainHandler : MonoBehaviour {
     void InitPracticeMode()
     {
         soundPracticeSongs = new List<FMOD.Studio.EventInstance>();
+        soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/FirstHappy"));
         soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/SpaceBagle"));
         soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/Elextroswing"));
         soundPracticeSongs.Add(FMODUnity.RuntimeManager.CreateInstance("event:/Music/PirateBoy"));
@@ -658,11 +719,11 @@ public class mainHandler : MonoBehaviour {
 
         soundAvailableracticeSongs = new List<FMOD.Studio.EventInstance>();
 
-        practiceSongNames = new List<string> { "Moon", "Swing", "Pirate", "Hell" };
+        practiceSongNames = new List<string> { "Sunshine", "Moon", "Swing", "Pirate", "Hell" };
 
         availablePracticeSongNames = new List<string>();
 
-        practiceSongBPM = new List<int> { 100, 128, 148, 108 };
+        practiceSongBPM = new List<int> { 142, 100, 128, 148, 108 };
 
         availablePracticeSongBPM = new List<int>();
 
@@ -786,8 +847,6 @@ public class mainHandler : MonoBehaviour {
             {
                 offBeat = false;
                 currentState = BEAT;
-                //rendererIndicator.sprite = spriteIndicatorGreen;
-
             }
         }
         return FMOD.RESULT.OK;
@@ -824,13 +883,6 @@ public class mainHandler : MonoBehaviour {
             {
                 // send endless analytics
                 AnalyticsEvent.LevelComplete("level_100" + "_Mode_" + gameMode, 100, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_survived", Mathf.Round(levelTimer) } });
-
-                if (Mathf.Round(levelTimer) > endlessRecord)
-                {
-                    endlessRecord = (int)Mathf.Round(levelTimer);
-                    txtRecordAnnouncement.enabled = true;
-                }
-                if (currentMaxStreak > streakLevelEndlessRecord) streakLevelEndlessRecord = currentMaxStreak;
             }
             
             for (int i = 0; i < enemies.Count; i++)
@@ -848,6 +900,7 @@ public class mainHandler : MonoBehaviour {
 
             gameOver = true;
 
+            print("res");
             // show results screen
             StartCoroutine(ShowResultScreen(1.5f, false));
         }
@@ -901,7 +954,7 @@ public class mainHandler : MonoBehaviour {
             HUDTurnedOff = true;
         }
 
-        if (Input.GetButtonDown("Cancel"))
+        if (Input.GetButtonDown("Cancel") && !normalLevelFinished && !birdLevelFinished)
         {
             QuitLevel("MenuScene");
         }
@@ -972,20 +1025,6 @@ public class mainHandler : MonoBehaviour {
                 soundMusic.setParameterValue("Clock", 1);
             }
 
-            if (currentTimeLimit <= 30)
-            {
-                timerBox.ShakeBox();
-                timerBox.FadeTextToRed();
-            }
-            if (currentTimeLimit < 20)
-            {
-                timerBox.FluctuateSize();
-            }
-            if (currentTimeLimit < 10)
-            {
-                timerBox.FluctuatePosition();
-            }
-
             if (currentTimeLimit <= 0)
             {
                 player.TakeDamage(999, 0, true);
@@ -1017,31 +1056,6 @@ public class mainHandler : MonoBehaviour {
 
                 if (tAllDead)
                 {
-                    // update save data
-                    if (gameMode == NORMAL)
-                    {
-                        if (currentMaxStreak > streakRecord[level]) streakRecord[level] = currentMaxStreak;
-                        clearedLevel[level] = true;
-                        if (player.currentScore > scoreRecord[level]) scoreRecord[level] = player.currentScore;
-                        if (player.currentRank > rankRecord[level]) rankRecord[level] = player.currentRank;
-
-                        if (clearedLevel[1]) { unlockedLevel[2] = true; unlockedLevel[3] = true; }
-                        if (clearedLevel[2] && clearedLevel[3]) unlockedLevel[4] = true;
-
-                        if ((clearedLevel[2] || clearedLevel[3]) && (clearedBirdLevel[2] || clearedBirdLevel[3])) unlockedHardLevel[1] = true;
-                    }
-                    if (gameMode == HARD)
-                    {
-                        if (currentTimeLimit > timeRecord[level]) timeRecord[level] = Mathf.Round(currentTimeLimit * 100f) / 100f;
-                        clearedHardLevel[level] = true;
-                        if (player.currentScore > scoreHardRecord[level]) scoreHardRecord[level] = player.currentScore;
-                        if (player.currentRank > rankHardRecord[level]) rankHardRecord[level] = player.currentRank;
-
-                        if (clearedHardLevel[1]) unlockedHardLevel[2] = true;
-                        if (clearedHardLevel[2]) unlockedHardLevel[3] = true;
-                        if (clearedHardLevel[3]) unlockedHardLevel[4] = true;
-                    }
-                    
                     // bonus currency
                     int currAmount = 20 + player.currentRank * 5;
                     currAmount = Random.Range(currAmount - 10, currAmount + 10);
@@ -1074,7 +1088,13 @@ public class mainHandler : MonoBehaviour {
                 // next spawn after time
                 for (int i = 0; i < currentLevelSpawn[currentSpawn].enemies.Length; i++)
                 {
-                    enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(currentLevelSpawn[currentSpawn].xPos[i], 0), Quaternion.identity));
+                    if (currentLevelSpawn[currentSpawn].relativeToPlayer)
+                    {
+                        float tXPost = player.transform.position.x + currentLevelSpawn[currentSpawn].xPos[i];
+                        if (tXPost > 10 || tXPost < -10) enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(0, 0), Quaternion.identity));
+                        else enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(player.transform.position.x + currentLevelSpawn[currentSpawn].xPos[i], 0), Quaternion.identity));
+                    }
+                    else enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(currentLevelSpawn[currentSpawn].xPos[i], 0), Quaternion.identity));
                     enemies[enemies.Count - 1].GetComponent<enemyHandler>().Init(currentLevelSpawn[currentSpawn].fallFromAbove[i]);
                 }
                 if (currentLevelSpawn[currentSpawn].waitForDeath) waitingForDeath = true;
@@ -1113,17 +1133,6 @@ public class mainHandler : MonoBehaviour {
                 tempObject.GetComponent<currencyHandler>().Init(false, 0);
             }
             
-            // update save data
-            if (currentMaxStreak > comboRecord[level]) comboRecord[level] = currentMaxStreak;
-            clearedBirdLevel[level] = true;
-            if (player.currentScore > scoreBirdRecord[level]) scoreBirdRecord[level] = player.currentScore;
-            if (player.currentRank > rankBirdRecord[level]) rankBirdRecord[level] = player.currentRank;
-
-            if (clearedBirdLevel[1]) { unlockedBirdLevel[2] = true; unlockedBirdLevel[3] = true; }
-            if (clearedBirdLevel[2] && clearedBirdLevel[3]) unlockedBirdLevel[4] = true;
-
-            if ((clearedLevel[2] || clearedLevel[3]) && (clearedBirdLevel[2] || clearedBirdLevel[3])) unlockedHardLevel[1] = true;
-            
             // send analytics
             AnalyticsEvent.LevelComplete("Level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", comboRecord[level] }, { "rank", player.currentRank } });
 
@@ -1134,7 +1143,6 @@ public class mainHandler : MonoBehaviour {
 
             // show results screen
             StartCoroutine(ShowResultScreen(2f, true));
-            
         }
 
         // endless mode
@@ -1146,13 +1154,12 @@ public class mainHandler : MonoBehaviour {
                 {
                     // generate new spawn
                     nextSpawn = levelTimer;
-                    nextSpawn += 18 - (Mathf.Clamp(14 * (levelTimer / 300), 0, 16));
+                    nextSpawn += 11 - (Mathf.Clamp(14 * (levelTimer / 300), 0, 16));
                     int tDistance = 0;
                     print("levelTimer: " + levelTimer + ", nextSpawn: " + nextSpawn);
                     for (int i = 0; i < 2 + levelTimer / 75; i++)
                     {
                         bool tAbove = false;
-                        print("spawn");
                         if (Random.value > 0.20f)
                         {
                             if (Random.value < 0.3f)
@@ -1201,7 +1208,12 @@ public class mainHandler : MonoBehaviour {
     public void ToggleTrainingControls()
     {
         if (trainingControlsOpen) imgControlsTraining.sprite = spriteControlsClosed;
-        else imgControlsTraining.sprite = spriteControlsOpen;
+        else
+        {
+            if (sceneSelectionHandler.Instance.inputIcons == 0) imgControlsTraining.sprite = spriteControlsXbox;
+            if (sceneSelectionHandler.Instance.inputIcons == 1) imgControlsTraining.sprite = spriteControlsPS;
+            if (sceneSelectionHandler.Instance.inputIcons == 2) imgControlsTraining.sprite = spriteControlsKeyboard;
+        }
         trainingControlsOpen = !trainingControlsOpen;
     }
 
@@ -1222,8 +1234,8 @@ public class mainHandler : MonoBehaviour {
         if (victoryTimer == 0) AnalyticsEvent.LevelQuit("level_" + level + "_Mode_" + gameMode, level, new Dictionary<string, object> { { "max_streak", currentMaxStreak }, { "time_alive", Mathf.Round(levelTimer) } });
         enemiesDead = 0;
         soundClock.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-        if (level == 2) soundAmbCafe.setParameterValue("End", 1);
-        if (level == 3) soundAmbSea.setParameterValue("End", 1);
+        if (level == 3) soundAmbCafe.setParameterValue("End", 1);
+        if (level == 4) soundAmbSea.setParameterValue("End", 1);
         soundMusic.setCallback(null, 0);
         soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         if (level == -1) soundAvailableracticeSongs[currentSong].stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
@@ -1237,8 +1249,8 @@ public class mainHandler : MonoBehaviour {
 
         soundMusic.setCallback(null, 0);
         soundClock.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-        if (level == 2) soundAmbCafe.setParameterValue("End", 1);
-        if (level == 3) soundAmbSea.setParameterValue("End", 1);
+        if (level == 3) soundAmbCafe.setParameterValue("End", 1);
+        if (level == 4) soundAmbSea.setParameterValue("End", 1);
         soundMusic.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
 
         print("restart level");
@@ -1331,6 +1343,11 @@ public class mainHandler : MonoBehaviour {
         preBeatTime = 60 / (float)bpm - leniency;
     }
 
+    int mod(int x, int m)
+    {
+        return (x % m + m) % m;
+    }
+
     int RandDirection()
     {
         return 1 * (int)Mathf.Pow(-1, Random.Range((int)1, (int)3));
@@ -1361,7 +1378,21 @@ public class mainHandler : MonoBehaviour {
     
     int[] CalculateRankLimits(int nBirds)
     {
+        int origBirds = nBirds;
         int tPScore = 0;
+        int tCount = 0;
+        while (nBirds > 0)
+        {
+            nBirds--;
+            tCount++;
+            if (tCount <= 10) tPScore += 100 * 1;
+            else if (tCount <= 30) tPScore += (int)Mathf.Round(100 * 1.1f);
+            else if (tCount <= 50) tPScore += (int)Mathf.Round(100 * 1.3f);
+            else if (tCount <= 75) tPScore += (int)Mathf.Round(100 * 1.5f);
+            else if (tCount <= 100) tPScore += (int)Mathf.Round(100 * 1.7f);
+            else tPScore += 100 * 2;
+        }
+        /*
         tPScore += 100 * 1 * 10;
         tPScore += (int)Mathf.Round(100 * 1.1f) * 20;
         tPScore += (int)Mathf.Round(100 * 1.3f) * 20;
@@ -1371,32 +1402,102 @@ public class mainHandler : MonoBehaviour {
         tBirds -= 100;
         
         tPScore += 100 * 2 * tBirds;
+        */
         tPScore += 1000;
 
-        //print("score for P: " + tPScore);
+        print("score for P with " + origBirds + " birds: " + tPScore);
 
         return new int[] { (int)(tPScore * 0.25f), (int)(tPScore * 0.5f), (int)(tPScore * 0.7f), (int)(tPScore * 0.8f), tPScore };
-    }
-
-    public bool GetFinishedNormalLevel()
-    {
-        return normalLevelFinished;
-    }
-
-    public bool GetFinishedBirdLevel()
-    {
-        return birdLevelFinished;
     }
 
     public IEnumerator ShowResultScreen(float waitTime, bool victory)
     {
         yield return new WaitForSeconds(waitTime);
 
+        // update save data
+        if (level == 100)
+        {
+            if (Mathf.Round(levelTimer) > endlessRecord)
+            {
+                endlessRecord = (int)Mathf.Round(levelTimer);
+            }
+            if (currentMaxStreak > streakLevelEndlessRecord) streakLevelEndlessRecord = currentMaxStreak;
+        }
+        else if (gameMode == NORMAL && level != 100)
+        {
+            if (normalLevelFinished)
+            {
+                if (currentMaxStreak > streakRecord[level]) streakRecord[level] = currentMaxStreak;
+                clearedLevel[level] = true;
+                if (player.currentScore > scoreRecord[level])
+                {
+                    scoreRecord[level] = player.currentScore;
+                    gotNewRecord = true;
+                }
+
+                if (player.currentRank > rankRecord[level]) rankRecord[level] = player.currentRank;
+
+                if (clearedLevel[1]) unlockedLevel[2] = true;
+                if (clearedLevel[2]) { unlockedLevel[3] = true; unlockedLevel[4] = true; }
+                if (clearedLevel[3] && clearedLevel[4]) unlockedLevel[5] = true;
+
+                if (clearedLevel[1]) unlockedBirdLevel[1] = true;
+                if ((clearedLevel[3] || clearedLevel[4]) && (clearedBirdLevel[3] || clearedBirdLevel[4])) unlockedHardLevel[1] = true;
+            }
+            currentRecord = scoreRecord[level];
+        }
+        if (gameMode == HARD)
+        {
+            if (normalLevelFinished)
+            {
+                if (currentTimeLimit > timeRecord[level]) timeRecord[level] = currentTimeLimit;
+                clearedHardLevel[level] = true;
+                if (player.currentScore > scoreHardRecord[level])
+                {
+                    scoreHardRecord[level] = player.currentScore;
+                    gotNewRecord = true;
+                }
+
+                if (player.currentRank > rankHardRecord[level]) rankHardRecord[level] = player.currentRank;
+
+                if (clearedHardLevel[1]) unlockedHardLevel[2] = true;
+                if (clearedHardLevel[2]) unlockedHardLevel[3] = true;
+                if (clearedHardLevel[3]) unlockedHardLevel[4] = true;
+                if (clearedHardLevel[4]) unlockedHardLevel[5] = true;
+            }
+            currentRecord = scoreHardRecord[level];
+        }
+        if (gameMode == BIRD)
+        {
+            if (birdLevelFinished)
+            {
+                if (currentMaxStreak > comboRecord[level]) comboRecord[level] = currentMaxStreak;
+                clearedBirdLevel[level] = true;
+                if (player.currentScore > scoreBirdRecord[level])
+                {
+                    scoreBirdRecord[level] = player.currentScore;
+                    gotNewRecord = true;
+                }
+
+                if (player.currentRank > rankBirdRecord[level]) rankBirdRecord[level] = player.currentRank;
+
+                if (clearedBirdLevel[1]) unlockedBirdLevel[2] = true;
+                if (clearedBirdLevel[2]) { unlockedBirdLevel[3] = true; unlockedBirdLevel[4] = true; }
+                if (clearedBirdLevel[3] && clearedBirdLevel[4]) unlockedBirdLevel[5] = true;
+
+                if ((clearedLevel[3] || clearedLevel[4]) && (clearedBirdLevel[3] || clearedBirdLevel[4])) unlockedHardLevel[1] = true;
+            }
+            currentRecord = scoreBirdRecord[level];
+        }
+
         currency = player.currentCurrency;
+        inputSelected = sceneSelectionHandler.Instance.inputIcons;
         SaveSystem.SavePlayer(this);
 
         resultScreen.gameObject.SetActive(true);
-        resultScreen.ShowResultScreen(victory);
+        print("object active");
+        resultScreen.ShowResultScreen(victory, level == 100);
+        print("method called");
     }
 
 }

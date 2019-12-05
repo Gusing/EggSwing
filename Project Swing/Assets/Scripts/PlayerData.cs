@@ -30,6 +30,7 @@ public class PlayerData
     public int lastMode;
     public bool seenTutorial;
     public bool seenBirdTutorial;
+    public int inputSelected;
 
     public PlayerData()
     {
@@ -38,23 +39,25 @@ public class PlayerData
 
     public void Init()
     {
-        if (unlockedLevel == null)
+        if (unlockedLevel == null || clearedBirdLevel.Length < 7)
         {
-            clearedLevel = new bool[5];
-            unlockedLevel = new bool[5];
-            clearedBirdLevel = new bool[5];
-            unlockedBirdLevel = new bool[5];
-            clearedHardLevel = new bool[5];
-            unlockedHardLevel = new bool[5];
-            streakRecord = new int[5];
-            comboRecord = new int[5];
-            timeRecord = new float[5];
-            scoreRecord = new int[5];
-            scoreBirdRecord = new int[5];
-            scoreHardRecord = new int[5];
-            rankRecord = new int[5];
-            rankBirdRecord = new int[5];
-            rankHardRecord = new int[5];
+            MonoBehaviour.print("new save");
+
+            clearedLevel = new bool[10];
+            unlockedLevel = new bool[10];
+            clearedBirdLevel = new bool[10];
+            unlockedBirdLevel = new bool[10];
+            clearedHardLevel = new bool[10];
+            unlockedHardLevel = new bool[10];
+            streakRecord = new int[10];
+            comboRecord = new int[10];
+            timeRecord = new float[10];
+            scoreRecord = new int[10];
+            scoreBirdRecord = new int[10];
+            scoreHardRecord = new int[10];
+            rankRecord = new int[10];
+            rankBirdRecord = new int[10];
+            rankHardRecord = new int[10];
             itemBought = new bool[10];
             itemActive = new bool[10];
             lastMode = 0;
@@ -68,20 +71,23 @@ public class PlayerData
             }
 
             unlockedLevel[1] = true;
-            unlockedBirdLevel[1] = true;
             
-            /*
+            
             unlockedHardLevel[1] = true;
             unlockedHardLevel[2] = true;
             unlockedHardLevel[3] = true;
             unlockedHardLevel[4] = true;
+            unlockedHardLevel[5] = true;
             unlockedLevel[2] = true;
             unlockedLevel[3] = true;
             unlockedLevel[4] = true;
+            unlockedLevel[5] = true;
+            unlockedBirdLevel[1] = true;
             unlockedBirdLevel[2] = true;
             unlockedBirdLevel[3] = true;
             unlockedBirdLevel[4] = true;
-            */
+            unlockedBirdLevel[5] = true;
+            
 
             for (int i = 0; i < itemActive.Length; i++)
             {
@@ -123,6 +129,8 @@ public class PlayerData
 
         seenTutorial = handler.seenTutorial;
         seenBirdTutorial = handler.seenBirdTutorial;
+
+        inputSelected = handler.inputSelected;
     }
 
     public PlayerData(shopHandler handler)
@@ -158,6 +166,8 @@ public class PlayerData
 
         seenTutorial = handler.seenTutorial;
         seenBirdTutorial = handler.seenBirdTutorial;
+
+        inputSelected = handler.inputSelected;
     }
 
     public PlayerData(mainHandlerTutorial handler)
@@ -193,10 +203,11 @@ public class PlayerData
 
         seenTutorial = handler.seenTutorial;
         seenBirdTutorial = handler.seenBirdTutorial;
+
+        inputSelected = handler.inputSelected;
     }
 
 }
-
 
 [System.Serializable]
 public class PlayerOptions

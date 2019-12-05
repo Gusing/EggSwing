@@ -922,6 +922,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 303937643396106981}
     m_Modifications:
+    - target: {fileID: 5220646699122805431, guid: b41944c4b6cf8394b970f75c6cc534e1,
+        type: 3}
+      propertyPath: m_Name
+      value: TimerBox
+      objectReference: {fileID: 0}
     - target: {fileID: 4477441230145129895, guid: b41944c4b6cf8394b970f75c6cc534e1,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -980,7 +985,7 @@ PrefabInstance:
     - target: {fileID: 4477441230145129895, guid: b41944c4b6cf8394b970f75c6cc534e1,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 36.46
+      value: 66.45
       objectReference: {fileID: 0}
     - target: {fileID: 4477441230145129895, guid: b41944c4b6cf8394b970f75c6cc534e1,
         type: 3}
@@ -990,7 +995,7 @@ PrefabInstance:
     - target: {fileID: 4477441230145129895, guid: b41944c4b6cf8394b970f75c6cc534e1,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 129.7
       objectReference: {fileID: 0}
     - target: {fileID: 4477441230145129895, guid: b41944c4b6cf8394b970f75c6cc534e1,
         type: 3}
@@ -1037,10 +1042,26 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 5220646699122805431, guid: b41944c4b6cf8394b970f75c6cc534e1,
+    - target: {fileID: 8321674621063953108, guid: b41944c4b6cf8394b970f75c6cc534e1,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.6500015
+      objectReference: {fileID: 0}
+    - target: {fileID: 9022881660429307172, guid: b41944c4b6cf8394b970f75c6cc534e1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2403d19cce6237548919d6eb644a0cfa,
+        type: 3}
+    - target: {fileID: 9022881660429307172, guid: b41944c4b6cf8394b970f75c6cc534e1,
+        type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6521722033125854777, guid: b41944c4b6cf8394b970f75c6cc534e1,
         type: 3}
       propertyPath: m_Name
-      value: TimerBox
+      value: txtTimeLeft
       objectReference: {fileID: 0}
     - target: {fileID: -5596793616639869239, guid: b41944c4b6cf8394b970f75c6cc534e1,
         type: 3}
@@ -1056,16 +1077,6 @@ PrefabInstance:
         type: 3}
       propertyPath: shakeAmount
       value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8321674621063953108, guid: b41944c4b6cf8394b970f75c6cc534e1,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0.6500015
-      objectReference: {fileID: 0}
-    - target: {fileID: 6521722033125854777, guid: b41944c4b6cf8394b970f75c6cc534e1,
-        type: 3}
-      propertyPath: m_Name
-      value: txtTimeLeft
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b41944c4b6cf8394b970f75c6cc534e1, type: 3}
