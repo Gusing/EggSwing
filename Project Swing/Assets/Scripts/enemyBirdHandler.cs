@@ -66,7 +66,12 @@ public class enemyBirdHandler : MonoBehaviour
 
         transform.Translate(new Vector3(0, 0, Random.Range(-0.1f, 0.1f)));
 
+        soundWarning = FMODUnity.RuntimeManager.CreateInstance("event:/Birds/Birds_warning");
+        soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Birds/Birds_attack");
+        soundPlayerHit = FMODUnity.RuntimeManager.CreateInstance("event:/Birds/Birds_player_attack");
+
         type = speedType;
+        print("parameter");
         if (type == RED)
         {
             beatLimit = 5;
@@ -89,13 +94,11 @@ public class enemyBirdHandler : MonoBehaviour
             soundWarning.setParameterValue("Bird", 0);
         }
     }
-
-    // Start is called before the first frame update
+    
     void Start()
     {
-        soundWarning = FMODUnity.RuntimeManager.CreateInstance("event:/Birds/Birds_warning");
-        soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Birds/Birds_attack");
-        soundPlayerHit = FMODUnity.RuntimeManager.CreateInstance("event:/Birds/Birds_player_attack");
+        print("start");
+        
         
         transform.position = new Vector3(10.08f, 3.37f);
 

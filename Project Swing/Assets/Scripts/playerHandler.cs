@@ -165,6 +165,7 @@ public class playerHandler : MonoBehaviour
     float accX;
 
     [HideInInspector] public float maxSP = 20;
+    [HideInInspector] public bool invincible;
     [HideInInspector] public bool dead;
 
     [HideInInspector] public int direction;
@@ -1489,7 +1490,8 @@ public class playerHandler : MonoBehaviour
     {
         actionTimer += Time.deltaTime;
 
-        hitboxBody.enabled = false;
+        invincible = true;
+        //hitboxBody.enabled = false;
 
         if (actionTimer >= counterTime / 3 && attackID == attackIDStart)
         {
@@ -1498,6 +1500,7 @@ public class playerHandler : MonoBehaviour
 
         if (actionTimer >= counterTime)
         {
+            invincible = false;
             hitboxAttack4A.enabled = false;
             actionTimer = 0;
             punchingSuccess = false;
@@ -1527,6 +1530,7 @@ public class playerHandler : MonoBehaviour
         birdHitting = true;
 
         hitboxBody.enabled = true;
+        invincible = false;
         DisableHurtboxes();
         hitboxAttackBird.enabled = true;
         Instantiate(effectHitBird, transform.position + new Vector3(0, 0.3f), new Quaternion(0, 0, 0, 0));
@@ -1542,7 +1546,6 @@ public class playerHandler : MonoBehaviour
         busy = true;
         beatPassed = false;
         punchingActive = false;
-        hitboxBody.enabled = true;
         hitstun = false;
         dodgeSucces = false;
         RestockCombos();
@@ -1684,7 +1687,8 @@ public class playerHandler : MonoBehaviour
 
     void Hitstun()
     {
-        hitboxBody.enabled = false;
+        //hitboxBody.enabled = false;
+        //invincible = true;
 
         velX = (-3f - actionTimer * 5) * hitstunDirection;
 
@@ -1696,6 +1700,7 @@ public class playerHandler : MonoBehaviour
             hitstun = false;
             busy = false;
             hitboxBody.enabled = true;
+            invincible = false;
         }
     }
 
@@ -1813,7 +1818,8 @@ public class playerHandler : MonoBehaviour
             GameObject tDmgNumber = Instantiate(damageNumberPlayer, transform.position + new Vector3(0, 0.7f), new Quaternion(0, 0, 0, 0));
             tDmgNumber.GetComponent<dmgNumberHandler>().Init(dmg);
 
-            hitboxBody.enabled = false;
+            //hitboxBody.enabled = false;
+            invincible = true;
 
             velX = 0;
             accX = 0;

@@ -560,9 +560,12 @@ public class enemyHandler : MonoBehaviour
     {
         if (other.tag == "player" && attackHitting == true)
         {
-            soundAttack.setParameterValue("Pre", 3);
-            soundAttack.start();
-            other.GetComponent<playerHandler>().TakeDamage(damage[currentAttack], direction);
+            if (!other.GetComponent<playerHandler>().invincible)
+            {
+                soundAttack.setParameterValue("Pre", 3);
+                soundAttack.start();
+                other.GetComponent<playerHandler>().TakeDamage(damage[currentAttack], direction);
+            }
         }
     }
 
