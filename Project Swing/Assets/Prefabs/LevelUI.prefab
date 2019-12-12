@@ -187,8 +187,7 @@ GameObject:
   - component: {fileID: 303937643396106906}
   - component: {fileID: 303937643396106907}
   - component: {fileID: 303937643396106904}
-  - component: {fileID: 6296588953774458169}
-  - component: {fileID: 7550866763886719732}
+  - component: {fileID: 7959853895297164896}
   m_Layer: 5
   m_Name: LevelUI
   m_TagString: Untagged
@@ -280,7 +279,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &6296588953774458169
+--- !u!114 &7959853895297164896
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -289,21 +288,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 303937643396106905}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd18a17b443d5224b956ed905719f833, type: 3}
+  m_Script: {fileID: 11500000, guid: 079ec76e05cb55a47826a63bd12e2dfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7550866763886719732
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 303937643396106905}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc4bfbb33a087724c9df77bced37447a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  matUIGlow: {fileID: 2100000, guid: 5b4d9d1c20d5f3b43acfc693bf6ac8dd, type: 2}
+  matUIGlowGreen: {fileID: 2100000, guid: a1439bb1299d99a44bcf49cddb21cce7, type: 2}
 --- !u!1 &2355862594621244941
 GameObject:
   m_ObjectHideFlags: 0

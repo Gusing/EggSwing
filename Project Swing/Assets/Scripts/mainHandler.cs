@@ -143,11 +143,6 @@ public class mainHandler : MonoBehaviour {
 
     //---------------------------------HUD
     public static bool HUDTurnedOff;
-    GameObject oldSelected;
-    GameObject currentUIMarker;
-    float UIMarkerColor;
-    bool UIMarkerColorSwitch;
-
     [HideInInspector] public bool moveResultScreen;
 
     //---------------------------------save data

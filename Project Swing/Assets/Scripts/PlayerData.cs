@@ -72,7 +72,7 @@ public class PlayerData
 
             unlockedLevel[1] = true;
             
-            
+            /*
             unlockedHardLevel[1] = true;
             unlockedHardLevel[2] = true;
             unlockedHardLevel[3] = true;
@@ -87,7 +87,7 @@ public class PlayerData
             unlockedBirdLevel[3] = true;
             unlockedBirdLevel[4] = true;
             unlockedBirdLevel[5] = true;
-            
+            */
 
             for (int i = 0; i < itemActive.Length; i++)
             {

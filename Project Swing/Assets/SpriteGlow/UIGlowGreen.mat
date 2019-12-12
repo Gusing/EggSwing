@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: UIGlow
+  m_Name: UIGlowGreen
   m_Shader: {fileID: 4800000, guid: c20308b0e23b78d4c85098af31f19cb4, type: 3}
   m_ShaderKeywords: PIXELSNAP_ON _ISOUTLINEENABLED_ON
   m_LightmapFlags: 4
@@ -61,7 +61,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - PixelSnap: 1
-    - _AlphaThreshold: 0.116
+    - _AlphaThreshold: 0.187
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -74,7 +74,7 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _OutlineSize: 8.86
+    - _OutlineSize: 8.2
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -82,8 +82,8 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.74509805, g: 0.7921569, b: 0.74509907, a: 1}
+    - _Color: {r: 0.1, g: 0.7, b: 0.2, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
-    - _OutlineColor: {r: 0.7251664, g: 2.8650014, b: 2.674794, a: 1}
+    - _OutlineColor: {r: 0.54, g: 2.16, b: 0.54, a: 2.7}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}

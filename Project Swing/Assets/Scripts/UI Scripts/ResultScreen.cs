@@ -93,7 +93,7 @@ public class ResultScreen : MonoBehaviour
     {
         if (!visible) return;
 
-        UpdateSelectedButton();
+        //UpdateSelectedButton();
 
         if (countingCurrency)
         {

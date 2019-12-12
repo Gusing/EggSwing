@@ -585,7 +585,7 @@ SpriteRenderer:
   m_SortingLayerID: -548683727
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 38edfb7e59ee43c479e4c3d8c1818dc5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 72ac0f68b39479a40b2ee47e25b9b60c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -605,7 +605,7 @@ Transform:
   m_GameObject: {fileID: 320455117}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -1054,10 +1054,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1059716758}
   - component: {fileID: 1059716757}
-  - component: {fileID: 1059716756}
-  - component: {fileID: 1059716760}
-  - component: {fileID: 1059716761}
   - component: {fileID: 1059716759}
+  - component: {fileID: 1059716760}
+  - component: {fileID: 1059716756}
   - component: {fileID: 1059716762}
   m_Layer: 0
   m_Name: Main Camera
@@ -1148,8 +1147,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d7023952ff75504988387b871b25c27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UIMarker: {fileID: 4072682925154051409, guid: 861e1dec572283f46834fa3bc3341327,
-    type: 3}
 --- !u!114 &1059716760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1159,21 +1156,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1059716755}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd18a17b443d5224b956ed905719f833, type: 3}
+  m_Script: {fileID: 11500000, guid: 079ec76e05cb55a47826a63bd12e2dfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1059716761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1059716755}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc4bfbb33a087724c9df77bced37447a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  matUIGlow: {fileID: 2100000, guid: 5b4d9d1c20d5f3b43acfc693bf6ac8dd, type: 2}
+  matUIGlowGreen: {fileID: 2100000, guid: a1439bb1299d99a44bcf49cddb21cce7, type: 2}
 --- !u!114 &1059716762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1626,7 +1613,7 @@ Light:
   serializedVersion: 9
   m_Type: 1
   m_Color: {r: 0.9245283, g: 0.9245283, b: 0.9245283, a: 1}
-  m_Intensity: 1
+  m_Intensity: 1.3
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1682,13 +1669,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1485710886}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2.96, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1724674351
 GameObject:
   m_ObjectHideFlags: 0

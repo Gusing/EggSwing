@@ -23,20 +23,25 @@ public class menuHandler : MonoBehaviour {
 
     EventSystem eventSystem;
     GameObject oldSelected;
+
+    // old UI marker
     public GameObject UIMarker;
     GameObject currentUIMarker;
     float UIMarkerColor;
     bool UIMarkerColorSwitch;
     public float UIMarkerSpeed = 20;
     public float UIMarkerDarkness = 1f;
+    ////////////////
+
+    public Material matUIGlowRed;
 
     public Button btnEndless;
-    public SpriteRenderer spriteLockEndless;
+    public Image imgLockEndless;
     public Text txtEndlessRecord;
     public Button btnBird;
     public Button btnHard;
-    public SpriteRenderer rendererLockHard;
-    public SpriteRenderer rendererLockBird;
+    public Image imgLockHard;
+    public Image imgLockBird;
     Text txtCurrency;
 
     public SpriteRenderer rendererBirdTutorial;
@@ -100,17 +105,24 @@ public class menuHandler : MonoBehaviour {
             else levelListItem.GetComponent<levelContainerHandler>().Init(" ", 0, 0, i, false, 0);
         }
 
+        
         if (!data.clearedLevel[2] || !data.clearedLevel[3])
         {
-            spriteLockEndless.enabled = true;
-            btnEndless.gameObject.SetActive(false);
+            imgLockEndless.enabled = true;
+            btnEndless.GetComponent<Image>().material = matUIGlowRed;
+            btnEndless.GetComponentInChildren<Text>().text = "";
+            btnEndless.enabled = false;
+            
             txtEndlessRecord.text = "";
         }
         else
         {
             txtEndlessRecord.text =  "Record: " + data.endlessRecord.ToString();
         }
-
+        
+        /*
+        txtEndlessRecord.text = "Record: " + data.endlessRecord.ToString();
+        */
         for (int i = 1; i < 6; i++)
         {
             GameObject levelListItem = Instantiate(levelContainer) as GameObject;
@@ -134,15 +146,21 @@ public class menuHandler : MonoBehaviour {
         if (data.unlockedHardLevel[1]) btnHard.interactable = true;
         else
         {
-            rendererLockHard.enabled = true;
-            btnHard.gameObject.SetActive(false);
+            btnHard.GetComponent<Image>().material = matUIGlowRed;
+            btnHard.GetComponentInChildren<Text>().text = "";
+            btnHard.enabled = false;
+
+            imgLockHard.enabled = true;
         }
 
         if (data.unlockedBirdLevel[1]) btnBird.interactable = true;
         else
         {
-            rendererLockBird.enabled = true;
-            btnBird.gameObject.SetActive(false);
+            btnBird.GetComponent<Image>().material = matUIGlowRed;
+            btnBird.GetComponentInChildren<Text>().text = "";
+            btnBird.enabled = false;
+
+            imgLockBird.enabled = true;
         }
 
         if (data.inputSelected == 0) rendererBirdTutorial.sprite = spriteBirdTutXbox;
@@ -205,6 +223,7 @@ public class menuHandler : MonoBehaviour {
             {
                 currentScrollList.verticalNormalizedPosition += 2.5f * Time.deltaTime;
             }
+
             // back to main menu
             if (Input.GetButtonDown("Cancel") || Input.GetButtonDown("Super"))
             {
@@ -214,7 +233,8 @@ public class menuHandler : MonoBehaviour {
             if (Input.GetButtonDown("Cycle Left")) CycleMode(false);
         }
 
-        // update marker
+        // old UI marker
+        /*
         if (!UIMarkerColorSwitch)
         {
             if (UIMarkerColor < 1)
@@ -236,22 +256,16 @@ public class menuHandler : MonoBehaviour {
         {
            currentUIMarker.GetComponent<Image>().color = new Color(UIMarkerColor * UIMarkerDarkness, UIMarkerColor, UIMarkerColor * UIMarkerDarkness);
         }
-
+        */
+        
         if (eventSystem.currentSelectedGameObject != null)
         {
             if (eventSystem.currentSelectedGameObject != oldSelected)
             {
-                //print(eventSystem.currentSelectedGameObject.transform.position.y);
-
                 sceneSelectionHandler.Instance.lastButtonName = eventSystem.currentSelectedGameObject.name;
-
-                Destroy(currentUIMarker);
-                currentUIMarker = Instantiate(UIMarker, eventSystem.currentSelectedGameObject.transform);
-                currentUIMarker.GetComponent<RectTransform>().sizeDelta = new Vector2(eventSystem.currentSelectedGameObject.GetComponent<RectTransform>().sizeDelta.x, eventSystem.currentSelectedGameObject.GetComponent<RectTransform>().sizeDelta.y);
-            
-                if (eventSystem.currentSelectedGameObject.transform.parent.parent != null)
+                print(sceneSelectionHandler.Instance.inputIcons);
+                if (eventSystem.currentSelectedGameObject.transform.parent.parent != null && sceneSelectionHandler.Instance.inputIcons != 2)
                 {
-                    
                     if (eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == levelListContent ||
                         eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == hardListContent ||
                         eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == BirdListContent)
@@ -262,21 +276,8 @@ public class menuHandler : MonoBehaviour {
                 }
             }
         }
-        
-        oldSelected = eventSystem.currentSelectedGameObject;
 
-        /*
-        if (eventSystem.currentSelectedGameObject.transform.parent.parent != null)
-        {
-            if (eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == levelListContent ||
-                eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == hardListContent ||
-                eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == BirdListContent)
-            {
-                if (eventSystem.currentSelectedGameObject.transform.position.y < -3.42f) eventSystem.SetSelectedGameObject()
-                if (eventSystem.currentSelectedGameObject.transform.position.y > 2.9f) currentScrollList.verticalNormalizedPosition = Mathf.Clamp(currentScrollList.verticalNormalizedPosition + 1f, 0, 1);
-            }
-        }
-        */
+        oldSelected = eventSystem.currentSelectedGameObject;
 
         // update mode marker
         rendererMarker.transform.position = new Vector3(-2.6f + 4.21f * selectedGameMode, rendererMarker.transform.position.y);
@@ -350,6 +351,7 @@ public class menuHandler : MonoBehaviour {
 
     public void EnterShop()
     {
+        /*
         Texture2D tex = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
         int width = Screen.width;
         int height = Screen.height;
@@ -357,12 +359,12 @@ public class menuHandler : MonoBehaviour {
         tex.Apply();
 
         print(tex.GetPixel(0, 0));
-
-        /*
+        */
+        
         soundUIClick.start();
         menuMusicPlayerHandler.Instance.SwapShop(true);
         SceneManager.LoadScene("ShopScene");
-        */
+        
     }
 
     public void EnterControls()

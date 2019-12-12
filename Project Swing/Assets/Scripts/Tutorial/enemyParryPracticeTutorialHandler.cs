@@ -73,6 +73,8 @@ public class enemyParryPracticeTutorialHandler : enemyHandler {
 
         parryTime = 1f;
 
+        attackRecovery = 4;
+
         damage.Add(0);
 
         soundAttack = FMODUnity.RuntimeManager.CreateInstance("event:/Object/Boxhand");
@@ -143,12 +145,6 @@ public class enemyParryPracticeTutorialHandler : enemyHandler {
         //if (invincible) GetComponent<BoxCollider2D>().enabled = false;
         //else GetComponent<BoxCollider2D>().enabled = true;
         
-
-        // update attack recovery
-        if (attackRecovery > 0)
-        {
-            attackRecovery -= Time.deltaTime;
-        }
 
         if (parried) Parried();
         if (invincible) Invincible();
@@ -300,7 +296,7 @@ public class enemyParryPracticeTutorialHandler : enemyHandler {
                 attacking = false;
                 busy = false;
                 attackState = 0;
-                attackRecovery = Random.Range(2, 3);
+                attackRecovery = Random.Range(2f, 2.5f);
             }
         }
         

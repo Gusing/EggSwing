@@ -149,7 +149,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &74752783
 Light:
@@ -240,7 +240,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 19
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &195197719
 Light:
@@ -313,6 +313,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ResultsScreen
+      objectReference: {fileID: 0}
+    - target: {fileID: 2380625380955299456, guid: a74aaf105f2dcc0428bd828dc203d57e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1100912122748975747, guid: a74aaf105f2dcc0428bd828dc203d57e,
         type: 3}
@@ -715,7 +720,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 17
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &334551961
 Light:
@@ -866,7 +871,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
@@ -1059,7 +1064,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 20
+  m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &545647618
 Light:
@@ -1210,7 +1215,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &615889784
 GameObject:
@@ -1241,7 +1246,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 18
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &615889786
 Light:
@@ -1392,7 +1397,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &671870462
 GameObject:
@@ -1483,8 +1488,106 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &673229684
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 673229685}
+  - component: {fileID: 673229686}
+  - component: {fileID: 673229687}
+  m_Layer: 0
+  m_Name: ForegroundLight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &673229685
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673229684}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1078396382}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &673229686
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673229684}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 32976c39297fa8a4ab45089c91e6ce22, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: -764363589
+  m_SortingLayer: 6
+  m_SortingOrder: 2
+  m_Sprite: {fileID: 21300000, guid: 81ba218da3896d74c9e43979002539ec, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 38.399998, y: 21.599998}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!114 &673229687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673229684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3bbdc00df0e144fb317c48a8076fe8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imgA: {fileID: 21300000, guid: 81ba218da3896d74c9e43979002539ec, type: 3}
+  imgB: {fileID: 21300000, guid: 75afb987e6084cd4daaf22f4822fa474, type: 3}
+  count: 2
+  lightsA: []
+  lightsB: []
 --- !u!212 &739228893 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 153360346053888935, guid: 024694b4cb46c694581f8476382507b3,
@@ -1520,7 +1623,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &796776795
 Light:
@@ -1671,7 +1774,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &952266512
 GameObject:
@@ -1762,7 +1865,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &973310641 stripped
 MonoBehaviour:
@@ -1805,7 +1908,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 21
+  m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &980113443
 Light:
@@ -1956,7 +2059,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1045637220
 PrefabInstance:
@@ -2094,6 +2197,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1078396382}
   - component: {fileID: 1078396381}
+  - component: {fileID: 1078396383}
   m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
@@ -2139,7 +2243,7 @@ SpriteRenderer:
   m_SortingLayerID: -548683727
   m_SortingLayer: 1
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: d4552a6f9e416bd4aa3e880b1d4987f1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: da90e9de0d9daaa41ac5b985bd4dce88, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2163,6 +2267,7 @@ Transform:
   m_Children:
   - {fileID: 1375728907}
   - {fileID: 1346761922}
+  - {fileID: 673229685}
   - {fileID: 915000102}
   - {fileID: 952266514}
   - {fileID: 1700322610}
@@ -2186,6 +2291,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1078396383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1078396380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3bbdc00df0e144fb317c48a8076fe8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imgA: {fileID: 21300000, guid: da90e9de0d9daaa41ac5b985bd4dce88, type: 3}
+  imgB: {fileID: 21300000, guid: 87261dc3cf9c0024e94a3f60f4fdcc01, type: 3}
+  count: 2
+  lightsA: []
+  lightsB: []
 --- !u!1 &1091258188
 GameObject:
   m_ObjectHideFlags: 0
@@ -2215,7 +2337,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &1091258190
 Light:
@@ -2366,7 +2488,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1284745203
 GameObject:
@@ -2452,13 +2574,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1284745203}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2.96, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1285684210
 GameObject:
   m_ObjectHideFlags: 0
@@ -2488,7 +2610,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &1285684212
 Light:
@@ -2619,7 +2741,7 @@ SpriteRenderer:
   m_SortingLayerID: -548683727
   m_SortingLayer: 1
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 1fe844dd76e65c74e88c3e75bf064321, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c4febb6a63d2f4f4bbcdeda0da4ce7fd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2706,7 +2828,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1375728906}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -2956,7 +3078,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1882228338
 GameObject:
@@ -2987,7 +3109,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &1882228340
 Light:
@@ -3138,7 +3260,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1078396382}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &303937643440660901
 PrefabInstance:
@@ -3151,56 +3273,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LevelUI
-      objectReference: {fileID: 0}
-    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: shakeAmount
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: timeStartShaking
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: timeStartColorFade
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: timeStartSizeJittering
-      value: 23
-      objectReference: {fileID: 0}
-    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: shakeOffsetStart
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: shakeOffsetEnd
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: sizeJitterStart
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: sizeJitterEnd
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: timeStartShakingText
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: timeStartFlashing
-      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 303937643396106981, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
@@ -3332,36 +3404,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -251.79993
       objectReference: {fileID: 0}
-    - target: {fileID: 1883888844100937906, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4953340227112521971, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_Name
-      value: ProgressBarForeground
-      objectReference: {fileID: 0}
-    - target: {fileID: 2809093787524072086, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_Name
-      value: ProgressBarMask
-      objectReference: {fileID: 0}
-    - target: {fileID: 7106404328082827602, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_Name
-      value: ProgressBarFill
-      objectReference: {fileID: 0}
-    - target: {fileID: 706362461879565501, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_SortingOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 241973790616035479, guid: 024694b4cb46c694581f8476382507b3,
-        type: 3}
-      propertyPath: m_Name
-      value: ProgressBarMarker
-      objectReference: {fileID: 0}
     - target: {fileID: 7103838901863670623, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
       propertyPath: m_LocalPosition.z
@@ -3426,6 +3468,86 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: MenuScene
+      objectReference: {fileID: 0}
+    - target: {fileID: 1883888844100937906, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4953340227112521971, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Name
+      value: ProgressBarForeground
+      objectReference: {fileID: 0}
+    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: shakeAmount
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: timeStartShaking
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: timeStartColorFade
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: timeStartSizeJittering
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: shakeOffsetStart
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: shakeOffsetEnd
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: sizeJitterStart
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: sizeJitterEnd
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: timeStartShakingText
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6560721895427337391, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: timeStartFlashing
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2809093787524072086, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Name
+      value: ProgressBarMask
+      objectReference: {fileID: 0}
+    - target: {fileID: 7106404328082827602, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Name
+      value: ProgressBarFill
+      objectReference: {fileID: 0}
+    - target: {fileID: 706362461879565501, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 241973790616035479, guid: 024694b4cb46c694581f8476382507b3,
+        type: 3}
+      propertyPath: m_Name
+      value: ProgressBarMarker
       objectReference: {fileID: 0}
     - target: {fileID: 5874460864962739806, guid: 024694b4cb46c694581f8476382507b3,
         type: 3}
@@ -3592,11 +3714,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: playerHUD
       objectReference: {fileID: 0}
-    - target: {fileID: 6207378075233845851, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
-        type: 3}
-      propertyPath: m_SortingOrder
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 4813939583015148578, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3707,6 +3824,11 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 6207378075233845851, guid: ba4024dc994b0f0449c7fa5a6dffaecb,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba4024dc994b0f0449c7fa5a6dffaecb, type: 3}
 --- !u!1001 &5507676937090035116
