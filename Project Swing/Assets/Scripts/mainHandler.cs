@@ -218,7 +218,7 @@ public class mainHandler : MonoBehaviour {
         // scene object references
         levelCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         player = GameObject.Find("Player").GetComponent<playerHandler>();
-        resultScreen = GameObject.FindObjectOfType<ResultScreen>();
+        resultScreen = FindObjectOfType<ResultScreen>();
 
         // endless mode object references
         if (level == 100)
@@ -240,13 +240,8 @@ public class mainHandler : MonoBehaviour {
         }
         else
         {
-            //txtCurrency = GameObject.Find("txtCurrency").GetComponent<Text>();
             maskProgressFill = GameObject.Find("ProgressBarMask").GetComponent<SpriteMask>();
             rendererProgressMarker = GameObject.Find("ProgressBarMarker").GetComponent<SpriteRenderer>();
-            //txtVictory = GameObject.Find("txtVictory").GetComponent<Text>();
-            //txtGameOver = GameObject.Find("txtGameOver").GetComponent<Text>();
-            //btnRetry = GameObject.Find("btnRetry").GetComponent<Button>();
-            //btnGameOver = GameObject.Find("btnBack").GetComponent<Button>();
         }
 
         if (level > 0) levelUI = GameObject.Find("LevelUI").GetComponent<Canvas>();

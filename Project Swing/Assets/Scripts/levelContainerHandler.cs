@@ -46,13 +46,13 @@ public class levelContainerHandler : MonoBehaviour
         if (rank == "B") txtLevelRank.color = new Color(0.2f, 0.76f, 1f);
         if (rank == "A") txtLevelRank.color = new Color(1f, 0.05f, 0.95f);
         if (rank == "S" || rank == "P") txtLevelRank.color = new Color(1f, 0.9f, 0f);
-        if (score > 0) txtLevelScore.text = score.ToString();
+        if (score > 0) txtLevelScore.text = "HIGH SCORE: " + score.ToString();
         else txtLevelScore.text = "";
         if (streak > 0)
         {
-            if (gameMode == 0) txtLevelStreak.text = "Highest Streak: " + streak.ToString();
-            if (gameMode == 1) txtLevelStreak.text = "Longest Combo: " + streak.ToString();
-            if (gameMode == 2) txtLevelStreak.text = "Most Time Left: " + streak.ToString("0.00");
+            if (gameMode == 0) txtLevelStreak.text = "HIGH STREAK: " + streak.ToString();
+            if (gameMode == 1) txtLevelStreak.text = "HIGH COMBO: " + streak.ToString();
+            if (gameMode == 2) txtLevelStreak.text = "MOST TIME LEFT: " + streak.ToString("0.00");
         }
         else txtLevelStreak.text = "";
     }

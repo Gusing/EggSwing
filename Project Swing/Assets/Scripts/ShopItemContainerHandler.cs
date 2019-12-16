@@ -34,13 +34,13 @@ public class ShopItemContainerHandler : MonoBehaviour
             {
                 active = false;
                 txtButton.text = "Inactive";
-                txtButton.color = new Color(0.3f, 0.1f, 0.1f);
+                txtButton.color = new Color(1f, 0.3f, 0.3f);
             }
             else
             {
                 active = true;
                 txtButton.text = "Active";
-                txtButton.color = new Color(0.1f, 0.3f, 0.13f);
+                txtButton.color = new Color(0.7f, 1f, 0.3f);
             }
         }
         txtName.text = name;
@@ -69,13 +69,13 @@ public class ShopItemContainerHandler : MonoBehaviour
             {
                 active = false;
                 txtButton.text = "Inactive";
-                txtButton.color = new Color(0.3f, 0.1f, 0.1f);
+                txtButton.color = new Color(1f, 0.3f, 0.3f);
             }
             else
             {
                 active = true;
                 txtButton.text = "Active";
-                txtButton.color = new Color(0.1f, 0.3f, 0.13f);
+                txtButton.color = new Color(0.7f, 1f, 0.3f);
             }
         }
 

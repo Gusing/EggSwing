@@ -263,7 +263,6 @@ public class menuHandler : MonoBehaviour {
             if (eventSystem.currentSelectedGameObject != oldSelected)
             {
                 sceneSelectionHandler.Instance.lastButtonName = eventSystem.currentSelectedGameObject.name;
-                print(sceneSelectionHandler.Instance.inputIcons);
                 if (eventSystem.currentSelectedGameObject.transform.parent.parent != null && sceneSelectionHandler.Instance.inputIcons != 2)
                 {
                     if (eventSystem.currentSelectedGameObject.transform.parent.parent.gameObject == levelListContent ||

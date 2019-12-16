@@ -22,18 +22,20 @@ public class ButtonNavigation : MonoBehaviour
 
     void Awake()
     {
-        eventSystem = EventSystem.current;
+        
     }
 
     void Start()
     {
+        eventSystem = EventSystem.current;
+
+        oldSelected = eventSystem.currentSelectedGameObject;
+
         soundUIMove = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Button_hover");
 
         matGlowTime = 0.2f;
         matGlowTimer = 0;
         glowingGreenStrong = false;
-
-        oldSelected = eventSystem.currentSelectedGameObject;
     }
     
     void Update()
@@ -76,7 +78,17 @@ public class ButtonNavigation : MonoBehaviour
             {
                 soundUIMove.start();
 
-                if (oldSelected != null) oldSelected.GetComponent<Image>().material = matUIGlow;
+                if (eventSystem.currentSelectedGameObject.name == "btnStartLevel")
+                {
+                    matUIGlowGreen.SetVector("_OutlineColor", new Color(0.2f, 0.8f, 0.2f, 1) * 2.7f);
+                    eventSystem.currentSelectedGameObject.GetComponentInChildren<Text>().color = new Color(0.4f, 0.9f, 0.2f);
+                }
+
+                if (oldSelected != null)
+                {
+                    if (oldSelected.name == "btnStartLevel") oldSelected.GetComponentInChildren<Text>().color = new Color(1f, 1f, 1f);
+                    oldSelected.GetComponent<Image>().material = matUIGlow;
+                }
                 eventSystem.currentSelectedGameObject.GetComponent<Image>().material = matUIGlowGreen;
             }
         }

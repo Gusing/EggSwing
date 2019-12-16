@@ -78,15 +78,13 @@ public class ResultScreen : MonoBehaviour
         countingCurrency = false;
 
         soundPointsCounter = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Pointscounter");
-
-        eventSystem = EventSystem.current;
-
+        
         txtScore.text = "<mspace=0.65em>" + pH.currentScore.ToString() + "</mspace>";
     }
     
     void Start()
     {
-
+        eventSystem = EventSystem.current;
     }
     
     void Update()

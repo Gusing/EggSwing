@@ -5,14 +5,12 @@ using UnityEngine;
 public class levelScrollHandler : MonoBehaviour
 {
     public GameObject levelContainerMoon;
-
-    // Start is called before the first frame update
+    
     void Start()
     {
 
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         

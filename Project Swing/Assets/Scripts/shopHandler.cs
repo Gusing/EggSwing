@@ -130,27 +130,27 @@ public class shopHandler : MonoBehaviour
         GameObject ShopListItem = Instantiate(ShopItemContainer) as GameObject;
         ShopListItem.SetActive(true);
         ShopListItem.transform.SetParent(ShopListContent.transform, false);
-        ShopListItem.GetComponent<ShopItemContainerHandler>().Init(data.itemBought[0], data.itemActive[0], "Flatten Combo",  spriteCombo1, prices[0], 0);
+        ShopListItem.GetComponent<ShopItemContainerHandler>().Init(data.itemBought[0], data.itemActive[0], "FLATTEN COMBO",  spriteCombo1, prices[0], 0);
 
         ShopListItem = Instantiate(ShopItemContainer) as GameObject;
         ShopListItem.SetActive(true);
         ShopListItem.transform.SetParent(ShopListContent.transform, false);
-        ShopListItem.GetComponent<ShopItemContainerHandler>().Init(data.itemBought[3], data.itemActive[3], "Super Attack", spriteCombo4, prices[3], 3);
+        ShopListItem.GetComponent<ShopItemContainerHandler>().Init(data.itemBought[3], data.itemActive[3], "SUPER ATTACK", spriteCombo4, prices[3], 3);
 
         ShopListItem = Instantiate(ShopItemContainer) as GameObject;
         ShopListItem.SetActive(true);
         ShopListItem.transform.SetParent(ShopListContent.transform, false);
-        ShopListItem.GetComponent<ShopItemContainerHandler>().Init(data.itemBought[4], data.itemActive[4], "Counter Hit", spriteCombo5, prices[4], 4);
+        ShopListItem.GetComponent<ShopItemContainerHandler>().Init(data.itemBought[4], data.itemActive[4], "COUNTER HIT", spriteCombo5, prices[4], 4);
 
         ShopListItem = Instantiate(ShopItemContainer) as GameObject;
         ShopListItem.SetActive(true);
         ShopListItem.transform.SetParent(ShopListContent.transform, false);
-        ShopListItem.GetComponent<ShopItemContainerHandler>().Init(data.itemBought[1], data.itemActive[1], "Charge Punch", spriteCombo2, prices[1], 1);
+        ShopListItem.GetComponent<ShopItemContainerHandler>().Init(data.itemBought[1], data.itemActive[1], "CHARGE PUNCH", spriteCombo2, prices[1], 1);
 
         ShopListItem = Instantiate(ShopItemContainer) as GameObject;
         ShopListItem.SetActive(true);
         ShopListItem.transform.SetParent(ShopListContent.transform, false);
-        ShopListItem.GetComponent<ShopItemContainerHandler>().Init(data.itemBought[2], data.itemActive[2], "Rapid Kicks", spriteCombo3, prices[2], 2);
+        ShopListItem.GetComponent<ShopItemContainerHandler>().Init(data.itemBought[2], data.itemActive[2], "RAPID KICKS", spriteCombo3, prices[2], 2);
 
         oldSelected = eventSystem.currentSelectedGameObject;
     }
