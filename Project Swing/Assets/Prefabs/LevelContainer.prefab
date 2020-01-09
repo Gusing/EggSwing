@@ -353,9 +353,9 @@ MonoBehaviour:
   btnPlayLevel: {fileID: 1984317598989361252}
   imgBg: {fileID: 1765172047853534361}
   bgImages:
-  - {fileID: 21300000, guid: 9040ee40cea9f64439a4eacb7a01b5af, type: 3}
+  - {fileID: 21300000, guid: 8de2a19317e04024a9029ca4946d50a7, type: 3}
   - {fileID: 21300000, guid: e3a2243d34088344f919573d87059c76, type: 3}
-  - {fileID: 21300000, guid: e17de74901d786a449bdd7b57e4c0c7d, type: 3}
+  - {fileID: 21300000, guid: 76b942a326b704f42ba4e81b131511ab, type: 3}
   - {fileID: 21300000, guid: e68ad669c04341748b42b5e07f32e2ab, type: 3}
   - {fileID: 21300000, guid: 055d8267fc7c66b42afd0847390e4558, type: 3}
   levelNames:

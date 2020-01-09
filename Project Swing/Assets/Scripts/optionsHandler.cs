@@ -97,7 +97,7 @@ public class optionsHandler : MonoBehaviour
         
         ChangeMode(0);
 
-        AnalyticsEvent.CustomEvent(new Dictionary<string, object> { { "Enter_Settings", 1 } });
+        //AnalyticsEvent.CustomEvent(new Dictionary<string, object> { { "Enter_Settings", 1 } });
     }
 
     // Update is called once per frame

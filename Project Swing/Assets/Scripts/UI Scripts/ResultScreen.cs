@@ -74,7 +74,6 @@ public class ResultScreen : MonoBehaviour
 
         countingTimer = 0;
         visible = false;
-        print("start false");
         countingCurrency = false;
 
         soundPointsCounter = FMODUnity.RuntimeManager.CreateInstance("event:/Ui/Pointscounter");

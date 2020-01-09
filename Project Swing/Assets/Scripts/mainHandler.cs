@@ -657,7 +657,7 @@ public class mainHandler : MonoBehaviour {
         birdRankLimits = new List<int[]>() {
             new int[] { 10, 20, 30, 40, 50 },
             CalculateRankLimits(45),
-            CalculateRankLimits(63),
+            CalculateRankLimits(58),
             CalculateRankLimits(146),
             CalculateRankLimits(178),
             CalculateRankLimits(127),
@@ -1081,7 +1081,7 @@ public class mainHandler : MonoBehaviour {
                     if (currentLevelSpawn[currentSpawn].relativeToPlayer)
                     {
                         float tXPost = player.transform.position.x + currentLevelSpawn[currentSpawn].xPos[i];
-                        if (tXPost > 10 || tXPost < -10) enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(0, 0), Quaternion.identity));
+                        if (tXPost > 9 || tXPost < -9) enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(0, 0), Quaternion.identity));
                         else enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(player.transform.position.x + currentLevelSpawn[currentSpawn].xPos[i], 0), Quaternion.identity));
                     }
                     else enemies.Add(Instantiate(currentLevelSpawn[currentSpawn].enemies[i], new Vector3(currentLevelSpawn[currentSpawn].xPos[i], 0), Quaternion.identity));

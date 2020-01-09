@@ -13,6 +13,9 @@ public class ButtonNavigation : MonoBehaviour
 
     public Material matUIGlow;
     public Material matUIGlowGreen;
+    public Material matUIGlowNormal;
+    public Material matUIGlowBird;
+    public Material matUIGlowHard;
 
     float matGlowTimer;
     float matGlowTime;
@@ -74,25 +77,32 @@ public class ButtonNavigation : MonoBehaviour
         // play sound and change material when selecting new object
         if (eventSystem.currentSelectedGameObject != null)
         {
-            if (eventSystem.currentSelectedGameObject != oldSelected)
+            if (eventSystem.currentSelectedGameObject != oldSelected && eventSystem.currentSelectedGameObject.GetComponent<Button>() != null)
             {
                 soundUIMove.start();
 
-                if (eventSystem.currentSelectedGameObject.name == "btnStartLevel")
+                eventSystem.currentSelectedGameObject.GetComponent<Image>().material = matUIGlowGreen;
+                
+                string tButtonName = eventSystem.currentSelectedGameObject.name;
+                if (tButtonName == "btnStartLevel")
                 {
                     matUIGlowGreen.SetVector("_OutlineColor", new Color(0.2f, 0.8f, 0.2f, 1) * 2.7f);
                     eventSystem.currentSelectedGameObject.GetComponentInChildren<Text>().color = new Color(0.4f, 0.9f, 0.2f);
                 }
-
-                if (oldSelected != null)
+                
+                if (oldSelected != null && eventSystem.currentSelectedGameObject.GetComponent<Button>() != null)
                 {
                     if (oldSelected.name == "btnStartLevel") oldSelected.GetComponentInChildren<Text>().color = new Color(1f, 1f, 1f);
+                    
                     oldSelected.GetComponent<Image>().material = matUIGlow;
+                    if (oldSelected.name == "btnNormal") oldSelected.GetComponent<Image>().material = matUIGlowNormal;
+                    if (oldSelected.name == "btnBird") oldSelected.GetComponent<Image>().material = matUIGlowBird;
+                    if (oldSelected.name == "btnHard") oldSelected.GetComponent<Image>().material = matUIGlowHard;
                 }
-                eventSystem.currentSelectedGameObject.GetComponent<Image>().material = matUIGlowGreen;
+                
             }
         }
 
-        oldSelected = eventSystem.currentSelectedGameObject;
+        if (eventSystem.currentSelectedGameObject.GetComponent<Button>() != null) oldSelected = eventSystem.currentSelectedGameObject;
     }
 }

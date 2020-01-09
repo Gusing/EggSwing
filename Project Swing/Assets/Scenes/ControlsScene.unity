@@ -236,7 +236,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 788e9a75983673d478f4c75d47f5f250, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b368297600cbdac4da6b2e3e0e47157e, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -245,7 +245,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 2
 --- !u!222 &9101680
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -468,7 +468,7 @@ SpriteRenderer:
   m_SortingLayerID: -548683727
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 72ac0f68b39479a40b2ee47e25b9b60c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 14ceed7efee1c0140a0dac273f989869, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -488,7 +488,7 @@ Transform:
   m_GameObject: {fileID: 320455117}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -643,7 +643,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 7e805a6d992d70e48a76e5a268149dcb, type: 3}
+    m_Font: {fileID: 12800000, guid: 51a8c52f54ce93a47ae03bf5e4318cbd, type: 3}
     m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
@@ -941,7 +941,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 788e9a75983673d478f4c75d47f5f250, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b368297600cbdac4da6b2e3e0e47157e, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -950,7 +950,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 2
 --- !u!222 &722062126
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1018,9 +1018,9 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 7e805a6d992d70e48a76e5a268149dcb, type: 3}
+    m_Font: {fileID: 12800000, guid: 51a8c52f54ce93a47ae03bf5e4318cbd, type: 3}
     m_FontSize: 20
-    m_FontStyle: 1
+    m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
@@ -1184,6 +1184,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   matUIGlow: {fileID: 2100000, guid: 5b4d9d1c20d5f3b43acfc693bf6ac8dd, type: 2}
   matUIGlowGreen: {fileID: 2100000, guid: a1439bb1299d99a44bcf49cddb21cce7, type: 2}
+  matUIGlowNormal: {fileID: 0}
+  matUIGlowBird: {fileID: 0}
+  matUIGlowHard: {fileID: 0}
 --- !u!114 &1059716761
 MonoBehaviour:
   m_ObjectHideFlags: 0

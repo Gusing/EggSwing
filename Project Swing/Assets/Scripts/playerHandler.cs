@@ -517,7 +517,7 @@ public class playerHandler : MonoBehaviour
         // update streak
         if (mainHandler.currentGameMode != 1)
         {
-            if (currentStreak > 0) streakTimer += Time.deltaTime;
+            if (currentStreak > 0 && !normalLevelFinished) streakTimer += Time.deltaTime;
 
             if (streakTimer >= streakDisappearDelay)
             {
