@@ -1119,7 +1119,7 @@ public class mainHandlerTutorial : MonoBehaviour {
         {
             tutorialState++;
             tutorialTimer = 0;
-            txtTutorial1.text = "Press <sprite=" + (9 + sceneSelectionHandler.Instance.inputIcons * 11) + "> to do a <sprite=0>Light Attack when the lines converge!";
+            txtTutorial1.text = "Press <sprite=" + (9 + sceneSelectionHandler.Instance.inputIcons * 11) + "> to do a Light Attack (<sprite=0>) when the lines converge!";
             txtTutorial2.text = "(0/5)";
             currentTutorialObject = Instantiate(enemyBoxLight, player.transform.position + new Vector3(1.7f, 0, 0), new Quaternion(0, 0, 0, 0));
             currentTutorialObject.GetComponent<enemyBoxLightTutorialHandler>().Init(false);
@@ -1172,7 +1172,7 @@ public class mainHandlerTutorial : MonoBehaviour {
         {
             tutorialState = 8;
             tutorialTimer = 0;
-            txtTutorial1.text = "Press <sprite=" + (10 + sceneSelectionHandler.Instance.inputIcons * 11) + "> to do a <sprite=1>Heavy attack every other beat!";
+            txtTutorial1.text = "Press <sprite=" + (10 + sceneSelectionHandler.Instance.inputIcons * 11) + "> to do a Heavy Attack (<sprite=1>) every other beat!";
             txtTutorial2.text = "(0/5)";
             currentTutorialObject = Instantiate(enemyBoxHeavy, player.transform.position + new Vector3(1.5f, 0, 0), new Quaternion(0, 0, 0, 0));
             currentTutorialObject.GetComponent<enemyBoxHeavyTutorialHandler>().Init(false);
@@ -1222,7 +1222,7 @@ public class mainHandlerTutorial : MonoBehaviour {
         {
             tutorialState++;
             tutorialTimer = 0;
-            txtTutorial1.text = "Press <sprite=" + (14 + sceneSelectionHandler.Instance.inputIcons * 11) + "> to do a <sprite=5>Parry against the enemy attack!";
+            txtTutorial1.text = "Press <sprite=" + (14 + sceneSelectionHandler.Instance.inputIcons * 11) + "> to do a Parry (<sprite=5>) against the enemy attack!";
             txtTutorial2.text = "(0/3)";
             currentTutorialObject = Instantiate(parryPractice, player.transform.position + new Vector3(1.7f, 0, 0), new Quaternion(0, 0, 0, 0));
             currentTutorialObject.GetComponent<enemyParryPracticeTutorialHandler>().Init(false);
@@ -1260,7 +1260,7 @@ public class mainHandlerTutorial : MonoBehaviour {
         {
             tutorialState++;
             tutorialTimer = 0;
-            txtTutorial1.text = "Press <sprite=" + (13 + sceneSelectionHandler.Instance.inputIcons * 11) + "> to use <sprite=4>Dodge to go through objects!";
+            txtTutorial1.text = "Press <sprite=" + (13 + sceneSelectionHandler.Instance.inputIcons * 11) + "> to use Dodge (<sprite=4>) to go through objects!";
             txtTutorial2.text = "Get to the right";
             currentTutorialObject = Instantiate(objectWall, new Vector3(1.35f, -1.11f, 0), new Quaternion(0, 0, 0, 0));
             currentTutorialObject = Instantiate(objectWall, new Vector3(4.85f, -1.11f, 0), new Quaternion(0, 0, 0, 0));
@@ -1278,8 +1278,12 @@ public class mainHandlerTutorial : MonoBehaviour {
             txtTutorial1.text = "Use everything you've learned!";
             txtTutorial2.rectTransform.localPosition = new Vector3(0, 200, 0);
             txtTutorial2.alignment = TextAlignmentOptions.MidlineLeft;
-            txtTutorial2.rectTransform.sizeDelta = new Vector2(600, txtTutorial2.rectTransform.sizeDelta.y);
-            txtTutorial2.text = "<sprite=0>Light Attack (0/3)\n<sprite=1>Heavy Attack (0/3)\n<sprite=5>Parry (0/3)\n<sprite=4>Dodge Through (0/3)";
+            txtTutorial2.rectTransform.sizeDelta = new Vector2(700, txtTutorial2.rectTransform.sizeDelta.y);
+            txtTutorial2.text = "<sprite=" + (9 + sceneSelectionHandler.Instance.inputIcons * 11) + ">: Light Attack (<sprite=0>) 0/3\n" +
+                "<sprite=" + (10 + sceneSelectionHandler.Instance.inputIcons * 11) + ">: Heavy Attack(<sprite=1>) 0/3\n" +
+                "<sprite=" + (14 + sceneSelectionHandler.Instance.inputIcons * 11) + ">: Parry (<sprite=5>) 0/3\n" +
+                "<sprite=" + (13 + sceneSelectionHandler.Instance.inputIcons * 11) + ">: Dodge (<sprite=4>) 0/3";
+            //txtTutorial2.text = "<sprite=0>Light Attack (0/3)\n<sprite=1>Heavy Attack (0/3)\n<sprite=5>Parry (0/3)\n<sprite=4>Dodge Through (0/3)";
             currentTutorialObject = Instantiate(enemyTutorial, new Vector3(-10, 0, 0), new Quaternion(0, 0, 0, 0));
             currentTutorialObject.GetComponent<enemyATutorialHandler>().Init(false);
             playerRightSide = true;
@@ -1289,7 +1293,12 @@ public class mainHandlerTutorial : MonoBehaviour {
 
         if (tutorialState == 18)
         {
-            txtTutorial2.text = "<sprite=0>Light Attack (" + lightCounter + "/3)\n<sprite=1>Heavy Attack (" + heavyCounter + "/3)\n<sprite=5>Parry (" + parryCounter + "/3)\n<sprite=4>Dodge Through (" + dashCounter + "/3)";
+            //txtTutorial2.text = "<sprite=0>Light Attack (" + lightCounter + "/3)\n<sprite=1>Heavy Attack (" + heavyCounter + "/3)\n<sprite=5>Parry (" + parryCounter + "/3)\n<sprite=4>Dodge Through (" + dashCounter + "/3)";
+            txtTutorial2.text = "<sprite=" + (9 + sceneSelectionHandler.Instance.inputIcons * 11) + ">: Light Attack (<sprite=0>) " + lightCounter  + "/ 3\n" +
+                "<sprite=" + (10 + sceneSelectionHandler.Instance.inputIcons * 11) + ">: Heavy Attack(<sprite=1>) " + heavyCounter + "/3\n" +
+                "<sprite=" + (14 + sceneSelectionHandler.Instance.inputIcons * 11) + ">: Parry (<sprite=5>) " + parryCounter + "/3\n" +
+                "<sprite=" + (13 + sceneSelectionHandler.Instance.inputIcons * 11) + ">: Dodge (<sprite=4>) " + dashCounter + "/3";
+
 
             if (player.transform.position.x > currentTutorialObject.transform.position.x && !playerRightSide && dashCounter < 3)
             {
@@ -1422,7 +1431,11 @@ public class mainHandlerTutorial : MonoBehaviour {
                     parryCounter++;
                 }
 
-                txtTutorial2.text = "<sprite=0>Light Attack (" + lightCounter + "/3)\n<sprite=1>Heavy Attack (" + heavyCounter + "/3)\n<sprite=5>Parry (" + parryCounter + "/3)\n<sprite=4>Dodge Through (" + dashCounter + "/3)";
+                //txtTutorial2.text = "<sprite=0>Light Attack (" + lightCounter + "/3)\n<sprite=1>Heavy Attack (" + heavyCounter + "/3)\n<sprite=5>Parry (" + parryCounter + "/3)\n<sprite=4>Dodge Through (" + dashCounter + "/3)";
+                txtTutorial2.text = "<sprite=" + (9 + sceneSelectionHandler.Instance.inputIcons * 11) + ">: Light Attack (<sprite=0>) " + lightCounter + "/ 3\n" +
+                "<sprite=" + (10 + sceneSelectionHandler.Instance.inputIcons * 11) + ">: Heavy Attack(<sprite=1>) " + heavyCounter + "/3\n" +
+                "<sprite=" + (14 + sceneSelectionHandler.Instance.inputIcons * 11) + ">: Parry (<sprite=5>) " + parryCounter + "/3\n" +
+                "<sprite=" + (13 + sceneSelectionHandler.Instance.inputIcons * 11) + ">: Dodge(<sprite=4>) " + dashCounter + "/3";
 
                 if (parryCounter >= 3 && lightCounter >= 3 && heavyCounter >= 3 && dashCounter >= 3)
                 {
